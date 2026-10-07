@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Кабинет — Niksos Client</title>
+<link rel="icon" href="assets/favicon.png">
+<link rel="stylesheet" href="assets/style.css">
+<style>
+.acc{min-height:100vh;min-height:100svh;padding:120px 0 64px;position:relative}
+.acc::before{content:"";position:absolute;inset:0;background:radial-gradient(50% 40% at 50% 0%,rgba(166,107,255,.25),transparent 70%);pointer-events:none}
+.acc .wrap{position:relative;max-width:980px}
+.box{border:1px solid var(--line);border-radius:20px;background:linear-gradient(180deg,var(--surface2),var(--surface));padding:32px}
+.auth{max-width:440px;margin:0 auto}
+.auth h1,.dash h1{font-size:clamp(32px,4.4vw,44px);font-weight:900;letter-spacing:-.035em;line-height:1.05}
+.auth .sub{color:var(--muted);margin:8px 0 24px;font-size:15px}
+.tabs{display:grid;grid-template-columns:1fr 1fr;gap:4px;padding:4px;border:1px solid var(--line);border-radius:12px;background:rgba(0,0,0,.25);margin-bottom:24px}
+.tabs button{min-height:40px;border:0;border-radius:9px;background:transparent;color:var(--muted);font:600 14px/1 inherit;cursor:pointer}
+.tabs button[aria-selected="true"]{background:rgba(166,107,255,.22);color:#fff}
+label{display:block;font-size:13px;font-weight:600;color:var(--muted);margin:0 0 6px}
+.field{margin-bottom:16px}
+input{width:100%;min-height:48px;padding:0 14px;border-radius:12px;border:1px solid var(--line);background:rgba(0,0,0,.3);color:#fff;font:16px/1 inherit;outline:none;transition:border-color .2s, box-shadow .2s}
+input:focus{border-color:var(--violet);box-shadow:0 0 0 3px rgba(166,107,255,.2)}
+input.key{font-family:ui-monospace,Consolas,monospace;letter-spacing:.06em;text-transform:uppercase}
+button.btn{border:0;cursor:pointer;color:#fff;font-family:inherit}
+button.btn:disabled{opacity:.5;cursor:not-allowed;transform:none!important;box-shadow:none!important}
+.full{width:100%}
+.msg{min-height:22px;margin-top:14px;font-size:14px;color:var(--muted)}
+.msg.err{color:#ff8a9a}.msg.ok{color:#7dffb4}
+.hint{margin-top:20px;font-size:13px;color:var(--dim)}
+.dash{display:none}
+.top{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap;margin-bottom:24px}
+.top .who{color:var(--muted);font-size:15px;margin-top:6px}
+.grid2{display:grid;grid-template-columns:1.1fr 1fr;gap:16px}
+.status{display:flex;flex-direction:column;gap:6px}
+.pill{align-self:flex-start;display:inline-flex;align-items:center;gap:8px;font-size:12px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;padding:6px 10px;border-radius:8px;border:1px solid var(--line);background:rgba(255,255,255,.05)}
+.pill .d{width:8px;height:8px;border-radius:50%;background:#ff6b81;box-shadow:0 0 10px #ff6b81}
+.pill.on .d{background:#5dffa5;box-shadow:0 0 10px #5dffa5}
+.status .big{font-size:clamp(30px,4vw,40px);font-weight:900;letter-spacing:-.03em;line-height:1.1;margin-top:12px}
+.status .small{color:var(--muted);font-size:14px}
+.status .btn{margin-top:20px}
+.box h2{font-size:20px;font-weight:800;letter-spacing:-.01em;text-transform:none;margin:0 0 4px;line-height:1.2}
+.box .desc{color:var(--muted);font-size:14px;margin-bottom:16px}
+.hist{margin-top:16px}
+.hist table{width:100%;border-collapse:collapse;font-size:14px}
+.hist td,.hist th{padding:10px 0;border-bottom:1px solid var(--line);text-align:left}
+.hist th{color:var(--dim);font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:.1em}
+.hist .empty{color:var(--dim);font-size:14px;padding:12px 0}
+.linkbtn{background:none;border:0;color:var(--muted);font:600 14px/1 inherit;cursor:pointer;padding:12px 4px;text-decoration:underline;text-underline-offset:3px}
+.linkbtn:hover{color:#fff}
+.spin{width:16px;height:16px;border-radius:50%;border:2px solid rgba(255,255,255,.35);border-top-color:#fff;animation:sp .8s linear infinite;display:none}
+.busy .spin{display:inline-block}
+@keyframes sp{to{transform:rotate(360deg)}}
+@media (max-width:760px){.grid2{grid-template-columns:1fr}.box{padding:24px 20px}}
+</style>
+</head>
+<body>
+<nav class="nav" aria-label="Навигация">
+  <a class="brand" href="index.html"><img src="assets/favicon.png" alt="">Niksos</a>
+  <a class="l" href="index.html#features">Возможности</a>
+  <a class="l" href="index.html#pricing">Цены</a>
+  <a class="btn primary" href="index.html#pricing">Купить</a>
+</nav>
+
+<main class="acc">
+  <div class="wrap">
+
+    <!-- Вход / регистрация -->
+    <section class="auth box" id="auth" aria-labelledby="auth-title" style="padding-top:32px">
+      <h1 id="auth-title">Кабинет</h1>
+      <p class="sub">Войди своим cloud-профилем Niksos — тем же ником и паролем, что в облаке клиента.</p>
+      <div class="tabs" role="tablist">
+        <button role="tab" aria-selected="true" data-tab="login">Вход</button>
+        <button role="tab" aria-selected="false" data-tab="register">Регистрация</button>
+      </div>
+      <form id="authForm" novalidate>
+        <div class="field"><label for="name">Ник</label>
+          <input id="name" autocomplete="username" maxlength="16" placeholder="Латиница, цифры, _" required></div>
+        <div class="field"><label for="pass">Пароль</label>
+          <input id="pass" type="password" autocomplete="current-password" required></div>
+        <div class="field" id="pass2wrap" hidden><label for="pass2">Повтори пароль</label>
+          <input id="pass2" type="password" autocomplete="new-password"></div>
+        <button class="btn primary full" id="authBtn" type="submit"><span class="spin"></span><span class="t">Войти</span></button>
+        <div class="msg" id="authMsg" role="status" aria-live="polite"></div>
+      </form>
+      <p class="hint">Пароль не уходит на сервер — в браузере считается защищённый хэш, как в клиенте. Профиль, созданный здесь, работает и в облаке клиента.</p>
+    </section>
+
+    <!-- Личный кабинет -->
+    <section class="dash" id="dash" aria-labelledby="dash-title">
+      <div class="top">
+        <div><h1 id="dash-title">Привет, <span class="grad" id="who"></span></h1><div class="who">Управление подпиской Niksos Client</div></div>
+        <div><a class="btn ghost" id="adminLink" href="admin.html" hidden>Админ-панель</a>
+        <button class="linkbtn" id="logout" type="button">Выйти</button></div>
+      </div>
+      <div class="grid2">
+        <div class="box status">
+          <span class="pill" id="pill"><span class="d"></span><span id="pillText">Нет подписки</span></span>
+          <div class="big" id="statusBig">—</div>
+          <div class="small" id="statusSmall"></div>
+          <button class="btn primary" id="dlBtn" type="button" disabled><span class="spin"></span><span class="t">Скачать клиент</span></button>
+          <div class="msg" id="dlMsg" role="status" aria-live="polite"></div>
+        </div>
+        <div class="box">
+          <h2>Ключ или промокод</h2>
+          <p class="desc">Ключ с FunPay (NIKSOS-XXXX-XXXX-XXXX-XXXX) или промокод. Дни добавляются к текущей подписке.</p>
+          <form id="keyForm" novalidate>
+            <div class="field"><label for="key">Ключ или промокод</label>
+              <input id="key" class="key" autocomplete="off" spellcheck="false" placeholder="NIKSOS-XXXX-… или ПРОМОКОД" maxlength="40"></div>
+            <button class="btn primary full" id="keyBtn" type="submit"><span class="spin"></span><span class="t">Активировать</span></button>
+            <div class="msg" id="keyMsg" role="status" aria-live="polite"></div>
+          </form>
+          <p class="hint">Нет ключа? <a href="#" data-buy style="text-decoration:underline">Купить на FunPay</a></p>
+        </div>
+      </div>
+      <div class="box hist">
+        <h2>Привязка к ПК <span id="devCount" style="color:var(--muted);font-weight:600"></span></h2>
+        <p class="desc" id="devText"></p>
+        <button class="btn ghost" id="resetBtn" type="button" disabled><span class="spin"></span><span class="t">Сбросить привязку</span></button>
+        <div class="small" id="resetNote" style="color:var(--dim);font-size:13px;margin-top:10px"></div>
+        <div class="msg" id="resetMsg" role="status" aria-live="polite"></div>
+      </div>
+      <div class="box hist">
+        <h2>История активаций</h2>
+        <div id="hist"></div>
+      </div>
+    </section>
+  </div>
+</main>
+
+<script src="assets/config.js"></script>
+<script src="assets/niksos-api.js"></script>
+<script src="assets/account.js"></script>
+</body>
+</html>
