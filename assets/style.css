@@ -2,7 +2,7 @@
   --bg:#08060f; --surface:#120e1f; --surface2:#1a1430; --line:rgba(255,255,255,.09);
   --text:#fff; --muted:rgba(255,255,255,.64); --dim:rgba(255,255,255,.42);
   --violet:#a66bff; --blue:#5e8bff; --pink:#e46bff;
-  --grad:linear-gradient(100deg,#6f8dff 0%,#a66bff 50%,#e46bff 100%);
+  --grad:#8b5cf6;
   --r:16px;
 }
 *{box-sizing:border-box;margin:0;padding:0}
@@ -11,7 +11,7 @@ body{background:var(--bg);color:var(--text);font:16px/1.5 system-ui,-apple-syste
 a{color:inherit;text-decoration:none}
 img{display:block;max-width:100%}
 .wrap{max-width:1160px;margin:0 auto;padding:0 32px}
-.grad{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.grad{color:inherit}
 .eyebrow{display:inline-flex;align-items:center;gap:10px;font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--violet)}
 .eyebrow::before{content:"";width:24px;height:1px;background:currentColor}
 .center .eyebrow::after{content:"";width:24px;height:1px;background:currentColor}
@@ -60,7 +60,7 @@ a:focus-visible,.btn:focus-visible{outline:2px solid var(--violet);outline-offse
 .tag{align-self:flex-start;font-size:11px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:#fff;padding:4px 8px;border-radius:6px;background:rgba(166,107,255,.28);border:1px solid rgba(166,107,255,.45);margin-bottom:12px}
 .card h3{font-size:22px;line-height:1.15;font-weight:800;letter-spacing:-.02em}
 .card p{color:var(--muted);font-size:14px;margin-top:6px;max-width:440px}
-.ico{position:absolute!important;top:22px;right:22px;color:#c9a6ff;line-height:0;filter:drop-shadow(0 0 12px rgba(166,107,255,.8))}
+.ico{position:absolute!important;top:22px;right:22px;color:#c9a6ff;line-height:0;filter:none}
 .glow::after{content:"";position:absolute;width:260px;height:260px;right:-80px;top:-80px;border-radius:50%;background:radial-gradient(circle,rgba(166,107,255,.35),transparent 70%);z-index:0}
 .c-a{grid-column:span 4;grid-row:span 2}.c-b{grid-column:span 2}.c-c{grid-column:span 2}
 .c-d{grid-column:span 3;grid-row:span 2}.c-e{grid-column:span 3}.c-f{grid-column:span 3}
