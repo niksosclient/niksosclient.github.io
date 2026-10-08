@@ -1,29 +1,42 @@
-/* Простой стиль для кабинета и админки (перекрывает старые стили) */
-body{--bg:#0f0f12;--surface:#17171c;--surface2:#17171c;--line:#26262d;--text:#e9e9ee;--muted:#9a9aa6;--dim:#7a7a86;--violet:#8b5cf6;--grad:#8b5cf6;background:#0f0f12;color:#e9e9ee;font-size:15px}
-body .grad{color:inherit;background:none}
-body .nav{position:sticky;top:0;width:auto;max-width:none;margin:0;border:0;border-bottom:1px solid var(--line);border-radius:0;background:#0f0f12;backdrop-filter:none;-webkit-backdrop-filter:none;padding:8px max(24px,calc((100vw - 980px)/2));gap:14px}
-body .nav .brand{margin-right:auto;font-weight:700}
-body .nav .brand img{width:26px;height:26px;border-radius:6px}
-body .nav a.l{padding:6px 4px;background:none!important}
-body .btn{border-radius:6px;font-weight:600;box-shadow:none!important;transform:none!important}
-body .btn.primary{background:#8b5cf6}
-body .btn.primary:hover{background:#7c4ef0}
-body .btn.ghost{background:#17171c;border:1px solid var(--line)}
+@font-face{font-family:Pix;font-weight:400;font-display:swap;src:url(tiny5.ttf) format("truetype")}
+@font-face{font-family:Inter;font-weight:400;font-display:swap;src:url(inter-cyr-400.ttf) format("truetype");unicode-range:U+0400-045F,U+2116}
+@font-face{font-family:Inter;font-weight:600;font-display:swap;src:url(inter-cyr-600.ttf) format("truetype");unicode-range:U+0400-045F,U+2116}
+@font-face{font-family:Inter;font-weight:400;font-display:swap;src:url(inter-400.ttf) format("truetype")}
+@font-face{font-family:Inter;font-weight:600;font-display:swap;src:url(inter-600.ttf) format("truetype")}
+/* Кабинет и админка в стиле интерфейса Minecraft */
+body{--bg:#141009;--surface:rgba(16,0,16,.94);--surface2:rgba(16,0,16,.94);--line:#3a2a6a;--text:#fff;--muted:#bdbdbd;--dim:#9a9a9a;--violet:#aa55ff;--grad:#6b3fd0;color:#fff;font:15px/1.6 Inter,system-ui,"Segoe UI",Arial,sans-serif;background:#141009 url(dirt.png) 0 0/64px 64px}
+body::before{content:"";position:fixed;inset:0;background:url(dirt.png) 0 0/64px 64px;image-rendering:pixelated;z-index:-1}
+body .grad{color:#ffff55;background:none}
+body .nav{position:sticky;top:0;width:auto;max-width:none;margin:0;border:0;border-bottom:2px solid #000;border-radius:0;background:rgba(0,0,0,.6);backdrop-filter:none;-webkit-backdrop-filter:none;padding:10px max(24px,calc((100vw - 1040px)/2));gap:22px}
+body .nav .brand{margin-right:auto;font-family:Pix,monospace;font-size:22px;font-weight:400;text-shadow:3px 3px 0 #3f3f3f}
+body .nav .brand img{width:28px;height:28px;border-radius:0}
+body .nav a.l{font-family:Pix,monospace;font-size:19px;color:#d0d0d0;text-shadow:2px 2px 0 #2a2a2a;padding:4px;background:none!important}
+body .nav a.l:hover{color:#ffff55}
+body .btn,body button.btn{font-family:Pix,monospace;font-size:19px;font-weight:400;color:#e0e0e0;text-shadow:2px 2px 0 #383838;background:#6f6f6f;border:2px solid #000;border-radius:0;box-shadow:inset 2px 2px 0 #a8a8a8,inset -2px -3px 0 #4a4a4a!important;transform:none!important;min-height:42px}
+body .btn:hover{background:#7f86a8;border-color:#fff;color:#ffffa0;box-shadow:inset 2px 2px 0 #bcc4ec,inset -2px -3px 0 #545a78!important}
+body .btn.primary{background:#6b3fd0;box-shadow:inset 2px 2px 0 #a07cff,inset -2px -3px 0 #43248f!important}
+body .btn.primary:hover{background:#7b52e0;border-color:#fff}
+body .btn.ghost{background:#6f6f6f}
+body button.btn:disabled{opacity:.55}
 body .acc{padding:40px 0 64px}
 body .acc::before{display:none}
-body .box{border-radius:8px;background:#17171c;padding:24px}
-body .auth h1,body .dash h1{font-size:28px;font-weight:700;letter-spacing:0}
-body .box h2{font-size:18px;font-weight:700}
-body .tabs{border-radius:6px;background:#0f0f12}
-body .tabs button{border-radius:4px}
-body .tabs button[aria-selected="true"]{background:#26262d}
-body input,body select{border-radius:6px;min-height:42px;background:#0f0f12}
-body input:focus{box-shadow:none;border-color:#8b5cf6}
-body .pill{letter-spacing:0;text-transform:none;font-weight:600;border-radius:4px}
-body .pill .d,body .pill.on .d{box-shadow:none}
-body .status .big{font-size:26px;font-weight:700;letter-spacing:0}
-body .hist th,body .tbl th{text-transform:none;letter-spacing:0;font-size:12px}
-body .stat .v{font-size:24px;font-weight:700;letter-spacing:0}
-body .tag{letter-spacing:0;text-transform:none;border-radius:4px}
-body .eyebrow{letter-spacing:0;text-transform:none}
-body .eyebrow::before,body .eyebrow::after{display:none}
+body .box{border-radius:0;background:rgba(16,0,16,.94);border:2px solid transparent;border-image:linear-gradient(#5000ff,#28007f) 1;padding:24px}
+body .auth h1,body .dash h1,body .box h2{font-family:Pix,monospace;font-weight:400;letter-spacing:.02em;text-shadow:3px 3px 0 #3f3f3f}
+body .auth h1,body .dash h1{font-size:44px}
+body .box h2{font-size:26px}
+body .tabs{border-radius:0;background:#000;border:2px solid #000;padding:2px}
+body .tabs button{border-radius:0;font-family:Pix,monospace;font-size:19px;font-weight:400;color:#bbb}
+body .tabs button[aria-selected="true"]{background:#6f6f6f;color:#fff;box-shadow:inset 2px 2px 0 #a8a8a8,inset -2px -3px 0 #4a4a4a}
+body input,body select{border-radius:0;min-height:44px;background:#000;border:2px solid #a0a0a0;color:#fff}
+body input:focus{box-shadow:none;border-color:#fff}
+body label{color:#bdbdbd}
+body .pill{font-family:Pix,monospace;font-size:17px;font-weight:400;letter-spacing:0;text-transform:none;border-radius:0;background:#000;border:2px solid #333}
+body .pill .d,body .pill.on .d{box-shadow:none;border-radius:0}
+body .status .big{font-family:Pix,monospace;font-size:34px;font-weight:400;letter-spacing:0;text-shadow:3px 3px 0 #3f3f3f}
+body .hist th,body .tbl th{text-transform:none;letter-spacing:0;font-size:12px;color:#aaa}
+body .hist td,body .hist th,body .tbl td,body .tbl th{border-color:#3a2a6a}
+body .stat .v{font-family:Pix,monospace;font-size:34px;font-weight:400;letter-spacing:0;color:#55ff55;text-shadow:3px 3px 0 #153f15}
+body .tag{letter-spacing:0;text-transform:none;border-radius:0}
+body .msg.ok{color:#55ff55}body .msg.err{color:#ff5555}
+body .linkbtn{color:#55ffff}
+body a[style*="underline"],body .hint a,body .desc a{color:#55ffff}
