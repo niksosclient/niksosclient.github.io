@@ -3,96 +3,108 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Niksos Client — Fabric-клиент для Minecraft 1.21.11</title>
-<meta name="description" content="Niksos Client — Fabric-мод для Minecraft 1.21.11: HUD, визуальные эффекты, анимации, косметика, друзья и облачные конфиги.">
+<title>Niksos Client — клиент для Minecraft 1.21.11</title>
+<meta name="description" content="Niksos Client — Fabric-клиент для Minecraft 1.21.11: свой HUD, эффекты, анимации, косметика, друзья и облачные конфиги.">
 <link rel="icon" href="assets/favicon.png">
+<link rel="preload" href="assets/tiny5.ttf" as="font" type="font/ttf" crossorigin>
 <link rel="stylesheet" href="assets/landing.css">
 </head>
 <body>
 
 <header class="top">
   <div class="wrap">
-    <a class="brand" href="#"><img src="assets/favicon.png" alt="">Niksos Client</a>
+    <a class="brand px sh" href="#"><img src="assets/favicon.png" alt="">Niksos</a>
     <nav>
       <a href="#features">Функции</a>
       <a href="#pricing">Цены</a>
       <a href="#install">Установка</a>
-      <a href="#faq">Вопросы</a>
+      <a href="#faq">FAQ</a>
     </nav>
-    <a class="btn" href="account.html">Кабинет</a>
+    <a class="mc" href="account.html">Кабинет</a>
   </div>
 </header>
 
-<div class="hero">
+<div class="title">
   <div class="wrap">
-    <h1>Niksos Client</h1>
-    <p>Fabric-мод для Minecraft 1.21.11. Свой HUD, эффекты, анимации, косметика, друзья и облачные конфиги. Настраивается через меню на <kbd>Right Shift</kbd>.</p>
-    <div class="row">
-      <a class="btn acc" href="#pricing">Купить ключ</a>
-      <a class="btn" href="account.html">Активировать ключ</a>
+    <div class="logo">
+      <h1>NIKSOS</h1>
+      <span class="ed">CLIENT</span>
+      <span class="splash">Теперь на 1.21.11!</span>
     </div>
-    <div class="meta">Minecraft 1.21.11 · Fabric Loader + Fabric API</div>
+    <p>Fabric-клиент: свой HUD, эффекты, анимации, косметика и друзья. Ставится как обычный мод, меню на Right Shift.</p>
+    <div class="menu">
+      <a class="mc p w" href="#pricing">Купить ключ</a>
+      <a class="mc" href="account.html">Кабинет</a>
+      <a class="mc" href="#features">Функции</a>
+      <a class="mc w" href="#" data-discord>Discord</a>
+    </div>
   </div>
+  <div class="ver">Niksos Client 1.21.11</div>
 </div>
 
 <main>
 <section id="features">
   <div class="wrap">
-    <h2>Функции</h2>
-    <p class="sub">Каждый модуль включается отдельно и настраивается под себя.</p>
-    <div class="groups">
-      <div class="g"><h3>HUD</h3><p>Watermark, ArmorHud, PotionHud, TargetHud, Keystrokes, InventoryHud, Compass, Spotify, список модулей. Всё двигается в редакторе HUD.</p></div>
-      <div class="g"><h3>Визуал</h3><p>Trails, Jump Circles, Hit Particles, Kill Effects, Damage Numbers, Weather, Chams, Target ESP, Fullbright, Trajectories, Block Outline.</p></div>
-      <div class="g"><h3>Анимации и камера</h3><p>Swing Animations, Smooth Zoom, Freelook, 3D Items, Item Physics, Custom FOV, Aspect Ratio, анимации экранов.</p></div>
-      <div class="g"><h3>Игрок</h3><p>AutoClicker, FastDelay, AutoSwap, ItemScroller, ShulkerView, Quick Phrases, Waypoints.</p></div>
-      <div class="g"><h3>Друзья и облако</h3><p>Метки над друзьями, пинги, личные сообщения, IRC-чат, отправка скриншотов. Профиль и конфиги в облаке — заходишь с любого ПК. Discord RPC.</p></div>
-      <div class="g"><h3>FunTime</h3><p>EventHelper, CombatTimer, TpaHelper, ChatFilter, подсказки по предметам. Функции, запрещённые правилами сервера, из клиента убраны.</p></div>
-      <div class="g"><h3>Косметика</h3><p>Крылья, питомцы, шляпы, хвосты, аксессуары, ножи с осмотром и ауры. Видна друзьям с Niksos Client.</p></div>
-      <div class="g"><h3>Темы</h3><p>Готовые цветовые схемы и свои цвета для меню и HUD.</p></div>
+    <h2 class="sec-t">Что внутри</h2>
+    <p class="sec-s">Около сотни модулей. Каждый включается отдельно и настраивается в меню.</p>
+    <div class="grid">
+      <div class="tt"><h3>HUD</h3><p>Любой элемент двигается и масштабируется в редакторе.</p><div class="m c-a"><span>Watermark</span><span>TargetHUD</span><span>ArmorHUD</span><span>PotionHUD</span><span>Keystrokes</span><span>Spotify</span></div></div>
+      <div class="tt"><h3>Эффекты</h3><p>Цвет и сила настраиваются у каждого.</p><div class="m c-p"><span>Trails</span><span>Jump Circles</span><span>Hit Particles</span><span>Kill Effects</span><span>Weather</span></div></div>
+      <div class="tt"><h3>Анимации и камера</h3><p>Удар, зум, обзор, предметы в руке.</p><div class="m c-y"><span>Swing Animations</span><span>Smooth Zoom</span><span>Freelook</span><span>3D Items</span><span>Item Physics</span></div></div>
+      <div class="tt"><h3>PvP</h3><p>Удобство в бою и с инвентарём.</p><div class="m c-o"><span>AutoClicker</span><span>FastDelay</span><span>AutoSwap</span><span>ItemScroller</span><span>Trajectories</span></div></div>
+      <div class="tt"><h3>FunTime</h3><p>Помощники для сервера. Запрещённого правилами нет.</p><div class="m c-g"><span>EventHelper</span><span>CombatTimer</span><span>TpaHelper</span><span>ChatFilter</span></div></div>
+      <div class="tt"><h3>Друзья и облако</h3><p>Метки, пинги, личка, скриншоты. Конфиги в облаке, на любом ПК.</p><div class="m c-a"><span>Friends</span><span>IRC</span><span>Cloud</span><span>Discord RPC</span></div></div>
+      <div class="tt"><h3>Косметика</h3><p>Видна друзьям с Niksos.</p><div class="m c-p"><span>Крылья</span><span>Питомцы</span><span>Шляпы</span><span>Хвосты</span><span>Ножи</span><span>Ауры</span></div></div>
+      <div class="tt"><h3>Темы</h3><p>Пресеты и свои цвета для меню и HUD. Темой можно поделиться с другом.</p><div class="m c-y"><span>Presets</span><span>Custom</span><span>Share</span></div></div>
+      <div class="tt"><h3>Остальное</h3><p>Waypoints, ShulkerView, ChatTweaks, Fullbright, Chams, TargetESP и ещё десятки мелочей.</p><div class="m c-gr"><span>+ ещё ~60 модулей</span></div></div>
     </div>
   </div>
 </section>
 
 <section id="pricing">
   <div class="wrap">
-    <h2>Цены</h2>
-    <p class="sub">Ключ покупается на FunPay и активируется в кабинете. Во всех тарифах одинаковые функции.</p>
-    <table>
-      <tr><th>Срок</th><th>Цена</th><th class="n"></th><th></th></tr>
-      <tr><td>7 дней</td><td class="p">119 ₽</td><td class="n"></td><td class="b"><a class="btn" href="#" data-buy>Купить</a></td></tr>
-      <tr><td>30 дней</td><td class="p">239 ₽</td><td class="n">≈ 8 ₽ в день</td><td class="b"><a class="btn acc" href="#" data-buy>Купить</a></td></tr>
-      <tr><td>90 дней</td><td class="p">349 ₽</td><td class="n">≈ 3,9 ₽ в день</td><td class="b"><a class="btn" href="#" data-buy>Купить</a></td></tr>
-      <tr><td>Навсегда</td><td class="p">439 ₽</td><td class="n">разовая оплата</td><td class="b"><a class="btn" href="#" data-buy>Купить</a></td></tr>
-    </table>
-    <p class="note">Несколько ключей складываются: новый продлевает текущую подписку. Промокоды вводятся в кабинете в том же поле, что и ключ.</p>
+    <h2 class="sec-t">Цены</h2>
+    <p class="sec-s">Функции во всех тарифах одинаковые, отличается только срок.</p>
+    <div class="gui">
+      <div class="gt">Выбери срок</div>
+      <div class="plans">
+        <div class="plan"><div class="n">7 дней</div><div class="pr">119<small> руб</small></div><div class="s">попробовать</div><a class="mc" href="#" data-buy>Купить</a></div>
+        <div class="plan hot"><span class="tag">чаще берут</span><div class="n">30 дней</div><div class="pr">239<small> руб</small></div><div class="s">≈ 8 руб в день</div><a class="mc p" href="#" data-buy>Купить</a></div>
+        <div class="plan"><div class="n">90 дней</div><div class="pr">349<small> руб</small></div><div class="s">≈ 3,9 руб в день</div><a class="mc" href="#" data-buy>Купить</a></div>
+        <div class="plan"><div class="n">Навсегда</div><div class="pr">439<small> руб</small></div><div class="s">один платёж</div><a class="mc" href="#" data-buy>Купить</a></div>
+      </div>
+      <p class="note">Ключи складываются: новый продлевает подписку. Промокод вводится в <a href="account.html">кабинете</a> вместо ключа.</p>
+    </div>
   </div>
 </section>
 
 <section id="install">
   <div class="wrap">
-    <h2>Установка</h2>
-    <ol class="steps">
-      <li>Купи ключ на FunPay. <span>Ключ приходит сразу после оплаты.</span></li>
-      <li>Зайди в <a href="account.html">кабинет</a> под cloud-профилем и введи ключ. <span>Профиль создаётся там же.</span></li>
-      <li>Скачай клиент в кабинете. <span>Файл <code>niksos-client.jar</code>.</span></li>
-      <li>Поставь Fabric Loader для 1.21.11 и Fabric API, положи jar в папку <code>.minecraft/mods</code>.</li>
-      <li>Запусти игру, войди в профиль командой <code>.cloud login</code>, меню — <kbd>Right Shift</kbd>.</li>
-    </ol>
+    <h2 class="sec-t">Установка</h2>
+    <p class="sec-s">Нужны Fabric Loader и Fabric API для 1.21.11.</p>
+    <div class="steps">
+      <div class="tt step"><div class="num">1</div><h3>Купи ключ</h3><p>Оплати на FunPay, ключ придёт в чат сделки.</p></div>
+      <div class="tt step"><div class="num">2</div><h3>Активируй</h3><p>В <a href="account.html">кабинете</a> войди или создай профиль, введи ключ и скачай клиент.</p></div>
+      <div class="tt step"><div class="num">3</div><h3>Играй</h3><p>Кинь <code>niksos-client.jar</code> в <code>mods</code>, в игре — <code>.cloud login</code>.</p></div>
+    </div>
   </div>
 </section>
 
 <section id="faq">
   <div class="wrap">
-    <h2>Вопросы</h2>
-    <details><summary>Сменил компьютер — что делать?</summary><p>Ключ привязывается к ПК. Сбросить привязку можно в кабинете.</p></details>
-    <details><summary>Не пришёл ключ или не активируется</summary><p>Напиши продавцу на FunPay или в наш <a href="#" data-discord>Discord</a> — приложи номер заказа.</p></details>
-    <details><summary>Какие версии поддерживаются?</summary><p>Только Minecraft 1.21.11 на Fabric.</p></details>
+    <h2 class="sec-t">FAQ</h2>
+    <div class="faq" style="margin-top:22px">
+      <details><summary>Сменил компьютер</summary><p>Ключ привязан к ПК. Сбрось привязку в кабинете и зайди с нового.</p></details>
+      <details><summary>Не пришёл ключ</summary><p>Напиши продавцу в чате сделки на FunPay или в <a href="#" data-discord>Discord</a> с номером заказа.</p></details>
+      <details><summary>Какие версии?</summary><p>Minecraft 1.21.11 на Fabric.</p></details>
+      <details><summary>Можно на FunTime?</summary><p>Функции, запрещённые правилами FunTime, из клиента убраны.</p></details>
+    </div>
   </div>
 </section>
 </main>
 
 <footer>
-  <div class="wrap"><span>© 2026 Niksos Client. Не связан с Mojang и Microsoft.</span><span><a href="#" data-discord>Discord</a></span></div>
+  <div class="wrap"><span>Niksos Client 1.21.11</span><span>Не связан с Mojang AB · <a href="#" data-discord>Discord</a></span></div>
 </footer>
 
 <script src="assets/config.js"></script>
