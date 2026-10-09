@@ -6,18 +6,18 @@
 <title>Niksos Client — клиент для Minecraft 1.21.11</title>
 <meta name="description" content="Niksos Client — Fabric-клиент для Minecraft 1.21.11: свой HUD, эффекты, анимации, косметика, друзья и облачные конфиги.">
 <link rel="icon" href="assets/favicon.png">
-<link rel="preload" href="assets/tiny5.ttf?v=9" as="font" type="font/ttf" crossorigin>
+<link rel="preload" href="assets/tiny5.ttf?v=11" as="font" type="font/ttf" crossorigin>
 <style>
-@font-face{font-family:Pix;font-weight:400;font-display:swap;src:url(assets/tiny5.ttf?v=9) format("truetype")}
-@font-face{font-family:Inter;font-weight:400;font-display:swap;src:url(assets/inter-cyr-400.ttf?v=9) format("truetype");unicode-range:U+0400-045F,U+2116}
-@font-face{font-family:Inter;font-weight:600;font-display:swap;src:url(assets/inter-cyr-600.ttf?v=9) format("truetype");unicode-range:U+0400-045F,U+2116}
-@font-face{font-family:Inter;font-weight:400;font-display:swap;src:url(assets/inter-400.ttf?v=9) format("truetype")}
-@font-face{font-family:Inter;font-weight:600;font-display:swap;src:url(assets/inter-600.ttf?v=9) format("truetype")}
+@font-face{font-family:Pix;font-weight:400;font-display:swap;src:url(assets/tiny5.ttf?v=11) format("truetype")}
+@font-face{font-family:Inter;font-weight:400;font-display:swap;src:url(assets/inter-cyr-400.ttf?v=11) format("truetype");unicode-range:U+0400-045F,U+2116}
+@font-face{font-family:Inter;font-weight:600;font-display:swap;src:url(assets/inter-cyr-600.ttf?v=11) format("truetype");unicode-range:U+0400-045F,U+2116}
+@font-face{font-family:Inter;font-weight:400;font-display:swap;src:url(assets/inter-400.ttf?v=11) format("truetype")}
+@font-face{font-family:Inter;font-weight:600;font-display:swap;src:url(assets/inter-600.ttf?v=11) format("truetype")}
 :root{--tt-bg:rgba(16,0,16,.94);--tt-top:#5000ff;--tt-bot:#28007f;--gray:#aaaaaa;--dgray:#555;--yellow:#ffff55;--aqua:#55ffff;--green:#55ff55;--gold:#ffaa00;--purple:#aa55ff}
 *{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
-body{color:#fff;font:15px/1.6 Inter,system-ui,"Segoe UI",Arial,sans-serif;background:#141009 url(assets/dirt.png?v=9) 0 0/64px 64px;image-rendering:auto}
-body::before{content:"";position:fixed;inset:0;background:url(assets/dirt.png?v=9) 0 0/64px 64px;image-rendering:pixelated;z-index:-1}
+body{color:#fff;font:15px/1.6 Inter,system-ui,"Segoe UI",Arial,sans-serif;background:#141009 url(assets/dirt.png?v=11) 0 0/64px 64px;image-rendering:auto}
+body::before{content:"";position:fixed;inset:0;background:url(assets/dirt.png?v=11) 0 0/64px 64px;image-rendering:pixelated;z-index:-1}
 a{color:inherit;text-decoration:none}
 .px{font-family:Pix,monospace;letter-spacing:.02em}
 .sh{text-shadow:3px 3px 0 #3f3f3f}
@@ -178,12 +178,12 @@ footer a:hover{color:var(--yellow)}
     <div class="gui">
       <div class="gt">Выбери срок</div>
       <div class="plans">
-        <div class="plan"><div class="n">7 дней</div><div class="pr">119<small> руб</small></div><div class="s">попробовать</div><a class="mc" href="#" data-buy>Купить</a></div>
-        <div class="plan hot"><span class="tag">чаще берут</span><div class="n">30 дней</div><div class="pr">239<small> руб</small></div><div class="s">≈ 8 руб в день</div><a class="mc p" href="#" data-buy>Купить</a></div>
-        <div class="plan"><div class="n">90 дней</div><div class="pr">349<small> руб</small></div><div class="s">≈ 3,9 руб в день</div><a class="mc" href="#" data-buy>Купить</a></div>
-        <div class="plan"><div class="n">Навсегда</div><div class="pr">439<small> руб</small></div><div class="s">один платёж</div><a class="mc" href="#" data-buy>Купить</a></div>
+        <div class="plan"><div class="n">7 дней</div><div class="pr">119<small> руб</small></div><div class="s">попробовать</div><a class="mc" href="account.html?buy=7d">Купить</a></div>
+        <div class="plan hot"><span class="tag">чаще берут</span><div class="n">30 дней</div><div class="pr">239<small> руб</small></div><div class="s">≈ 8 руб в день</div><a class="mc p" href="account.html?buy=30d">Купить</a></div>
+        <div class="plan"><div class="n">90 дней</div><div class="pr">349<small> руб</small></div><div class="s">≈ 3,9 руб в день</div><a class="mc" href="account.html?buy=90d">Купить</a></div>
+        <div class="plan"><div class="n">Навсегда</div><div class="pr">439<small> руб</small></div><div class="s">один платёж</div><a class="mc" href="account.html?buy=forever">Купить</a></div>
       </div>
-      <p class="note">Ключи складываются: новый продлевает подписку. Промокод вводится в <a href="account.html">кабинете</a> вместо ключа.</p>
+      <p class="note">Оплата картой или СБП прямо в <a href="account.html">кабинете</a>, подписка начисляется сразу. Сроки складываются: новая покупка продлевает текущую.</p>
     </div>
   </div>
 </section>
@@ -193,8 +193,8 @@ footer a:hover{color:var(--yellow)}
     <h2 class="sec-t">Установка</h2>
     <p class="sec-s">Нужны Fabric Loader и Fabric API для 1.21.11.</p>
     <div class="steps">
-      <div class="tt step"><div class="num">1</div><h3>Купи ключ</h3><p>Оплати на FunPay, ключ придёт в чат сделки.</p></div>
-      <div class="tt step"><div class="num">2</div><h3>Активируй</h3><p>В <a href="account.html">кабинете</a> войди или создай профиль, введи ключ и скачай клиент.</p></div>
+      <div class="tt step"><div class="num">1</div><h3>Оплати</h3><p>Создай профиль в <a href="account.html">кабинете</a> и оплати картой или СБП.</p></div>
+      <div class="tt step"><div class="num">2</div><h3>Скачай</h3><p>Подписка начислится сама — нажми «Скачать клиент» в кабинете.</p></div>
       <div class="tt step"><div class="num">3</div><h3>Играй</h3><p>Кинь <code>niksos-client.jar</code> в <code>mods</code>, в игре — <code>.cloud login</code>.</p></div>
     </div>
   </div>
@@ -205,7 +205,7 @@ footer a:hover{color:var(--yellow)}
     <h2 class="sec-t">FAQ</h2>
     <div class="faq" style="margin-top:22px">
       <details><summary>Сменил компьютер</summary><p>Ключ привязан к ПК. Сбрось привязку в кабинете и зайди с нового.</p></details>
-      <details><summary>Не пришёл ключ</summary><p>Напиши продавцу в чате сделки на FunPay или в <a href="#" data-discord>Discord</a> с номером заказа.</p></details>
+      <details><summary>Оплатил, а подписки нет</summary><p>Обычно начисляется за минуту. Если нет — напиши в <a href="#" data-discord>Discord</a> свой ник и время оплаты.</p></details>
       <details><summary>Какие версии?</summary><p>Minecraft 1.21.11 на Fabric.</p></details>
       <details><summary>Можно на FunTime?</summary><p>Функции, запрещённые правилами FunTime, из клиента убраны.</p></details>
     </div>
@@ -217,9 +217,8 @@ footer a:hover{color:var(--yellow)}
   <div class="wrap"><span>Niksos Client 1.21.11</span><span>Не связан с Mojang AB · <a href="#" data-discord>Discord</a></span></div>
 </footer>
 
-<script src="assets/config.js?v=9"></script>
+<script src="assets/config.js?v=11"></script>
 <script>
-document.querySelectorAll("[data-buy]").forEach(a => { a.href = NIKSOS.links.funpay; a.target = "_blank"; a.rel = "noopener"; });
 document.querySelectorAll("[data-discord]").forEach(a => { a.href = NIKSOS.links.discord; a.target = "_blank"; a.rel = "noopener"; });
 </script>
 </body>

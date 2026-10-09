@@ -154,6 +154,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
 .subnote a{color:#c9a6ff;text-decoration:underline;text-underline-offset:3px}
 @media (max-width:1000px){.plans{grid-template-columns:1fr 1fr}}
 @media (max-width:560px){.plans{grid-template-columns:1fr}}
+.buy{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:6px}@media(max-width:760px){.buy{grid-template-columns:1fr 1fr}}.buy .btn{justify-content:center;width:100%}.buy .btn.pick{outline:2px solid #ffff55;outline-offset:2px}
 </style>
 <style>
 .acc{min-height:100vh;min-height:100svh;padding:120px 0 64px;position:relative}
@@ -203,14 +204,14 @@ button.btn:disabled{opacity:.5;cursor:not-allowed;transform:none!important;box-s
 @media (max-width:760px){.grid2{grid-template-columns:1fr}.box{padding:24px 20px}}
 </style>
 <style>
-@font-face{font-family:Pix;font-weight:400;font-display:swap;src:url(assets/tiny5.ttf?v=9) format("truetype")}
-@font-face{font-family:Inter;font-weight:400;font-display:swap;src:url(assets/inter-cyr-400.ttf?v=9) format("truetype");unicode-range:U+0400-045F,U+2116}
-@font-face{font-family:Inter;font-weight:600;font-display:swap;src:url(assets/inter-cyr-600.ttf?v=9) format("truetype");unicode-range:U+0400-045F,U+2116}
-@font-face{font-family:Inter;font-weight:400;font-display:swap;src:url(assets/inter-400.ttf?v=9) format("truetype")}
-@font-face{font-family:Inter;font-weight:600;font-display:swap;src:url(assets/inter-600.ttf?v=9) format("truetype")}
+@font-face{font-family:Pix;font-weight:400;font-display:swap;src:url(assets/tiny5.ttf?v=11) format("truetype")}
+@font-face{font-family:Inter;font-weight:400;font-display:swap;src:url(assets/inter-cyr-400.ttf?v=11) format("truetype");unicode-range:U+0400-045F,U+2116}
+@font-face{font-family:Inter;font-weight:600;font-display:swap;src:url(assets/inter-cyr-600.ttf?v=11) format("truetype");unicode-range:U+0400-045F,U+2116}
+@font-face{font-family:Inter;font-weight:400;font-display:swap;src:url(assets/inter-400.ttf?v=11) format("truetype")}
+@font-face{font-family:Inter;font-weight:600;font-display:swap;src:url(assets/inter-600.ttf?v=11) format("truetype")}
 /* Кабинет и админка в стиле интерфейса Minecraft */
-body{--bg:#141009;--surface:rgba(16,0,16,.94);--surface2:rgba(16,0,16,.94);--line:#3a2a6a;--text:#fff;--muted:#bdbdbd;--dim:#9a9a9a;--violet:#aa55ff;--grad:#6b3fd0;color:#fff;font:15px/1.6 Inter,system-ui,"Segoe UI",Arial,sans-serif;background:#141009 url(assets/dirt.png?v=9) 0 0/64px 64px}
-body::before{content:"";position:fixed;inset:0;background:url(assets/dirt.png?v=9) 0 0/64px 64px;image-rendering:pixelated;z-index:-1}
+body{--bg:#141009;--surface:rgba(16,0,16,.94);--surface2:rgba(16,0,16,.94);--line:#3a2a6a;--text:#fff;--muted:#bdbdbd;--dim:#9a9a9a;--violet:#aa55ff;--grad:#6b3fd0;color:#fff;font:15px/1.6 Inter,system-ui,"Segoe UI",Arial,sans-serif;background:#141009 url(assets/dirt.png?v=11) 0 0/64px 64px}
+body::before{content:"";position:fixed;inset:0;background:url(assets/dirt.png?v=11) 0 0/64px 64px;image-rendering:pixelated;z-index:-1}
 body .grad{color:#ffff55;background:none}
 body .nav{position:sticky;top:0;width:auto;max-width:none;margin:0;border:0;border-bottom:2px solid #000;border-radius:0;background:rgba(0,0,0,.6);backdrop-filter:none;-webkit-backdrop-filter:none;padding:10px max(24px,calc((100vw - 1040px)/2));gap:22px}
 body .nav .brand{margin-right:auto;font-family:Pix,monospace;font-size:22px;font-weight:400;text-shadow:3px 3px 0 #3f3f3f}
@@ -296,15 +297,29 @@ body a[style*="underline"],body .hint a,body .desc a{color:#55ffff}
         </div>
         <div class="box">
           <h2>Ключ или промокод</h2>
-          <p class="desc">Ключ с FunPay (NIKSOS-XXXX-XXXX-XXXX-XXXX) или промокод. Дни добавляются к текущей подписке.</p>
+          <p class="desc">Ключ (NIKSOS-XXXX-XXXX-XXXX-XXXX) или промокод. Дни добавляются к текущей подписке.</p>
           <form id="keyForm" novalidate>
             <div class="field"><label for="key">Ключ или промокод</label>
               <input id="key" class="key" autocomplete="off" spellcheck="false" placeholder="NIKSOS-XXXX-… или ПРОМОКОД" maxlength="40"></div>
             <button class="btn primary full" id="keyBtn" type="submit"><span class="spin"></span><span class="t">Активировать</span></button>
             <div class="msg" id="keyMsg" role="status" aria-live="polite"></div>
           </form>
-          <p class="hint">Нет ключа? <a href="#" data-buy style="text-decoration:underline">Купить на FunPay</a></p>
         </div>
+      </div>
+      <div class="box hist" id="buyBox">
+        <h2>Купить подписку</h2>
+        <p class="desc">Оплата картой или СБП. Подписка начисляется на этот профиль сразу после оплаты, дни складываются с текущими.</p>
+        <div class="buy">
+          <button class="btn ghost" type="button" data-plan="7d"><span class="spin"></span><span class="t">7 дней — 119 ₽</span></button>
+          <button class="btn primary" type="button" data-plan="30d"><span class="spin"></span><span class="t">30 дней — 239 ₽</span></button>
+          <button class="btn ghost" type="button" data-plan="90d"><span class="spin"></span><span class="t">90 дней — 349 ₽</span></button>
+          <button class="btn ghost" type="button" data-plan="forever"><span class="spin"></span><span class="t">Навсегда — 439 ₽</span></button>
+        </div>
+        <div class="small" id="provWrap" style="display:none;margin-top:12px">Способ оплаты:
+          <label><input type="radio" name="prov" value="anypay" style="width:auto;height:auto;margin:0 4px 0 10px;display:inline-block;vertical-align:middle;accent-color:#7b4dff"> AnyPay</label>
+          <label><input type="radio" name="prov" value="rollypay" style="width:auto;height:auto;margin:0 4px 0 10px;display:inline-block;vertical-align:middle;accent-color:#7b4dff"> RollyPay</label></div>
+        <label class="small" id="testWrap" style="display:none;margin-top:10px"><input type="checkbox" id="testPay" style="width:auto;height:auto;padding:0;margin:0 6px 0 0;display:inline-block;vertical-align:middle;accent-color:#7b4dff"> Тестовый платёж RollyPay (sandbox, без денег) — видно только админу</label>
+        <div class="msg" id="buyMsg" role="status" aria-live="polite"></div>
       </div>
       <div class="box hist">
         <h2>Привязка к ПК <span id="devCount" style="color:var(--muted);font-weight:600"></span></h2>
@@ -314,15 +329,15 @@ body a[style*="underline"],body .hint a,body .desc a{color:#55ffff}
         <div class="msg" id="resetMsg" role="status" aria-live="polite"></div>
       </div>
       <div class="box hist">
-        <h2>История активаций</h2>
+        <h2>История покупок и активаций</h2>
         <div id="hist"></div>
       </div>
     </section>
   </div>
 </main>
 
-<script src="assets/config.js?v=9"></script>
-<script src="assets/niksos-api.js?v=9"></script>
-<script src="assets/account.js?v=9"></script>
+<script src="assets/config.js?v=11"></script>
+<script src="assets/niksos-api.js?v=11"></script>
+<script src="assets/account.js?v=11"></script>
 </body>
 </html>
