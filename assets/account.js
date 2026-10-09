@@ -16,7 +16,14 @@
   const fmtDate = s => new Date(s).toLocaleString("ru-RU", { day: "numeric", month: "long", year: "numeric", hour: "2-digit", minute: "2-digit" });
   let session = null, mode = "login";
 
-  document.querySelectorAll("[data-buy]").forEach(a => { a.href = NIKSOS.links.funpay; a.target = "_blank"; a.rel = "noopener"; });
+  const qs = new URLSearchParams(location.search);
+  const wantPlan = qs.get("buy"), payBack = qs.get("pay");
+  if (wantPlan || payBack) history.replaceState(null, "", location.pathname);
+  const PAY_ERR = {
+    too_many: "Слишком много попыток оплаты — подожди час", bad_plan: "Неизвестный тариф",
+    not_configured: "Оплата ещё не настроена — напиши в поддержку", pay_error: "Платёжная система не ответила — попробуй через минуту",
+    net: "Нет связи с сервером — попробуй ещё раз", ...AUTH_ERR,
+  };
 
   function busy(btn, on) { btn.disabled = on; btn.classList.toggle("busy", on); }
   function msg(el, text, kind) { el.textContent = text || ""; el.className = "msg" + (kind ? " " + kind : ""); }
@@ -36,6 +43,7 @@
     lastLic = lic;
     $("who").textContent = lic.name || session.name;
     $("adminLink").hidden = lic.role !== "admin";
+    $("testWrap").style.display = lic.role === "admin" && PROVS.includes("rollypay") ? "block" : "none";
     const on = !!lic.active;
     $("pill").classList.toggle("on", on);
     $("pillText").textContent = on ? "Подписка активна" : "Нет подписки";
@@ -47,7 +55,7 @@
       $("statusSmall").textContent = "Действует до " + fmtDate(lic.expires);
     } else {
       $("statusBig").textContent = lic.expires ? "Подписка закончилась" : "Подписки нет";
-      $("statusSmall").textContent = lic.expires ? "Закончилась " + fmtDate(lic.expires) + ". Активируй новый ключ." : "Купи ключ на FunPay и активируй его справа.";
+      $("statusSmall").textContent = lic.expires ? "Закончилась " + fmtDate(lic.expires) + ". Продли ниже." : "Купи подписку ниже или активируй ключ/промокод справа.";
     }
     $("dlBtn").disabled = !on;
     // привязка к ПК
@@ -61,11 +69,56 @@
     const h = lic.history || [];
     $("hist").innerHTML = h.length
       ? "<table><thead><tr><th>Тариф</th><th>Дата активации</th></tr></thead><tbody>" +
-        h.map(x => `<tr><td>${x.plan === "promo" ? "Промокод " + esc(x.code) + " (" + (x.days ? "+" + x.days + " дн." : "навсегда") + ")" : (PLAN[x.plan] || esc(x.plan))}</td><td>${fmtDate(x.at)}</td></tr>`).join("") + "</tbody></table>"
-      : '<div class="empty">Пока нет активированных ключей</div>';
+        h.map(x => `<tr><td>${x.plan === "promo" ? "Промокод " + esc(x.code) + " (" + (x.days ? "+" + x.days + " дн." : "навсегда") + ")"
+          : (PLAN[x.plan] || esc(x.plan)) + (x.via === "pay" ? " — оплата " + esc(x.amount) + " ₽" + (x.test ? " (тест)" : "")
+          + (x.state === "refunded" ? " · возврат, дни сняты" : x.state === "chargeback" ? " · отменена банком, дни сняты" : "") : "")}</td><td>${fmtDate(x.at)}</td></tr>`).join("") + "</tbody></table>"
+      : '<div class="empty">Пока нет покупок и активаций</div>';
   }
 
-  function showDash(lic) { $("auth").style.display = "none"; $("dash").style.display = "block"; render(lic); }
+  function showDash(lic) {
+    $("auth").style.display = "none"; $("dash").style.display = "block"; render(lic);
+    if (wantPlan && !afterLogin.done) {
+      afterLogin.done = true;
+      const b = document.querySelector(`[data-plan="${CSS.escape(wantPlan)}"]`);
+      if (b) { b.classList.add("pick"); $("buyBox").scrollIntoView({ behavior: "smooth", block: "center" }); }
+    }
+    if (payBack && !afterPay.done) { afterPay.done = true; checkPaid(); }
+  }
+  const afterLogin = {}, afterPay = {};
+  const PROVS = (NIKSOS.pay && NIKSOS.pay.length ? NIKSOS.pay : ["anypay"]);
+  document.querySelectorAll('input[name="prov"]').forEach(r => { r.parentElement.style.display = PROVS.includes(r.value) ? "" : "none"; r.checked = r.value === PROVS[0]; });
+  $("provWrap").style.display = PROVS.length > 1 ? "block" : "none";
+
+  // Вернулись со страницы оплаты: ждём колбэк, заодно сверяем платёж сами
+  async function checkPaid() {
+    if (payBack === "fail") return msg($("buyMsg"), "Оплата не прошла или отменена. Деньги не списаны — можно попробовать ещё раз.", "err");
+    const was = lastLic ? (lastLic.forever ? Infinity : +new Date(lastLic.expires || 0)) : 0;
+    msg($("buyMsg"), "Проверяем оплату…");
+    $("buyBox").scrollIntoView({ behavior: "smooth", block: "center" });
+    for (let i = 0; i < 12; i++) {
+      if (i % 3 === 1) await NiksosApi.paySync(session.name, session.hash);
+      try {
+        const lic = await NiksosApi.license(session.name, session.hash);
+        if (lic.status === "ok") {
+          const now = lic.forever ? Infinity : +new Date(lic.expires || 0);
+          if (now > was) { render(lic); return msg($("buyMsg"), "Оплата прошла, подписка начислена 🎉 Можно скачивать клиент.", "ok"); }
+        }
+      } catch (e) {}
+      await new Promise(r => setTimeout(r, 5000));
+    }
+    msg($("buyMsg"), "Платёж ещё обрабатывается — обнови страницу через пару минут. Если деньги списались, а подписки нет — напиши в поддержку.", "err");
+  }
+
+  document.querySelectorAll("[data-plan]").forEach(b => b.addEventListener("click", async () => {
+    if (!session) return;
+    document.querySelectorAll("[data-plan]").forEach(x => { x.disabled = true; x.classList.remove("pick"); });
+    b.classList.add("busy"); msg($("buyMsg"), "Создаём платёж…");
+    const prov = (document.querySelector('input[name="prov"]:checked') || {}).value || PROVS[0];
+    const r = await NiksosApi.buy(session.name, session.hash, b.dataset.plan, $("testPay").checked, prov);
+    if (r.status === "ok" && r.pay_url) { msg($("buyMsg"), "Переходим к оплате…", "ok"); location.href = r.pay_url; return; }
+    msg($("buyMsg"), PAY_ERR[r.status] || "Не удалось создать платёж — попробуй позже", "err");
+    document.querySelectorAll("[data-plan]").forEach(x => x.disabled = false); b.classList.remove("busy");
+  }));
   function showAuth() { $("dash").style.display = "none"; $("auth").style.display = "block"; }
 
   $("authForm").addEventListener("submit", async e => {

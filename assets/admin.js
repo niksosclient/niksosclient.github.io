@@ -22,7 +22,7 @@
     if (r.status !== "ok") throw new Error(fail(r));
     S = s; sessionStorage.setItem("niksos", JSON.stringify(s));
     $("auth").style.display = "none"; $("dash").style.display = "block"; $("who").textContent = s.name;
-    renderStats(r); loadUsers(""); loadDownloads(); loadPromos();
+    renderStats(r); loadUsers(""); loadDownloads(); loadPromos(); loadPayments();
   }
 
   function renderStats(r) {
@@ -52,6 +52,20 @@
   function select(n) {
     selected = n; $("selBox").hidden = false; $("selName").textContent = n; msg($("actMsg"));
     $("users").querySelectorAll("tr").forEach(tr => tr.classList.toggle("sel", tr.dataset.n === n));
+  }
+
+  const PST = { paid: "оплачен", created: "создан", processing: "в процессе", expired: "истёк", canceled: "отменён",
+    refunded: "возврат", chargeback: "чарджбек", mismatch: "сумма не совпала", error: "ошибка создания" };
+  async function loadPayments() {
+    const r = await A.payments(S.name, S.hash);
+    if (r.status !== "ok") { $("pays").textContent = fail(r); return; }
+    $("paySum").textContent = `Выручка (без тестовых): 24ч — ${r.sum_24h} ₽ · 30 дней — ${r.sum_30d} ₽ · всего — ${r.sum_all} ₽`;
+    const d = r.items || [];
+    $("pays").innerHTML = d.length ? "<table><thead><tr><th>Когда</th><th>Ник</th><th>Тариф</th><th>Сумма</th><th>Статус</th><th>Касса</th><th>Заказ</th></tr></thead><tbody>" +
+      d.map(x => `<tr><td>${fmt(x.paid_at || x.created)}</td><td>${esc(x.name)}</td><td>${esc(PLAN[x.plan] || x.plan)}</td><td>${esc(x.amount)} ₽</td>
+        <td>${x.status === "paid" ? '<span class="tag on">' : ["refunded", "chargeback", "mismatch"].includes(x.status) ? '<span class="tag ban">' : '<span class="tag off">'}${esc(PST[x.status] || x.status)}</span>${x.test ? ' <span class="tag adm">ТЕСТ</span>' : ""}</td>
+        <td>${esc(x.provider === "anypay" ? "AnyPay" : "RollyPay")}</td><td style="font-size:12px;color:var(--dim)">${esc(x.order_id)}</td></tr>`).join("") + "</tbody></table>"
+      : '<div class="hint">Оплат пока нет</div>';
   }
 
   async function loadDownloads() {

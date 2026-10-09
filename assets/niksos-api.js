@@ -42,8 +42,19 @@
       promos: (n, h) => rpc("niksos_admin_promos", { p_name: n, p_pass: h }),
       promoSet: (n, h, code, action) => rpc("niksos_admin_promo_set", { p_name: n, p_pass: h, p_code: code, p_action: action }),
       promoUsers: (n, h, code) => rpc("niksos_admin_promo_users", { p_name: n, p_pass: h, p_code: code }),
+      payments: (n, h) => rpc("niksos_admin_payments", { p_name: n, p_pass: h }),
       downloads: (n, h) => rpc("niksos_admin_downloads", { p_name: n, p_pass: h }),
     },
+    // Оплата RollyPay (Edge Function niksos-pay)
+    async pay(body) {
+      try {
+        const r = await fetch(`${base}/functions/v1/niksos-pay`, { method: "POST", headers: headers(), body: JSON.stringify(body) });
+        const j = await r.json().catch(() => ({}));
+        return j.status ? j : { status: "error" };
+      } catch (e) { return { status: "net" }; }
+    },
+    buy: (name, hash, plan, test, provider) => NiksosApi.pay({ action: "create", name, pass: hash, plan, test: !!test, provider }),
+    paySync: (name, hash) => NiksosApi.pay({ action: "sync", name, pass: hash }),
     hwidReset: (name, hash) => rpc("niksos_hwid_reset", { p_name: name, p_pass: hash }),
     // Edge Function отдаёт сам jar (с меткой владельца), а при ошибке — JSON {status}
     async download(name, hash) {
