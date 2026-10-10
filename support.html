@@ -204,14 +204,14 @@ button.btn:disabled{opacity:.5;cursor:not-allowed;transform:none!important;box-s
 @media (max-width:760px){.grid2{grid-template-columns:1fr}.box{padding:24px 20px}}
 </style>
 <style>
-@font-face{font-family:Pix;font-weight:400;font-display:swap;src:url(assets/tiny5.ttf?v=11) format("truetype")}
-@font-face{font-family:Inter;font-weight:400;font-display:swap;src:url(assets/inter-cyr-400.ttf?v=11) format("truetype");unicode-range:U+0400-045F,U+2116}
-@font-face{font-family:Inter;font-weight:600;font-display:swap;src:url(assets/inter-cyr-600.ttf?v=11) format("truetype");unicode-range:U+0400-045F,U+2116}
-@font-face{font-family:Inter;font-weight:400;font-display:swap;src:url(assets/inter-400.ttf?v=11) format("truetype")}
-@font-face{font-family:Inter;font-weight:600;font-display:swap;src:url(assets/inter-600.ttf?v=11) format("truetype")}
+@font-face{font-family:Pix;font-weight:400;font-display:swap;src:url(assets/tiny5.ttf?v=13) format("truetype")}
+@font-face{font-family:Inter;font-weight:400;font-display:swap;src:url(assets/inter-cyr-400.ttf?v=13) format("truetype");unicode-range:U+0400-045F,U+2116}
+@font-face{font-family:Inter;font-weight:600;font-display:swap;src:url(assets/inter-cyr-600.ttf?v=13) format("truetype");unicode-range:U+0400-045F,U+2116}
+@font-face{font-family:Inter;font-weight:400;font-display:swap;src:url(assets/inter-400.ttf?v=13) format("truetype")}
+@font-face{font-family:Inter;font-weight:600;font-display:swap;src:url(assets/inter-600.ttf?v=13) format("truetype")}
 /* Кабинет и админка в стиле интерфейса Minecraft */
-body{--bg:#141009;--surface:rgba(16,0,16,.94);--surface2:rgba(16,0,16,.94);--line:#3a2a6a;--text:#fff;--muted:#bdbdbd;--dim:#9a9a9a;--violet:#aa55ff;--grad:#6b3fd0;color:#fff;font:15px/1.6 Inter,system-ui,"Segoe UI",Arial,sans-serif;background:#141009 url(assets/dirt.png?v=11) 0 0/64px 64px}
-body::before{content:"";position:fixed;inset:0;background:url(assets/dirt.png?v=11) 0 0/64px 64px;image-rendering:pixelated;z-index:-1}
+body{--bg:#141009;--surface:rgba(16,0,16,.94);--surface2:rgba(16,0,16,.94);--line:#3a2a6a;--text:#fff;--muted:#bdbdbd;--dim:#9a9a9a;--violet:#aa55ff;--grad:#6b3fd0;color:#fff;font:15px/1.6 Inter,system-ui,"Segoe UI",Arial,sans-serif;background:#141009 url(assets/dirt.png?v=13) 0 0/64px 64px}
+body::before{content:"";position:fixed;inset:0;background:url(assets/dirt.png?v=13) 0 0/64px 64px;image-rendering:pixelated;z-index:-1}
 body .grad{color:#ffff55;background:none}
 body .nav{position:sticky;top:0;width:auto;max-width:none;margin:0;border:0;border-bottom:2px solid #000;border-radius:0;background:rgba(0,0,0,.6);backdrop-filter:none;-webkit-backdrop-filter:none;padding:10px max(24px,calc((100vw - 1040px)/2));gap:22px}
 body .nav .brand{margin-right:auto;font-family:Pix,monospace;font-size:22px;font-weight:400;text-shadow:3px 3px 0 #3f3f3f}
@@ -266,7 +266,7 @@ body a[style*="underline"],body .hint a,body .desc a{color:#55ffff}
 
 <main class="acc"><div class="wrap"><section class="box doc" style="display:block;padding:32px">
 <h1>Служба поддержки</h1><div class="upd">Отвечаем ежедневно, обычно в течение нескольких часов (не позднее 3 рабочих дней).</div>
-<div class="contacts" data-contacts></div>
+<div class="contacts" data-contacts><div class="c"><b>Telegram</b><a href="https://t.me/niksos_support" target="_blank" rel="noopener">@niksos_support</a></div><div class="c"><b>Email</b><a href="mailto:sskyn1xx@gmail.com">sskyn1xx@gmail.com</a></div><div class="c"><b>Discord</b><a href="https://discord.gg/eWnsttQ87m" target="_blank" rel="noopener">сервер поддержки</a></div></div>
 <h2>С чем помогаем</h2>
 <ul><li>оплатил, а подписка не начислилась — напиши ник профиля, время и сумму оплаты;</li>
 <li>не получается войти, скачать или запустить клиент;</li><li>смена компьютера и сброс привязки;</li><li>возврат средств — по условиям <a href="terms.html">Пользовательского соглашения</a>.</li></ul>
@@ -277,7 +277,7 @@ body a[style*="underline"],body .hint a,body .desc a{color:#55ffff}
   <div class="wrap"><span>Niksos Client 1.21.11 · Не связан с Mojang AB</span>
   <span><a href="terms.html">Пользовательское соглашение</a> · <a href="privacy.html">Политика конфиденциальности</a> · <a href="support.html">Поддержка</a></span></div>
 </footer>
-<script src="assets/config.js?v=12"></script>
+<script src="assets/config.js?v=13"></script>
 <script>
 (function(){
   var s=(window.NIKSOS&&NIKSOS.support)||{}, L=(window.NIKSOS&&NIKSOS.links)||{};
