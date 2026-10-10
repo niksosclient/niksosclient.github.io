@@ -12,6 +12,6 @@ window.NIKSOS = {
   },
   links: {
     funpay: "-",   // ссылка на твой лот / профиль на FunPay
-    discord: "https://discord.gg/eWnsttQ87m",  // инвайт в Discord
+    discord: "https://discord.gg/tUryKysJVT",  // инвайт в Discord
   },
 };
