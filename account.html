@@ -204,14 +204,14 @@ button.btn:disabled{opacity:.5;cursor:not-allowed;transform:none!important;box-s
 @media (max-width:760px){.grid2{grid-template-columns:1fr}.box{padding:24px 20px}}
 </style>
 <style>
-@font-face{font-family:Pix;font-weight:400;font-display:swap;src:url(assets/tiny5.ttf?v=11) format("truetype")}
-@font-face{font-family:Inter;font-weight:400;font-display:swap;src:url(assets/inter-cyr-400.ttf?v=11) format("truetype");unicode-range:U+0400-045F,U+2116}
-@font-face{font-family:Inter;font-weight:600;font-display:swap;src:url(assets/inter-cyr-600.ttf?v=11) format("truetype");unicode-range:U+0400-045F,U+2116}
-@font-face{font-family:Inter;font-weight:400;font-display:swap;src:url(assets/inter-400.ttf?v=11) format("truetype")}
-@font-face{font-family:Inter;font-weight:600;font-display:swap;src:url(assets/inter-600.ttf?v=11) format("truetype")}
+@font-face{font-family:Pix;font-weight:400;font-display:swap;src:url(assets/tiny5.ttf?v=12) format("truetype")}
+@font-face{font-family:Inter;font-weight:400;font-display:swap;src:url(assets/inter-cyr-400.ttf?v=12) format("truetype");unicode-range:U+0400-045F,U+2116}
+@font-face{font-family:Inter;font-weight:600;font-display:swap;src:url(assets/inter-cyr-600.ttf?v=12) format("truetype");unicode-range:U+0400-045F,U+2116}
+@font-face{font-family:Inter;font-weight:400;font-display:swap;src:url(assets/inter-400.ttf?v=12) format("truetype")}
+@font-face{font-family:Inter;font-weight:600;font-display:swap;src:url(assets/inter-600.ttf?v=12) format("truetype")}
 /* Кабинет и админка в стиле интерфейса Minecraft */
-body{--bg:#141009;--surface:rgba(16,0,16,.94);--surface2:rgba(16,0,16,.94);--line:#3a2a6a;--text:#fff;--muted:#bdbdbd;--dim:#9a9a9a;--violet:#aa55ff;--grad:#6b3fd0;color:#fff;font:15px/1.6 Inter,system-ui,"Segoe UI",Arial,sans-serif;background:#141009 url(assets/dirt.png?v=11) 0 0/64px 64px}
-body::before{content:"";position:fixed;inset:0;background:url(assets/dirt.png?v=11) 0 0/64px 64px;image-rendering:pixelated;z-index:-1}
+body{--bg:#141009;--surface:rgba(16,0,16,.94);--surface2:rgba(16,0,16,.94);--line:#3a2a6a;--text:#fff;--muted:#bdbdbd;--dim:#9a9a9a;--violet:#aa55ff;--grad:#6b3fd0;color:#fff;font:15px/1.6 Inter,system-ui,"Segoe UI",Arial,sans-serif;background:#141009 url(assets/dirt.png?v=12) 0 0/64px 64px}
+body::before{content:"";position:fixed;inset:0;background:url(assets/dirt.png?v=12) 0 0/64px 64px;image-rendering:pixelated;z-index:-1}
 body .grad{color:#ffff55;background:none}
 body .nav{position:sticky;top:0;width:auto;max-width:none;margin:0;border:0;border-bottom:2px solid #000;border-radius:0;background:rgba(0,0,0,.6);backdrop-filter:none;-webkit-backdrop-filter:none;padding:10px max(24px,calc((100vw - 1040px)/2));gap:22px}
 body .nav .brand{margin-right:auto;font-family:Pix,monospace;font-size:22px;font-weight:400;text-shadow:3px 3px 0 #3f3f3f}
@@ -308,7 +308,7 @@ body a[style*="underline"],body .hint a,body .desc a{color:#55ffff}
       </div>
       <div class="box hist" id="buyBox">
         <h2>Купить подписку</h2>
-        <p class="desc">Оплата картой или СБП. Подписка начисляется на этот профиль сразу после оплаты, дни складываются с текущими.</p>
+        <p class="desc">Оплата картой или СБП. Подписка начисляется на этот профиль сразу после оплаты, дни складываются с текущими. Оплачивая, ты принимаешь <a href="terms.html" style="text-decoration:underline">Пользовательское соглашение</a> и <a href="privacy.html" style="text-decoration:underline">Политику конфиденциальности</a>.</p>
         <div class="buy">
           <button class="btn ghost" type="button" data-plan="7d"><span class="spin"></span><span class="t">7 дней — 119 ₽</span></button>
           <button class="btn primary" type="button" data-plan="30d"><span class="spin"></span><span class="t">30 дней — 239 ₽</span></button>
@@ -335,9 +335,10 @@ body a[style*="underline"],body .hint a,body .desc a{color:#55ffff}
     </section>
   </div>
 </main>
+<footer><div class="wrap"><span>Niksos Client · Не связан с Mojang AB</span><span><a href="terms.html">Пользовательское соглашение</a> · <a href="privacy.html">Политика конфиденциальности</a> · <a href="support.html">Поддержка</a></span></div></footer>
 
-<script src="assets/config.js?v=11"></script>
-<script src="assets/niksos-api.js?v=11"></script>
-<script src="assets/account.js?v=11"></script>
+<script src="assets/config.js?v=12"></script>
+<script src="assets/niksos-api.js?v=12"></script>
+<script src="assets/account.js?v=12"></script>
 </body>
 </html>

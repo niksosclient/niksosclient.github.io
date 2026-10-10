@@ -3,8 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="robots" content="noindex">
-<title>Админ-панель — Niksos Client</title>
+<title>Поддержка — Niksos Client</title>
 <link rel="icon" href="assets/favicon.png">
 <style>
 :root{
@@ -155,6 +154,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
 .subnote a{color:#c9a6ff;text-decoration:underline;text-underline-offset:3px}
 @media (max-width:1000px){.plans{grid-template-columns:1fr 1fr}}
 @media (max-width:560px){.plans{grid-template-columns:1fr}}
+.buy{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:6px}@media(max-width:760px){.buy{grid-template-columns:1fr 1fr}}.buy .btn{justify-content:center;width:100%}.buy .btn.pick{outline:2px solid #ffff55;outline-offset:2px}
 </style>
 <style>
 .acc{min-height:100vh;min-height:100svh;padding:120px 0 64px;position:relative}
@@ -204,37 +204,14 @@ button.btn:disabled{opacity:.5;cursor:not-allowed;transform:none!important;box-s
 @media (max-width:760px){.grid2{grid-template-columns:1fr}.box{padding:24px 20px}}
 </style>
 <style>
-.acc .wrap{max-width:1200px}
-.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:16px}
-.stat{padding:18px 20px}
-.stat .v{font-size:30px;font-weight:900;letter-spacing:-.03em}
-.stat .l{color:var(--muted);font-size:13px;margin-top:2px}
-.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
-.row input,.row select{flex:1;min-width:140px}
-select{min-height:48px;padding:0 12px;border-radius:12px;border:1px solid var(--line);background:rgba(0,0,0,.3);color:#fff;font:15px inherit}
-.tbl{overflow-x:auto;margin-top:12px}
-.tbl table{width:100%;border-collapse:collapse;font-size:13px;white-space:nowrap}
-.tbl td,.tbl th{padding:9px 10px;border-bottom:1px solid var(--line);text-align:left}
-.tbl th{color:var(--dim);font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:.1em}
-.tbl tr.sel td{background:rgba(166,107,255,.12)}
-.tbl tbody tr{cursor:pointer}
-.tag{display:inline-block;font-size:11px;font-weight:800;padding:3px 7px;border-radius:6px;background:rgba(255,255,255,.07)}
-.tag.on{background:rgba(93,255,165,.15);color:#7dffb4}.tag.off{color:var(--dim)}
-.tag.ban{background:rgba(255,107,129,.18);color:#ff8a9a}.tag.adm{background:rgba(255,77,94,.2);color:#ff6b7a}
-.acts{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
-.acts .btn{min-height:40px;padding:0 14px;font-size:14px}
-textarea{width:100%;min-height:140px;margin-top:12px;padding:12px;border-radius:12px;border:1px solid var(--line);background:rgba(0,0,0,.3);color:#fff;font:13px/1.5 ui-monospace,Consolas,monospace}
-.sec{margin-top:16px}
-</style>
-<style>
-@font-face{font-family:Pix;font-weight:400;font-display:swap;src:url(assets/tiny5.ttf?v=12) format("truetype")}
-@font-face{font-family:Inter;font-weight:400;font-display:swap;src:url(assets/inter-cyr-400.ttf?v=12) format("truetype");unicode-range:U+0400-045F,U+2116}
-@font-face{font-family:Inter;font-weight:600;font-display:swap;src:url(assets/inter-cyr-600.ttf?v=12) format("truetype");unicode-range:U+0400-045F,U+2116}
-@font-face{font-family:Inter;font-weight:400;font-display:swap;src:url(assets/inter-400.ttf?v=12) format("truetype")}
-@font-face{font-family:Inter;font-weight:600;font-display:swap;src:url(assets/inter-600.ttf?v=12) format("truetype")}
+@font-face{font-family:Pix;font-weight:400;font-display:swap;src:url(assets/tiny5.ttf?v=11) format("truetype")}
+@font-face{font-family:Inter;font-weight:400;font-display:swap;src:url(assets/inter-cyr-400.ttf?v=11) format("truetype");unicode-range:U+0400-045F,U+2116}
+@font-face{font-family:Inter;font-weight:600;font-display:swap;src:url(assets/inter-cyr-600.ttf?v=11) format("truetype");unicode-range:U+0400-045F,U+2116}
+@font-face{font-family:Inter;font-weight:400;font-display:swap;src:url(assets/inter-400.ttf?v=11) format("truetype")}
+@font-face{font-family:Inter;font-weight:600;font-display:swap;src:url(assets/inter-600.ttf?v=11) format("truetype")}
 /* Кабинет и админка в стиле интерфейса Minecraft */
-body{--bg:#141009;--surface:rgba(16,0,16,.94);--surface2:rgba(16,0,16,.94);--line:#3a2a6a;--text:#fff;--muted:#bdbdbd;--dim:#9a9a9a;--violet:#aa55ff;--grad:#6b3fd0;color:#fff;font:15px/1.6 Inter,system-ui,"Segoe UI",Arial,sans-serif;background:#141009 url(assets/dirt.png?v=12) 0 0/64px 64px}
-body::before{content:"";position:fixed;inset:0;background:url(assets/dirt.png?v=12) 0 0/64px 64px;image-rendering:pixelated;z-index:-1}
+body{--bg:#141009;--surface:rgba(16,0,16,.94);--surface2:rgba(16,0,16,.94);--line:#3a2a6a;--text:#fff;--muted:#bdbdbd;--dim:#9a9a9a;--violet:#aa55ff;--grad:#6b3fd0;color:#fff;font:15px/1.6 Inter,system-ui,"Segoe UI",Arial,sans-serif;background:#141009 url(assets/dirt.png?v=11) 0 0/64px 64px}
+body::before{content:"";position:fixed;inset:0;background:url(assets/dirt.png?v=11) 0 0/64px 64px;image-rendering:pixelated;z-index:-1}
 body .grad{color:#ffff55;background:none}
 body .nav{position:sticky;top:0;width:auto;max-width:none;margin:0;border:0;border-bottom:2px solid #000;border-radius:0;background:rgba(0,0,0,.6);backdrop-filter:none;-webkit-backdrop-filter:none;padding:10px max(24px,calc((100vw - 1040px)/2));gap:22px}
 body .nav .brand{margin-right:auto;font-family:Pix,monospace;font-size:22px;font-weight:400;text-shadow:3px 3px 0 #3f3f3f}
@@ -270,104 +247,48 @@ body .msg.ok{color:#55ff55}body .msg.err{color:#ff5555}
 body .linkbtn{color:#55ffff}
 body a[style*="underline"],body .hint a,body .desc a{color:#55ffff}
 </style>
+<style>
+.doc{max-width:860px;margin:0 auto}
+.doc h1{margin-bottom:6px}.doc .upd{color:var(--dim);font-size:13px;margin-bottom:22px}
+.doc h2{margin:26px 0 10px;font-size:22px}.doc p,.doc li{color:var(--muted);line-height:1.65;font-size:15px;margin:6px 0}
+.doc ul{padding-left:22px}.doc a{text-decoration:underline}
+.contacts{display:grid;gap:12px;margin-top:10px}.contacts .c{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.contacts b{min-width:120px;display:inline-block}
+</style>
 </head>
 <body>
 <nav class="nav" aria-label="Навигация">
   <a class="brand" href="index.html"><img src="assets/favicon.png" alt="">Niksos</a>
-  <a class="l" href="account.html">Кабинет</a>
+  <a class="l" href="index.html#features">Возможности</a>
+  <a class="l" href="index.html#pricing">Цены</a>
+  <a class="btn primary" href="index.html#pricing">Купить</a>
 </nav>
-<main class="acc">
-  <div class="wrap">
-    <section class="auth box" id="auth">
-      <h1>Админ-панель</h1>
-      <p class="sub">Вход cloud-профилем с ролью администратора.</p>
-      <form id="authForm" novalidate>
-        <div class="field"><label for="name">Ник</label><input id="name" autocomplete="username" maxlength="16"></div>
-        <div class="field"><label for="pass">Пароль</label><input id="pass" type="password" autocomplete="current-password"></div>
-        <button class="btn primary full" id="authBtn" type="submit"><span class="spin"></span><span class="t">Войти</span></button>
-        <div class="msg" id="authMsg" role="status" aria-live="polite"></div>
-      </form>
-    </section>
 
-    <section class="dash" id="dash">
-      <div class="top">
-        <div><h1>Админ-панель</h1><div class="who">Вошёл как <b id="who"></b> · <span class="tag adm">ADMIN</span></div></div>
-        <div><button class="linkbtn" id="refresh" type="button">Обновить</button><button class="linkbtn" id="logout" type="button">Выйти</button></div>
-      </div>
-
-      <div class="stats" id="stats"></div>
-
-      <div class="box">
-        <h2>Игроки</h2>
-        <p class="desc">Поиск по нику. Нажми на строку, чтобы выбрать игрока.</p>
-        <form class="row" id="searchForm"><input id="q" placeholder="Ник" maxlength="16"><button class="btn primary" type="submit">Найти</button></form>
-        <div class="tbl" id="users"></div>
-        <div class="sec" id="selBox" hidden>
-          <h2>Игрок: <span class="grad" id="selName"></span></h2>
-          <div class="acts">
-            <select id="days"><option value="7">+7 дней</option><option value="30" selected>+30 дней</option><option value="90">+90 дней</option><option value="0">Навсегда</option></select>
-            <button class="btn primary" data-act="grant">Выдать подписку</button>
-            <button class="btn ghost" data-act="revoke">Забрать подписку</button>
-            <button class="btn ghost" data-act="reset_hwid">Сбросить ПК</button>
-            <button class="btn ghost" data-act="unlock">Снять блок входа</button>
-            <button class="btn ghost" data-act="ban">Забанить</button>
-            <button class="btn ghost" data-act="unban">Разбанить</button>
-          </div>
-          <div class="msg" id="actMsg" role="status" aria-live="polite"></div>
-        </div>
-      </div>
-
-      <div class="box sec">
-        <h2>Промокоды</h2>
-        <p class="desc">Многоразовые коды для ютуберов, раздач и акций. Игрок вводит их в кабинете там же, где ключ. Один игрок — один раз.</p>
-        <form id="promoForm" novalidate>
-          <div class="row">
-            <input id="pCode" placeholder="Код, например SKYN1X" maxlength="32" style="text-transform:uppercase">
-            <select id="pDays"><option value="1">+1 день</option><option value="3">+3 дня</option><option value="7" selected>+7 дней</option><option value="14">+14 дней</option><option value="30">+30 дней</option><option value="0">Навсегда</option></select>
-            <input id="pMax" type="number" min="1" placeholder="Лимит активаций (пусто = ∞)">
-            <input id="pExp" type="date" title="Действует до (пусто = бессрочно)">
-          </div>
-          <div class="row" style="margin-top:10px">
-            <input id="pNote" placeholder="Заметка (для кого код)" maxlength="200">
-            <label style="display:flex;gap:6px;align-items:center;margin:0;white-space:nowrap"><input id="pIp" type="checkbox" checked style="width:auto;min-height:0">1 раз с одного IP</label>
-            <label style="display:flex;gap:6px;align-items:center;margin:0;white-space:nowrap"><input id="pNew" type="checkbox" style="width:auto;min-height:0">Только новым</label>
-            <button class="btn primary" id="pBtn" type="submit"><span class="spin"></span><span class="t">Создать</span></button>
-          </div>
-        </form>
-        <div class="msg" id="pMsg" role="status" aria-live="polite"></div>
-        <div class="tbl" id="promos"></div>
-        <div class="tbl" id="promoUsers"></div>
-      </div>
-
-      <div class="box sec">
-        <h2>Оплаты</h2>
-        <div class="desc" id="paySum"></div>
-        <div class="tbl" id="pays"></div>
-      </div>
-
-      <div class="grid2 sec">
-        <div class="box">
-          <h2>Сгенерировать ключи</h2>
-          <p class="desc">Ключи показываются один раз — сразу скопируй (для раздач, конкурсов, ручной выдачи).</p>
-          <form class="row" id="genForm">
-            <select id="plan"><option value="7d">7 дней</option><option value="30d" selected>30 дней</option><option value="90d">90 дней</option><option value="forever">Навсегда</option></select>
-            <input id="count" type="number" min="1" max="500" value="10">
-            <button class="btn primary" id="genBtn" type="submit"><span class="spin"></span><span class="t">Создать</span></button>
-          </form>
-          <textarea id="keysOut" readonly placeholder="Здесь появятся ключи"></textarea>
-          <div class="acts"><button class="btn ghost" id="copyKeys" type="button">Скопировать</button></div>
-          <div class="msg" id="genMsg" role="status" aria-live="polite"></div>
-        </div>
-        <div class="box">
-          <h2>Последние скачивания</h2>
-          <div class="tbl" id="dls"></div>
-        </div>
-      </div>
-    </section>
-  </div>
-</main>
+<main class="acc"><div class="wrap"><section class="box doc" style="display:block;padding:32px">
+<h1>Служба поддержки</h1><div class="upd">Отвечаем ежедневно, обычно в течение нескольких часов (не позднее 3 рабочих дней).</div>
+<div class="contacts" data-contacts></div>
+<h2>С чем помогаем</h2>
+<ul><li>оплатил, а подписка не начислилась — напиши ник профиля, время и сумму оплаты;</li>
+<li>не получается войти, скачать или запустить клиент;</li><li>смена компьютера и сброс привязки;</li><li>возврат средств — по условиям <a href="terms.html">Пользовательского соглашения</a>.</li></ul>
+<h2>Документы</h2>
+<p><a href="terms.html">Пользовательское соглашение</a> · <a href="privacy.html">Политика конфиденциальности</a></p>
+</section></div></main>
+<footer>
+  <div class="wrap"><span>Niksos Client 1.21.11 · Не связан с Mojang AB</span>
+  <span><a href="terms.html">Пользовательское соглашение</a> · <a href="privacy.html">Политика конфиденциальности</a> · <a href="support.html">Поддержка</a></span></div>
+</footer>
 <script src="assets/config.js?v=12"></script>
-<script src="assets/niksos-api.js?v=12"></script>
-<script src="assets/admin.js?v=12"></script>
+<script>
+(function(){
+  var s=(window.NIKSOS&&NIKSOS.support)||{}, L=(window.NIKSOS&&NIKSOS.links)||{};
+  var items=[];
+  if(s.telegram) items.push(['Telegram','<a href="https://t.me/'+s.telegram.replace(/^@/,'')+'" target="_blank" rel="noopener">'+s.telegram+'</a>']);
+  if(s.email) items.push(['Email','<a href="mailto:'+s.email+'">'+s.email+'</a>']);
+  if(L.discord && L.discord!=='#') items.push(['Discord','<a href="'+L.discord+'" target="_blank" rel="noopener">сервер поддержки</a>']);
+  var html=items.map(function(i){return '<div class="c"><b>'+i[0]+'</b>'+i[1]+'</div>'}).join('');
+  document.querySelectorAll('[data-contacts]').forEach(function(e){e.innerHTML=html||'<p>Контакты скоро появятся.</p>'});
+  document.querySelectorAll('[data-contacts-inline]').forEach(function(e){e.innerHTML=items.map(function(i){return i[0]+': '+i[1]}).join(', ')||'указаны на странице <a href="support.html">Поддержка</a>'});
+})();
+</script>
 </body>
 </html>
