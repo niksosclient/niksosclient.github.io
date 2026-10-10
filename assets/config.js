@@ -7,11 +7,11 @@ window.NIKSOS = {
   pay: ["rollypay"],
   // Поддержка (показывается на support.html, в соглашении и политике). Пустое — не показывается.
   support: {
-    telegram: "",   // например "@niksos_support"
-    email: "",      // например "support@mail.ru"
+    telegram: "@niksos_support",   // например "@niksos_support"
+    email: "sskyn1xx@gmail.com",      // например "support@mail.ru"
   },
   links: {
-    funpay: "#",   // ссылка на твой лот / профиль на FunPay
-    discord: "#",  // инвайт в Discord
+    funpay: "-",   // ссылка на твой лот / профиль на FunPay
+    discord: "https://discord.gg/eWnsttQ87m",  // инвайт в Discord
   },
 };
