@@ -3,10 +3,10 @@
 @font-face{font-family:Inter;font-weight:600;font-display:swap;src:url(inter-cyr-600.ttf) format("truetype");unicode-range:U+0400-045F,U+2116}
 @font-face{font-family:Inter;font-weight:400;font-display:swap;src:url(inter-400.ttf) format("truetype")}
 @font-face{font-family:Inter;font-weight:600;font-display:swap;src:url(inter-600.ttf) format("truetype")}
-:root{--tt-bg:rgba(16,0,16,.94);--tt-top:#5000ff;--tt-bot:#28007f;--gray:#aaaaaa;--dgray:#555;--yellow:#ffff55;--aqua:#55ffff;--green:#55ff55;--gold:#ffaa00;--purple:#aa55ff}
+:root{--tt-bg:rgba(14,14,14,.94);--tt-top:#3a3a3a;--tt-bot:#1f1f1f;--gray:#aaaaaa;--dgray:#555;--yellow:#ffffff;--aqua:#e6e6e6;--green:#d9d9d9;--gold:#cfcfcf;--purple:#d0d0d0}
 *{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
-body{color:#fff;font:15px/1.6 Inter,system-ui,"Segoe UI",Arial,sans-serif;background:#141009 url(dirt.png) 0 0/64px 64px;image-rendering:auto}
+body{color:#fff;font:15px/1.6 Inter,system-ui,"Segoe UI",Arial,sans-serif;background:#0a0a0a url(dirt.png) 0 0/64px 64px;image-rendering:auto}
 body::before{content:"";position:fixed;inset:0;background:url(dirt.png) 0 0/64px 64px;image-rendering:pixelated;z-index:-1}
 a{color:inherit;text-decoration:none}
 .px{font-family:Pix,monospace;letter-spacing:.02em}
@@ -15,9 +15,9 @@ a{color:inherit;text-decoration:none}
 
 /* кнопка как в Minecraft */
 .mc{font-family:Pix,monospace;font-size:18px;display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:0 22px;color:#e0e0e0;text-shadow:2px 2px 0 #383838;background:#6f6f6f;border:2px solid #000;box-shadow:inset 2px 2px 0 #a8a8a8,inset -2px -3px 0 #4a4a4a;cursor:pointer;image-rendering:pixelated;user-select:none}
-.mc:hover{background:#7f86a8;box-shadow:inset 2px 2px 0 #bcc4ec,inset -2px -3px 0 #545a78;color:#ffffa0;border-color:#fff}
-.mc.p{background:#6b3fd0;box-shadow:inset 2px 2px 0 #a07cff,inset -2px -3px 0 #43248f}
-.mc.p:hover{background:#7b52e0;border-color:#fff;color:#ffffa0}
+.mc:hover{background:#2b2b2b;box-shadow:inset 2px 2px 0 #4a4a4a,inset -2px -3px 0 #1a1a1a;color:#ffffff;border-color:#fff}
+.mc.p{background:#f2f2f2;box-shadow:inset 2px 2px 0 #ffffff,inset -2px -3px 0 #bdbdbd}
+.mc.p:hover{background:#ffffff;border-color:#fff;color:#ffffff}
 .mc.w{width:100%}
 
 /* шапка */
@@ -33,9 +33,9 @@ a{color:inherit;text-decoration:none}
 /* титульный экран */
 .title{text-align:center;padding:80px 0 70px;position:relative}
 .logo{position:relative;display:inline-block}
-.logo h1{font-family:Pix,monospace;font-weight:700;font-size:112px;line-height:1;letter-spacing:.04em;color:#fff;text-shadow:6px 6px 0 #3a2a6a,12px 12px 0 rgba(0,0,0,.35)}
-.logo .ed{display:block;font-family:Pix,monospace;font-size:26px;letter-spacing:.5em;color:#d6c8ff;text-shadow:3px 3px 0 #2a1f4f;margin-top:8px;padding-left:.5em}
-.splash{position:absolute;right:-150px;bottom:44px;font-family:Pix,monospace;font-size:24px;color:var(--yellow);text-shadow:3px 3px 0 #3f3f15;transform:rotate(-18deg);animation:pulse .5s ease-in-out infinite alternate;white-space:nowrap}
+.logo h1{font-family:Pix,monospace;font-weight:700;font-size:112px;line-height:1;letter-spacing:.04em;color:#fff;text-shadow:6px 6px 0 #262626,12px 12px 0 rgba(0,0,0,.35)}
+.logo .ed{display:block;font-family:Pix,monospace;font-size:26px;letter-spacing:.5em;color:#bdbdbd;text-shadow:3px 3px 0 #000000;margin-top:8px;padding-left:.5em}
+.splash{position:absolute;right:-150px;bottom:44px;font-family:Pix,monospace;font-size:24px;color:var(--yellow);text-shadow:3px 3px 0 #000000;transform:rotate(-18deg);animation:pulse .5s ease-in-out infinite alternate;white-space:nowrap}
 @keyframes pulse{to{transform:rotate(-18deg) scale(1.08)}}
 .title p{max-width:560px;margin:34px auto 30px;color:#e6e6e6;text-shadow:1px 1px 0 #000;font-size:16px}
 .menu{display:grid;grid-template-columns:1fr 1fr;gap:10px;max-width:420px;margin:0 auto}
@@ -46,7 +46,7 @@ a{color:inherit;text-decoration:none}
 section{padding:72px 0}
 .sec-t{font-family:Pix,monospace;font-size:44px;text-shadow:4px 4px 0 #3f3f3f;margin-bottom:8px}
 .sec-s{color:#d0d0d0;text-shadow:1px 1px 0 #000;margin-bottom:30px;max-width:560px}
-.tt{background:var(--tt-bg);position:relative;padding:14px 16px;border:2px solid transparent;border-image:linear-gradient(var(--tt-top),var(--tt-bot)) 1;outline:2px solid rgba(16,0,16,.94);outline-offset:0}
+.tt{background:var(--tt-bg);position:relative;padding:14px 16px;border:2px solid transparent;border-image:linear-gradient(var(--tt-top),var(--tt-bot)) 1;outline:2px solid rgba(14,14,14,.94);outline-offset:0}
 .tt h3{font-family:Pix,monospace;font-weight:500;font-size:21px;line-height:1.2;text-shadow:2px 2px 0 #3f3f3f;margin-bottom:6px}
 .tt p{color:var(--gray);font-size:14px;text-shadow:1px 1px 0 #2a2a2a}
 .tt .m{margin-top:10px;font-family:Pix,monospace;font-size:16px;line-height:1.45;text-shadow:2px 2px 0 #2a2a2a}
@@ -65,7 +65,7 @@ section{padding:72px 0}
 .plan .pr{font-family:Pix,monospace;font-size:44px;line-height:1;margin:6px 0}
 .plan .pr small{font-size:20px}
 .plan .s{font-size:13px;color:#ececec;min-height:20px;margin-bottom:8px}
-.plan.hot{background:#9a7fd6}
+.plan.hot{background:#f2f2f2}
 .plan .tag{position:absolute;top:-12px;right:10px;font-family:Pix,monospace;font-size:14px;background:#000;color:var(--yellow);padding:1px 8px;text-shadow:none}
 .plan .mc{margin-top:auto}
 .gui .note{margin-top:14px;font-size:14px;color:#3f3f3f}
@@ -73,7 +73,7 @@ section{padding:72px 0}
 
 /* установка */
 .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
-.step .num{font-family:Pix,monospace;font-size:34px;color:var(--green);text-shadow:3px 3px 0 #153f15;line-height:1;margin-bottom:6px}
+.step .num{font-family:Pix,monospace;font-size:34px;color:var(--green);text-shadow:3px 3px 0 #000000;line-height:1;margin-bottom:6px}
 .tt code,.tt kbd{font:13px ui-monospace,Consolas,monospace;color:var(--yellow)}
 .tt a{color:var(--aqua);text-decoration:underline}
 

@@ -4,23 +4,23 @@
 @font-face{font-family:Inter;font-weight:400;font-display:swap;src:url(inter-400.ttf) format("truetype")}
 @font-face{font-family:Inter;font-weight:600;font-display:swap;src:url(inter-600.ttf) format("truetype")}
 /* Кабинет и админка в стиле интерфейса Minecraft */
-body{--bg:#141009;--surface:rgba(16,0,16,.94);--surface2:rgba(16,0,16,.94);--line:#3a2a6a;--text:#fff;--muted:#bdbdbd;--dim:#9a9a9a;--violet:#aa55ff;--grad:#6b3fd0;color:#fff;font:15px/1.6 Inter,system-ui,"Segoe UI",Arial,sans-serif;background:#141009 url(dirt.png) 0 0/64px 64px}
+body{--bg:#0a0a0a;--surface:rgba(14,14,14,.94);--surface2:rgba(14,14,14,.94);--line:#262626;--text:#fff;--muted:#bdbdbd;--dim:#9a9a9a;--violet:#d0d0d0;--grad:#f2f2f2;color:#fff;font:15px/1.6 Inter,system-ui,"Segoe UI",Arial,sans-serif;background:#0a0a0a url(dirt.png) 0 0/64px 64px}
 body::before{content:"";position:fixed;inset:0;background:url(dirt.png) 0 0/64px 64px;image-rendering:pixelated;z-index:-1}
-body .grad{color:#ffff55;background:none}
+body .grad{color:#ffffff;background:none}
 body .nav{position:sticky;top:0;width:auto;max-width:none;margin:0;border:0;border-bottom:2px solid #000;border-radius:0;background:rgba(0,0,0,.6);backdrop-filter:none;-webkit-backdrop-filter:none;padding:10px max(24px,calc((100vw - 1040px)/2));gap:22px}
 body .nav .brand{margin-right:auto;font-family:Pix,monospace;font-size:22px;font-weight:400;text-shadow:3px 3px 0 #3f3f3f}
 body .nav .brand img{width:28px;height:28px;border-radius:0}
 body .nav a.l{font-family:Pix,monospace;font-size:19px;color:#d0d0d0;text-shadow:2px 2px 0 #2a2a2a;padding:4px;background:none!important}
-body .nav a.l:hover{color:#ffff55}
+body .nav a.l:hover{color:#ffffff}
 body .btn,body button.btn{font-family:Pix,monospace;font-size:19px;font-weight:400;color:#e0e0e0;text-shadow:2px 2px 0 #383838;background:#6f6f6f;border:2px solid #000;border-radius:0;box-shadow:inset 2px 2px 0 #a8a8a8,inset -2px -3px 0 #4a4a4a!important;transform:none!important;min-height:42px}
-body .btn:hover{background:#7f86a8;border-color:#fff;color:#ffffa0;box-shadow:inset 2px 2px 0 #bcc4ec,inset -2px -3px 0 #545a78!important}
-body .btn.primary{background:#6b3fd0;box-shadow:inset 2px 2px 0 #a07cff,inset -2px -3px 0 #43248f!important}
-body .btn.primary:hover{background:#7b52e0;border-color:#fff}
+body .btn:hover{background:#2b2b2b;border-color:#fff;color:#ffffff;box-shadow:inset 2px 2px 0 #4a4a4a,inset -2px -3px 0 #1a1a1a!important}
+body .btn.primary{background:#f2f2f2;box-shadow:inset 2px 2px 0 #ffffff,inset -2px -3px 0 #bdbdbd!important}
+body .btn.primary:hover{background:#ffffff;border-color:#fff}
 body .btn.ghost{background:#6f6f6f}
 body button.btn:disabled{opacity:.55}
 body .acc{padding:40px 0 64px}
 body .acc::before{display:none}
-body .box{border-radius:0;background:rgba(16,0,16,.94);border:2px solid transparent;border-image:linear-gradient(#5000ff,#28007f) 1;padding:24px}
+body .box{border-radius:0;background:rgba(14,14,14,.94);border:2px solid transparent;border-image:linear-gradient(#3a3a3a,#1f1f1f) 1;padding:24px}
 body .auth h1,body .dash h1,body .box h2{font-family:Pix,monospace;font-weight:400;letter-spacing:.02em;text-shadow:3px 3px 0 #3f3f3f}
 body .auth h1,body .dash h1{font-size:44px}
 body .box h2{font-size:26px}
@@ -34,9 +34,9 @@ body .pill{font-family:Pix,monospace;font-size:17px;font-weight:400;letter-spaci
 body .pill .d,body .pill.on .d{box-shadow:none;border-radius:0}
 body .status .big{font-family:Pix,monospace;font-size:34px;font-weight:400;letter-spacing:0;text-shadow:3px 3px 0 #3f3f3f}
 body .hist th,body .tbl th{text-transform:none;letter-spacing:0;font-size:12px;color:#aaa}
-body .hist td,body .hist th,body .tbl td,body .tbl th{border-color:#3a2a6a}
-body .stat .v{font-family:Pix,monospace;font-size:34px;font-weight:400;letter-spacing:0;color:#55ff55;text-shadow:3px 3px 0 #153f15}
+body .hist td,body .hist th,body .tbl td,body .tbl th{border-color:#262626}
+body .stat .v{font-family:Pix,monospace;font-size:34px;font-weight:400;letter-spacing:0;color:#d9d9d9;text-shadow:3px 3px 0 #000000}
 body .tag{letter-spacing:0;text-transform:none;border-radius:0}
-body .msg.ok{color:#55ff55}body .msg.err{color:#ff5555}
-body .linkbtn{color:#55ffff}
-body a[style*="underline"],body .hint a,body .desc a{color:#55ffff}
+body .msg.ok{color:#d9d9d9}body .msg.err{color:#ff5555}
+body .linkbtn{color:#e6e6e6}
+body a[style*="underline"],body .hint a,body .desc a{color:#e6e6e6}
