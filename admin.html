@@ -318,6 +318,17 @@ body a[style*="underline"],body .hint a,body .desc a{color:#e6e6e6}
         </div>
       </div>
 
+      <div class="box sec" id="staffBox" hidden>
+        <h2>Админы <span class="tag adm" style="background:#ffc83d22;color:#ffc83d">ГЛ. АДМИН</span></h2>
+        <p class="desc">Видно только главному админу. Админ может всё в этой панели, кроме выдачи/снятия админки. Тебя (главного) он не забанит и не снимет.</p>
+        <form id="staffForm" novalidate><div class="row">
+          <input id="stName" placeholder="Ник облака друга" maxlength="16">
+          <button class="btn primary" id="stGive" type="submit"><span class="spin"></span><span class="t">Выдать админку</span></button>
+        </div></form>
+        <div class="msg" id="stMsg" role="status" aria-live="polite"></div>
+        <div class="tbl" id="staff"></div>
+      </div>
+
       <div class="box sec">
         <h2>Промокоды</h2>
         <p class="desc">Многоразовые коды для ютуберов, раздач и акций. Игрок вводит их в кабинете там же, где ключ. Один игрок — один раз.</p>
