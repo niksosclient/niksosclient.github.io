@@ -5,7 +5,7 @@
   const ERR = {
     wrong: "Неверный пароль", none: "Профиль не найден", locked: "Слишком много попыток — подожди 10 минут",
     bad: "Неверные данные", banned: "Аккаунт заблокирован", forbidden: "У этого профиля нет прав администратора",
-    no_user: "Игрок не найден", self: "Нельзя забанить самого себя",
+    no_user: "Игрок не найден", self: "Нельзя менять самого себя", already: "Уже так и есть",
     bad_code: "Код: 3–32 символа (латиница/цифры) и не начинается с NIKSOS", no_promo: "Промокод не найден",
   };
   const PLAN = { "7d": "7 дней", "30d": "30 дней", "90d": "90 дней", forever: "Навсегда" };
@@ -22,7 +22,7 @@
     if (r.status !== "ok") throw new Error(fail(r));
     S = s; sessionStorage.setItem("niksos", JSON.stringify(s));
     $("auth").style.display = "none"; $("dash").style.display = "block"; $("who").textContent = s.name;
-    renderStats(r); loadUsers(""); loadDownloads(); loadPromos(); loadPayments();
+    renderStats(r); loadUsers(""); loadDownloads(); loadPromos(); loadPayments(); loadStaff();
   }
 
   function renderStats(r) {
@@ -40,7 +40,7 @@
     const u = r.users || [];
     $("users").innerHTML = u.length ? `<table><thead><tr><th>Ник</th><th>Подписка</th><th>До</th><th>ПК</th><th>Был в клиенте</th>
       <th>Скач. 7д</th><th>IP 7д</th><th>Ключей</th><th>Создан</th></tr></thead><tbody>` + u.map(x => `<tr data-n="${esc(x.name)}">
-      <td><b>${esc(x.display)}</b> ${x.role === "admin" ? '<span class="tag adm">ADMIN</span>' : ""} ${x.banned ? '<span class="tag ban">БАН</span>' : ""}</td>
+      <td><b>${esc(x.display)}</b> ${x.owner ? '<span class="tag adm" style="background:#ffc83d22;color:#ffc83d">ГЛ. АДМИН</span>' : x.role === "admin" ? '<span class="tag adm">ADMIN</span>' : ""} ${x.banned ? '<span class="tag ban">БАН</span>' : ""}</td>
       <td>${x.active ? '<span class="tag on">' + (x.forever ? "навсегда" : "активна") + "</span>" : '<span class="tag off">нет</span>'}</td>
       <td>${x.forever ? "∞" : fmt(x.expires)}</td><td>${esc(x.devices)}</td><td>${fmt(x.last_seen)}</td>
       <td>${esc(x.dl_7d)}</td><td>${x.ips_7d > 2 ? '<span class="tag ban">' + esc(x.ips_7d) + "</span>" : esc(x.ips_7d)}</td>
@@ -176,7 +176,38 @@
     finally { busy($("pBtn"), false); }
   });
 
-  $("refresh").addEventListener("click", () => { refreshStats(); loadUsers($("q").value); loadDownloads(); loadPromos(); });
+  // ---------------- админы (только главный админ)
+  async function loadStaff() {
+    let r; try { r = await A.staff(S.name, S.hash); } catch (e) { return; }
+    $("staffBox").hidden = r.status !== "ok";
+    if (r.status !== "ok") return;
+    const a = r.admins || [];
+    $("staff").innerHTML = "<table><thead><tr><th>Ник</th><th>Роль</th><th>С какого</th><th></th></tr></thead><tbody>" + a.map(x =>
+      `<tr data-n="${esc(x.name)}"><td><b>${esc(x.display)}</b></td><td>${x.owner ? '<span class="tag adm" style="background:#ffc83d22;color:#ffc83d">ГЛ. АДМИН</span>' : '<span class="tag adm">ADMIN</span>'}</td>
+       <td>${fmt(x.since)}</td><td>${x.owner ? "" : '<button class="linkbtn" data-take>снять админку</button>'}</td></tr>`).join("") + "</tbody></table>";
+    $("staff").querySelectorAll("[data-take]").forEach(b => b.addEventListener("click", async () => {
+      const n = b.closest("tr").dataset.n;
+      if (!confirm("Снять админку с " + n + "?")) return;
+      const x = await A.staffSet(S.name, S.hash, n, false);
+      msg($("stMsg"), x.status === "ok" ? "Админка снята — " + x.target + " (в клиенте пропадёт в течение 30 мин)" : fail(x), x.status === "ok" ? "ok" : "err");
+      loadStaff(); loadUsers($("q").value);
+    }));
+  }
+  $("staffForm").addEventListener("submit", async e => {
+    e.preventDefault();
+    const n = $("stName").value.trim();
+    if (!/^[A-Za-z0-9_]{3,16}$/.test(n)) return msg($("stMsg"), "Ник: 3–16 символов, латиница, цифры, _", "err");
+    busy($("stGive"), true); msg($("stMsg"), "…");
+    try {
+      const x = await A.staffSet(S.name, S.hash, n, true);
+      if (x.status !== "ok") throw new Error(fail(x));
+      msg($("stMsg"), "Админка выдана — " + x.target + ". Пусть перезайдёт в кабинет / перезапустит клиент.", "ok");
+      $("stName").value = ""; loadStaff(); loadUsers($("q").value);
+    } catch (err) { msg($("stMsg"), err.message, "err"); }
+    finally { busy($("stGive"), false); }
+  });
+
+  $("refresh").addEventListener("click", () => { refreshStats(); loadUsers($("q").value); loadDownloads(); loadPromos(); loadStaff(); });
   $("logout").addEventListener("click", () => { sessionStorage.removeItem("niksos"); location.href = "account.html"; });
 
   // сессия из кабинета

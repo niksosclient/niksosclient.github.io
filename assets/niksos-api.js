@@ -44,6 +44,8 @@
       promoUsers: (n, h, code) => rpc("niksos_admin_promo_users", { p_name: n, p_pass: h, p_code: code }),
       payments: (n, h) => rpc("niksos_admin_payments", { p_name: n, p_pass: h }),
       downloads: (n, h) => rpc("niksos_admin_downloads", { p_name: n, p_pass: h }),
+      staff: (n, h) => rpc("niksos_staff", { p_name: n, p_pass: h }),
+      staffSet: (n, h, target, admin) => rpc("niksos_staff_set", { p_name: n, p_pass: h, p_target: target, p_admin: !!admin }),
     },
     // Оплата RollyPay (Edge Function niksos-pay)
     async pay(body) {

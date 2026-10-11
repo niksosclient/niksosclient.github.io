@@ -1,6 +1,6 @@
 (function () {
   const $ = id => document.getElementById(id);
-  const PLAN = { "7d": "7 дней", "30d": "30 дней", "90d": "90 дней", forever: "Навсегда" };
+  const PLAN = { "7d": "7 дней", "30d": "30 дней", "90d": "90 дней", forever: "Навсегда", hwid: "Сброс привязки ПК" };
   const AUTH_ERR = {
     wrong: "Неверный пароль", none: "Такого профиля нет — зарегистрируйся",
     locked: "Слишком много попыток — подожди 10 минут", banned: "Аккаунт заблокирован администрацией", bad: "Ник: 3–16 символов, латиница, цифры, _",
@@ -42,8 +42,8 @@
   function render(lic) {
     lastLic = lic;
     $("who").textContent = lic.name || session.name;
-    $("adminLink").hidden = lic.role !== "admin";
-    $("testWrap").style.display = lic.role === "admin" && PROVS.includes("rollypay") ? "block" : "none";
+    $("adminLink").hidden = lic.role !== "admin" && !lic.owner;
+    $("testWrap").style.display = (lic.role === "admin" || lic.owner) && PROVS.includes("rollypay") ? "block" : "none";
     const on = !!lic.active;
     $("pill").classList.toggle("on", on);
     $("pillText").textContent = on ? "Подписка активна" : "Нет подписки";
@@ -64,8 +64,12 @@
     $("devText").textContent = dev
       ? "Клиент привязан к ПК. Чтобы играть на другом компьютере, сбрось привязку — новый ПК привяжется при первом запуске."
       : "ПК пока не привязан — привяжется автоматически при первом запуске клиента с активной подпиской.";
-    $("resetBtn").disabled = !dev || !!lic.reset_next;
-    $("resetNote").textContent = lic.reset_next ? "Следующий сброс доступен " + fmtDate(lic.reset_next) : "Сброс доступен раз в 7 дней.";
+    const price = lic.hwid_price || 69, free = lic.hwid_free !== false || (lic.hwid_credits || 0) > 0;
+    $("resetBtn").disabled = !dev;
+    $("resetBtn").querySelector(".t").textContent = free ? "Сбросить привязку" : "Сбросить привязку — " + price + " ₽";
+    $("resetNote").textContent = lic.hwid_credits > 0 ? "Оплаченных сбросов: " + lic.hwid_credits + "."
+      : lic.hwid_free !== false ? "Первый сброс — бесплатно, каждый следующий — " + price + " ₽."
+      : "Бесплатный сброс уже использован. Каждый следующий — " + price + " ₽.";
     const h = lic.history || [];
     $("hist").innerHTML = h.length
       ? "<table><thead><tr><th>Тариф</th><th>Дата активации</th></tr></thead><tbody>" +
@@ -91,6 +95,7 @@
 
   // Вернулись со страницы оплаты: ждём колбэк, заодно сверяем платёж сами
   async function checkPaid() {
+    if (sessionStorage.getItem("niksos_pay_kind") === "hwid") { sessionStorage.removeItem("niksos_pay_kind"); return checkHwidPaid(); }
     if (payBack === "fail") return msg($("buyMsg"), "Оплата не прошла или отменена. Деньги не списаны — можно попробовать ещё раз.", "err");
     const was = lastLic ? (lastLic.forever ? Infinity : +new Date(lastLic.expires || 0)) : 0;
     msg($("buyMsg"), "Проверяем оплату…");
@@ -107,6 +112,23 @@
       await new Promise(r => setTimeout(r, 5000));
     }
     msg($("buyMsg"), "Платёж ещё обрабатывается — обнови страницу через пару минут. Если деньги списались, а подписки нет — напиши в поддержку.", "err");
+  }
+
+  async function checkHwidPaid() {
+    const m = $("resetMsg");
+    if (payBack === "fail") return msg(m, "Оплата не прошла или отменена. Деньги не списаны.", "err");
+    msg(m, "Проверяем оплату сброса…"); $("resetBtn").scrollIntoView({ behavior: "smooth", block: "center" });
+    for (let i = 0; i < 12; i++) {
+      if (i % 3 === 1) await NiksosApi.paySync(session.name, session.hash);
+      try {
+        const lic = await NiksosApi.license(session.name, session.hash);
+        if (lic.status === "ok" && (!lic.devices || lic.hwid_credits > 0)) {
+          render(lic); return msg(m, lic.devices ? "Оплата прошла — нажми «Сбросить привязку»" : "Оплата прошла, привязка сброшена — запусти клиент на нужном ПК", "ok");
+        }
+      } catch (e) {}
+      await new Promise(r => setTimeout(r, 5000));
+    }
+    msg(m, "Платёж ещё обрабатывается — обнови страницу через пару минут. Если деньги списались, а сброса нет — напиши в поддержку.", "err");
   }
 
   document.querySelectorAll("[data-plan]").forEach(b => b.addEventListener("click", async () => {
@@ -184,15 +206,24 @@
   });
 
   $("resetBtn").addEventListener("click", async () => {
-    if (!confirm("Сбросить привязку к ПК? Следующий сброс будет доступен только через 7 дней.")) return;
-    busy($("resetBtn"), true); msg($("resetMsg"), "Сбрасываем…");
+    const free = !lastLic || lastLic.hwid_free !== false || (lastLic.hwid_credits || 0) > 0, price = (lastLic && lastLic.hwid_price) || 69;
+    if (!confirm(free ? "Сбросить привязку к ПК? Это бесплатно. Каждый следующий сброс — " + price + " ₽."
+                      : "Сброс привязки стоит " + price + " ₽. Перейти к оплате? После оплаты ПК сбросится сам.")) return;
+    busy($("resetBtn"), true); msg($("resetMsg"), free ? "Сбрасываем…" : "Создаём платёж…");
     try {
-      const r = await NiksosApi.hwidReset(session.name, session.hash);
-      if (r.status === "ok") { render(r); msg($("resetMsg"), "Готово — запусти клиент на нужном ПК", "ok"); }
-      else if (r.status === "cooldown") { if (lastLic) lastLic.reset_next = r.reset_next; msg($("resetMsg"), "Сбрасывать можно раз в 7 дней. Следующий — " + fmtDate(r.reset_next), "err"); }
-      else msg($("resetMsg"), AUTH_ERR[r.status] || "Не удалось сбросить", "err");
+      if (free) {
+        const r = await NiksosApi.hwidReset(session.name, session.hash);
+        if (r.status === "ok") { render(r); msg($("resetMsg"), "Готово — запусти клиент на нужном ПК", "ok"); return; }
+        if (r.status !== "pay") { msg($("resetMsg"), AUTH_ERR[r.status] || "Не удалось сбросить", "err"); return; }
+        if (lastLic) lastLic.hwid_free = false;
+        if (!confirm("Бесплатный сброс уже использован. Оплатить " + (r.price || price) + " ₽?")) { render(lastLic); return; }
+      }
+      const prov = (document.querySelector('input[name="prov"]:checked') || {}).value || PROVS[0];
+      const p = await NiksosApi.buy(session.name, session.hash, "hwid", $("testPay").checked, prov);
+      if (p.status === "ok" && p.pay_url) { sessionStorage.setItem("niksos_pay_kind", "hwid"); msg($("resetMsg"), "Переходим к оплате…", "ok"); location.href = p.pay_url; return; }
+      msg($("resetMsg"), PAY_ERR[p.status] || "Не удалось создать платёж — попробуй позже", "err");
     } catch (err) { msg($("resetMsg"), "Нет связи с сервером — попробуй ещё раз", "err"); }
-    finally { busy($("resetBtn"), false); $("resetBtn").disabled = !(lastLic && lastLic.devices) || !!(lastLic && lastLic.reset_next); }
+    finally { busy($("resetBtn"), false); $("resetBtn").disabled = !(lastLic && lastLic.devices); }
   });
 
   $("logout").addEventListener("click", () => { sessionStorage.removeItem("niksos"); session = null; showAuth(); });
