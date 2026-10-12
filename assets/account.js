@@ -161,6 +161,11 @@
       if (lic.status !== "ok") throw new Error(AUTH_ERR[lic.status] || "Не удалось войти");
       session = { name, hash };
       sessionStorage.setItem("niksos", JSON.stringify(session));
+      // ключ облака для страницы «Друзья» (считается локально, живёт до закрытия вкладки)
+      if (window.NiksosCloud) NiksosCloud.derive(name, pass).then(d => {
+        sessionStorage.setItem("niksos_ck", JSON.stringify({ name, d: NiksosCloud.b64(d) }));
+        if (qs.get("next") === "friends") location.href = "friends.html";
+      }).catch(() => {});
       $("pass").value = $("pass2").value = "";
       msg($("authMsg"));
       showDash(lic);
@@ -226,7 +231,7 @@
     finally { busy($("resetBtn"), false); $("resetBtn").disabled = !(lastLic && lastLic.devices); }
   });
 
-  $("logout").addEventListener("click", () => { sessionStorage.removeItem("niksos"); session = null; showAuth(); });
+  $("logout").addEventListener("click", () => { sessionStorage.removeItem("niksos"); sessionStorage.removeItem("niksos_ck"); session = null; showAuth(); });
 
   // восстановление сессии вкладки
   (async () => {
