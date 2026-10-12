@@ -375,11 +375,18 @@ body a[style*="underline"],body .hint a,body .desc a{color:#e6e6e6}
           <div class="tbl" id="dls"></div>
         </div>
       </div>
+      <div class="box sec" id="mediaBox" hidden>
+        <h2>Медиа — заявки <span id="mediaCount" style="color:var(--muted);font-weight:600"></span></h2>
+        <p class="desc">Одобренные появляются на странице <a href="media.html" style="text-decoration:underline">Медиа</a>. Бесплатную подписку выдай в поиске игрока выше.</p>
+        <div class="msg" id="mdMsg" role="status" aria-live="polite"></div>
+        <div class="tbl" id="mediaApps"></div>
+      </div>
     </section>
   </div>
 </main>
 <script src="assets/config.js?v=13"></script>
 <script src="assets/niksos-api.js?v=13"></script>
 <script src="assets/admin.js?v=13"></script>
+<script src="assets/admin-media.js?v=1"></script>
 </body>
 </html>
