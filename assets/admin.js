@@ -5,7 +5,7 @@
   const ERR = {
     wrong: "Неверный пароль", none: "Профиль не найден", locked: "Слишком много попыток — подожди 10 минут",
     bad: "Неверные данные", banned: "Аккаунт заблокирован", forbidden: "У этого профиля нет прав администратора",
-    no_user: "Игрок не найден", self: "Нельзя менять самого себя", already: "Уже так и есть",
+    protected: "Нельзя снять главного администратора", no_user: "Игрок не найден — сначала зарегистрируй профиль в кабинете", self: "Нельзя менять самого себя", already: "Уже так и есть",
     bad_code: "Код: 3–32 символа (латиница/цифры) и не начинается с NIKSOS", no_promo: "Промокод не найден",
   };
   const PLAN = { "7d": "7 дней", "30d": "30 дней", "90d": "90 дней", forever: "Навсегда" };
@@ -13,7 +13,7 @@
   const fmt = s => s ? new Date(s).toLocaleString("ru-RU", { day: "2-digit", month: "2-digit", year: "2-digit", hour: "2-digit", minute: "2-digit" }) : "—";
   const msg = (el, t, k) => { el.textContent = t || ""; el.className = "msg" + (k ? " " + k : ""); };
   const busy = (b, on) => { b.disabled = on; b.classList.toggle("busy", on); };
-  let S = null, selected = null;
+  let S = null, selected = null, canManageStaff = false;
 
   function fail(r) { return ERR[r && r.status] || "Ошибка: " + (r && r.status || "нет связи"); }
 
@@ -176,35 +176,72 @@
     finally { busy($("pBtn"), false); }
   });
 
-  // ---------------- админы (только главный админ)
+  // ---------------- выдача админки. Блок виден, но право выдачи проверяет только сервер.
+  function staffAccess(allowed, hint, badge) {
+    canManageStaff = allowed;
+    $("staffBox").hidden = false;
+    $("stName").disabled = !allowed;
+    $("stGive").disabled = !allowed;
+    $("staffHint").textContent = hint;
+    $("staffBadge").textContent = badge;
+  }
   async function loadStaff() {
-    let r; try { r = await A.staff(S.name, S.hash); } catch (e) { return; }
-    $("staffBox").hidden = r.status !== "ok";
-    if (r.status !== "ok") return;
+    staffAccess(false, "Проверяем право управления администраторами…", "Проверка прав…");
+    let r;
+    try { r = await A.staff(S.name, S.hash); }
+    catch (e) {
+      const missing = /^HTTP (404|400)$/.test(e.message || "");
+      staffAccess(false, missing
+        ? "Серверная выдача админки не установлена. Выполни admin-staff.sql в Supabase → SQL Editor, затем нажми «Обновить»."
+        : "Не удалось проверить права. Нажми «Обновить»; если ошибка повторится — проверь ответ niksos_staff.", "Недоступно");
+      $("staff").textContent = ""; $("staffHistory").textContent = "";
+      return;
+    }
+    if (r.status !== "ok") {
+      staffAccess(false, r.status === "forbidden"
+        ? "Ты обычный администратор. Выдавать и снимать админку может только главный. Владелец проекта назначает главного через SQL Editor — инструкция в комплекте."
+        : fail(r), r.status === "forbidden" ? "Только главный админ" : "Нет доступа");
+      $("staff").textContent = ""; $("staffHistory").textContent = "";
+      return;
+    }
+    staffAccess(true, "Укажи ник зарегистрированного профиля. Новый админ получит доступ к панели, но не сможет выдавать админку или менять роль главного. Подписка выдаётся отдельно.", "ГЛ. АДМИН");
     const a = r.admins || [];
-    $("staff").innerHTML = "<table><thead><tr><th>Ник</th><th>Роль</th><th>С какого</th><th></th></tr></thead><tbody>" + a.map(x =>
-      `<tr data-n="${esc(x.name)}"><td><b>${esc(x.display)}</b></td><td>${x.owner ? '<span class="tag adm" style="background:#ffc83d22;color:#ffc83d">ГЛ. АДМИН</span>' : '<span class="tag adm">ADMIN</span>'}</td>
-       <td>${fmt(x.since)}</td><td>${x.owner ? "" : '<button class="linkbtn" data-take>снять админку</button>'}</td></tr>`).join("") + "</tbody></table>";
+    $("staff").innerHTML = "<table><thead><tr><th>Ник</th><th>Роль</th><th>Выдана</th><th></th></tr></thead><tbody>" + a.map(x =>
+      `<tr data-n="${esc(x.name)}"><td><b>${esc(x.display || x.name)}</b></td><td>${x.owner ? '<span class="tag adm">ГЛ. АДМИН</span>' : '<span class="tag adm">ADMIN</span>'}</td>
+       <td>${fmt(x.since)}</td><td>${x.owner ? "" : '<button class="linkbtn" data-take>Снять админку</button>'}</td></tr>`).join("") + "</tbody></table>";
+    const log = r.log || [];
+    $("staffHistory").innerHTML = log.length ? '<h2 style="margin-top:18px">История выдачи</h2><table><thead><tr><th>Когда</th><th>Кто</th><th>Кому</th><th>Действие</th></tr></thead><tbody>'
+      + log.map(x => `<tr><td>${fmt(x.at)}</td><td>${esc(x.by_name)}</td><td>${esc(x.target)}</td><td>${x.action === "give" ? "Выдал админку" : "Снял админку"}</td></tr>`).join("") + "</tbody></table>"
+      : '<div class="hint">История выдачи пока пуста</div>';
     $("staff").querySelectorAll("[data-take]").forEach(b => b.addEventListener("click", async () => {
+      if (!canManageStaff || b.disabled) return;
       const n = b.closest("tr").dataset.n;
-      if (!confirm("Снять админку с " + n + "?")) return;
-      const x = await A.staffSet(S.name, S.hash, n, false);
-      msg($("stMsg"), x.status === "ok" ? "Админка снята — " + x.target + " (в клиенте пропадёт в течение 30 мин)" : fail(x), x.status === "ok" ? "ok" : "err");
-      loadStaff(); loadUsers($("q").value);
+      if (!confirm("Снять админку с " + n + "? Подписка останется без изменений.")) return;
+      busy(b, true);
+      try {
+        const x = await A.staffSet(S.name, S.hash, n, false);
+        if (x.status !== "ok") throw new Error(fail(x));
+        msg($("stMsg"), "Админка снята — " + (x.target || n), "ok");
+        await loadStaff(); loadUsers($("q").value);
+      } catch (err) { msg($("stMsg"), err.message, "err"); }
+      finally { busy(b, false); }
     }));
   }
   $("staffForm").addEventListener("submit", async e => {
     e.preventDefault();
+    if (!S || !canManageStaff || $("stGive").disabled) return;
     const n = $("stName").value.trim();
     if (!/^[A-Za-z0-9_]{3,16}$/.test(n)) return msg($("stMsg"), "Ник: 3–16 символов, латиница, цифры, _", "err");
-    busy($("stGive"), true); msg($("stMsg"), "…");
+    if (n.toLowerCase() === S.name.toLowerCase()) return msg($("stMsg"), "Нельзя менять собственную роль", "err");
+    if (!confirm("Выдать админку профилю " + n + "? Он получит управление игроками, подписками, ключами и промокодами.")) return;
+    busy($("stGive"), true); msg($("stMsg"), "Выдаём админку…");
     try {
       const x = await A.staffSet(S.name, S.hash, n, true);
       if (x.status !== "ok") throw new Error(fail(x));
-      msg($("stMsg"), "Админка выдана — " + x.target + ". Пусть перезайдёт в кабинет / перезапустит клиент.", "ok");
-      $("stName").value = ""; loadStaff(); loadUsers($("q").value);
+      msg($("stMsg"), "Админка выдана — " + (x.target || n) + ". Пусть выйдет и заново войдёт в кабинет.", "ok");
+      $("stName").value = ""; await loadStaff(); loadUsers($("q").value);
     } catch (err) { msg($("stMsg"), err.message, "err"); }
-    finally { busy($("stGive"), false); }
+    finally { busy($("stGive"), false); $("stGive").disabled = !canManageStaff; }
   });
 
   $("refresh").addEventListener("click", () => { refreshStats(); loadUsers($("q").value); loadDownloads(); loadPromos(); loadStaff(); });
