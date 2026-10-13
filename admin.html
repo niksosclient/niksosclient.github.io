@@ -298,6 +298,20 @@ body a[style*="underline"],body .hint a,body .desc a{color:#e6e6e6}
 
       <div class="stats" id="stats"></div>
 
+      <div class="box sec" id="staffBox">
+        <h2>Выдача админки <span class="tag adm" id="staffBadge">Проверка прав…</span></h2>
+        <p class="desc" id="staffHint">Доступ проверяется сервером. Только главный администратор может назначать других админов.</p>
+        <form id="staffForm" novalidate><div class="row">
+          <input id="stName" placeholder="Ник профиля в кабинете" maxlength="16" autocomplete="off" aria-label="Ник для выдачи админки" disabled>
+          <button class="btn primary" id="stGive" type="submit" disabled><span class="spin"></span><span class="t">Выдать админку</span></button>
+        </div></form>
+        <div class="msg" id="stMsg" role="status" aria-live="polite"></div>
+        <div class="tbl" id="staff"></div>
+        <div class="tbl" id="staffHistory"></div>
+      </div>
+
+
+
       <div class="box">
         <h2>Игроки</h2>
         <p class="desc">Поиск по нику. Нажми на строку, чтобы выбрать игрока.</p>
@@ -316,17 +330,6 @@ body a[style*="underline"],body .hint a,body .desc a{color:#e6e6e6}
           </div>
           <div class="msg" id="actMsg" role="status" aria-live="polite"></div>
         </div>
-      </div>
-
-      <div class="box sec" id="staffBox" hidden>
-        <h2>Админы <span class="tag adm" style="background:#ffc83d22;color:#ffc83d">ГЛ. АДМИН</span></h2>
-        <p class="desc">Видно только главному админу. Админ может всё в этой панели, кроме выдачи/снятия админки. Тебя (главного) он не забанит и не снимет.</p>
-        <form id="staffForm" novalidate><div class="row">
-          <input id="stName" placeholder="Ник облака друга" maxlength="16">
-          <button class="btn primary" id="stGive" type="submit"><span class="spin"></span><span class="t">Выдать админку</span></button>
-        </div></form>
-        <div class="msg" id="stMsg" role="status" aria-live="polite"></div>
-        <div class="tbl" id="staff"></div>
       </div>
 
       <div class="box sec">
@@ -385,8 +388,8 @@ body a[style*="underline"],body .hint a,body .desc a{color:#e6e6e6}
   </div>
 </main>
 <script src="assets/config.js?v=13"></script>
-<script src="assets/niksos-api.js?v=13"></script>
-<script src="assets/admin.js?v=13"></script>
+<script src="assets/niksos-api.js?v=30"></script>
+<script src="assets/admin.js?v=30"></script>
 <script src="assets/admin-media.js?v=1"></script>
 </body>
 </html>
