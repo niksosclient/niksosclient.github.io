@@ -271,6 +271,7 @@ body .linkbtn{color:#e6e6e6}
 body a[style*="underline"],body .hint a,body .desc a{color:#e6e6e6}
 </style>
 <link rel="stylesheet" href="assets/mono.css?v=20">
+<link rel="stylesheet" href="assets/checkout.css?v=30github">
 </head>
 <body>
 <nav class="nav" aria-label="Навигация">
@@ -332,8 +333,28 @@ body a[style*="underline"],body .hint a,body .desc a{color:#e6e6e6}
         </div>
       </div>
 
+      <div class="box sec" id="discountBox">
+        <h2>Скидочные промокоды</h2>
+        <p class="discount-help">Применяются в окне покупки. Не выдают дни и не действуют на сброс ПК. Лимит учитывает оплаченные и незавершённые заказы; простая проверка кода лимит не расходует.</p>
+        <form id="discountForm" class="discount-form" novalidate>
+          <div class="row">
+            <label>Промокод<input id="dCode" placeholder="SUMMER15" maxlength="32" required></label>
+            <label>Скидка, %<input id="dPercent" type="number" min="1" max="95" value="15" required></label>
+            <label>Лимит заказов<input id="dMax" type="number" min="1" placeholder="Без лимита"></label>
+            <label>Действует до<input id="dExpires" type="date"></label>
+          </div>
+          <fieldset class="discount-plans"><legend>Доступные тарифы</legend>
+            <label><input type="checkbox" name="dPlan" value="7d" checked>7 дней</label><label><input type="checkbox" name="dPlan" value="30d" checked>30 дней</label>
+            <label><input type="checkbox" name="dPlan" value="90d" checked>90 дней</label><label><input type="checkbox" name="dPlan" value="forever" checked>Навсегда</label>
+          </fieldset>
+          <label class="discount-one"><input id="dOne" type="checkbox" checked>Один заказ с кодом на профиль</label>
+          <div class="row" style="margin-top:12px"><label>Заметка<input id="dNote" maxlength="200" placeholder="Например, акция для зрителей"></label>
+            <button class="btn primary" type="submit" id="dSave">Сохранить код</button></div>
+        </form>
+        <div class="msg" id="dMsg" role="status" aria-live="polite"></div><div class="tbl" id="discounts"></div>
+      </div>
       <div class="box sec">
-        <h2>Промокоды</h2>
+        <h2>Промокоды на дни подписки</h2>
         <p class="desc">Многоразовые коды для ютуберов, раздач и акций. Игрок вводит их в кабинете там же, где ключ. Один игрок — один раз.</p>
         <form id="promoForm" novalidate>
           <div class="row">
@@ -388,8 +409,8 @@ body a[style*="underline"],body .hint a,body .desc a{color:#e6e6e6}
   </div>
 </main>
 <script src="assets/config.js?v=13"></script>
-<script src="assets/niksos-api.js?v=30"></script>
-<script src="assets/admin.js?v=30"></script>
+<script src="assets/niksos-api.js?v=30github"></script>
+<script src="assets/admin.js?v=30github"></script>
 <script src="assets/admin-media.js?v=1"></script>
 </body>
 </html>

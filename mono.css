@@ -1,0 +1,98 @@
+/* Niksos — фирменный ч/б стиль (деловой). Подключается последним и перекрывает старые стили. */
+:root,body{--bg:#0a0a0a!important;--surface:#111111!important;--surface2:#161616!important;--line:rgba(255,255,255,.09)!important;
+  --text:#f5f5f5!important;--muted:#a3a3a3!important;--dim:#6e6e6e!important;--violet:#ffffff!important;--blue:#cfcfcf!important;--pink:#e6e6e6!important;
+  --grad:#f2f2f2!important;--tt-bg:#111111!important;--tt-top:#2a2a2a!important;--tt-bot:#1a1a1a!important;
+  --gray:#a3a3a3!important;--yellow:#ffffff!important;--aqua:#e6e6e6!important;--green:#d9d9d9!important;--gold:#cfcfcf!important;--purple:#d0d0d0!important}
+html,body{background:#0a0a0a!important}
+body{color:#f5f5f5!important;font-family:Inter,system-ui,"Segoe UI",Arial,sans-serif!important;
+  background:radial-gradient(70% 45% at 50% -5%,rgba(255,255,255,.07),transparent 70%),
+             linear-gradient(rgba(255,255,255,.025) 1px,transparent 1px) 0 0/32px 32px,
+             linear-gradient(90deg,rgba(255,255,255,.025) 1px,transparent 1px) 0 0/32px 32px,#0a0a0a!important;
+  background-attachment:fixed!important;image-rendering:auto!important}
+body::before{display:none!important;background:none!important}
+*{text-shadow:none!important}
+.px,.mc,.sec-t,.tt h3,.tt .m,.gui .gt,.plan .n,.plan .pr,.plan .tag,summary,footer,.top nav a,.brand,.logo h1,.logo .ed,.splash,.ver,.step .num,h1,h2,h3{
+  font-family:Inter,system-ui,"Segoe UI",Arial,sans-serif!important;letter-spacing:-.01em}
+code,kbd,pre{font-family:ui-monospace,Consolas,monospace!important;color:#e6e6e6!important}
+::selection{background:#fff;color:#000}
+
+/* кнопки */
+.mc,.btn{border-radius:999px!important;border:1px solid rgba(255,255,255,.14)!important;background:rgba(255,255,255,.04)!important;color:#f5f5f5!important;
+  box-shadow:none!important;font-weight:600!important;font-size:15px!important;min-height:44px;padding:0 22px!important;transition:background .2s,color .2s,transform .2s!important;image-rendering:auto!important}
+.mc:hover,.btn:hover,.btn.ghost:hover{background:rgba(255,255,255,.1)!important;color:#fff!important;border-color:rgba(255,255,255,.3)!important;transform:translateY(-1px)}
+.mc.p,.btn.primary{background:#f5f5f5!important;color:#0a0a0a!important;border-color:#f5f5f5!important}
+.mc.p:hover,.btn.primary:hover{background:#ffffff!important;color:#000!important;box-shadow:0 10px 30px -12px rgba(255,255,255,.45)!important}
+.top .mc,.nav .btn{min-height:36px!important;font-size:14px!important;padding:0 16px!important}
+a:focus-visible,.btn:focus-visible,.mc:focus-visible{outline:2px solid #fff!important;outline-offset:3px}
+
+/* шапка */
+.top,.nav{background:rgba(10,10,10,.72)!important;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:0!important;border-bottom:1px solid rgba(255,255,255,.08)!important;box-shadow:none!important}
+.nav{border:1px solid rgba(255,255,255,.08)!important;border-radius:14px!important}
+.brand{font-weight:700!important;font-size:18px!important;letter-spacing:.02em}
+.brand img{width:24px!important;height:24px!important;border-radius:0!important}
+.top nav a,.nav a.l{font-size:14px!important;color:#a3a3a3!important;font-weight:500}
+.top nav a:hover,.nav a.l:hover{color:#fff!important;background:transparent}
+
+/* главный экран */
+.title{padding:96px 0 84px!important}
+.logo{border-radius:0!important;box-shadow:none!important;overflow:visible!important}
+.logo .mark{display:block;width:96px;height:96px;margin:0 auto 26px}
+.logo h1{font-size:76px!important;font-weight:800!important;letter-spacing:.18em!important;color:#fff!important;padding-left:.18em}
+.logo .ed{font-size:14px!important;font-weight:600!important;letter-spacing:.6em!important;color:#8f8f8f!important;margin-top:14px!important}
+.splash{position:static!important;display:inline-block;margin-top:22px;transform:none!important;animation:none!important;font-size:12px!important;font-weight:600;
+  color:#d9d9d9!important;padding:5px 12px;border:1px solid rgba(255,255,255,.14);border-radius:999px;background:rgba(255,255,255,.04)}
+.title p{color:#a3a3a3!important}
+.menu{gap:10px!important}
+.ver{color:#5c5c5c!important;font-size:12px!important}
+
+/* секции и карточки */
+.sec-t{font-size:40px!important;font-weight:800!important;letter-spacing:-.03em!important}
+.sec-s,.lead{color:#a3a3a3!important}
+.tt,.card,.item,.box{background:#111111!important;border:1px solid rgba(255,255,255,.08)!important;border-image:none!important;outline:0!important;border-radius:16px!important;box-shadow:none!important}
+.tt:hover,.card:hover,.item:hover{border-color:rgba(255,255,255,.22)!important}
+.tt h3{font-size:18px!important;font-weight:700!important;color:#fff}
+.tt p{color:#a3a3a3!important}
+.tt .m{font-size:12px!important;font-weight:500}
+.tt .m span,.chips span{display:inline-block;margin:6px 6px 0 0!important;padding:3px 9px;border-radius:999px;border:1px solid rgba(255,255,255,.1);color:#d0d0d0}
+.c-a,.c-y,.c-g,.c-o,.c-p,.c-gr{color:#d0d0d0!important}
+.slot i{background:#161616!important;border:1px solid rgba(255,255,255,.1)!important;border-radius:12px}
+.tag{background:rgba(255,255,255,.08)!important;border:1px solid rgba(255,255,255,.16)!important;color:#fff!important}
+.ico{color:#e6e6e6!important}
+.glow::after,.hero::after{background:radial-gradient(60% 50% at 50% 38%,rgba(255,255,255,.08),transparent 70%)!important}
+.dot{background:#fff!important;box-shadow:0 0 10px rgba(255,255,255,.6)!important}
+
+/* цены */
+.gui{background:#111111!important;border:1px solid rgba(255,255,255,.08)!important;box-shadow:none!important;border-radius:20px;color:#f5f5f5!important;padding:24px!important}
+.gui .gt{font-size:16px!important;font-weight:700;color:#a3a3a3}
+.plan{background:#0d0d0d!important;border:1px solid rgba(255,255,255,.1)!important;border-radius:16px;color:#f5f5f5!important}
+.plan .n{font-size:15px!important;font-weight:600;color:#a3a3a3}
+.plan .pr{font-size:40px!important;font-weight:800!important;letter-spacing:-.03em}
+.plan .pr small{font-size:15px!important;font-weight:500;color:#8f8f8f}
+.plan .s{color:#8f8f8f!important}
+.plan.hot{background:#f5f5f5!important;color:#0a0a0a!important;border-color:#f5f5f5!important}
+.plan.hot .n,.plan.hot .s,.plan.hot .pr small{color:#404040!important}
+.plan.hot .mc{background:#0a0a0a!important;color:#fff!important;border-color:#0a0a0a!important}
+.plan .tag{background:#0a0a0a!important;color:#fff!important;border-radius:999px;font-size:11px!important;padding:2px 10px!important}
+.gui .note{color:#8f8f8f!important}
+.addon{margin-top:14px;padding:14px 16px;border:1px dashed rgba(255,255,255,.18);border-radius:14px;color:#d0d0d0;font-size:14px}
+.addon b{color:#fff}
+
+/* установка, faq, футер */
+.step .num{color:#fff!important;font-weight:800;font-size:28px!important}
+.tt a,details a,.gui .note a{color:#fff!important;text-decoration:underline;text-underline-offset:3px}
+details{background:#111111!important;border:1px solid rgba(255,255,255,.08)!important;box-shadow:none!important;border-radius:14px}
+summary{font-size:15px!important;font-weight:600}
+summary::before{color:#8f8f8f!important}
+details p{color:#a3a3a3!important}
+footer{font-size:13px!important;color:#6e6e6e!important;border-top:1px solid rgba(255,255,255,.06)}
+footer a:hover{color:#fff!important}
+input,select,textarea{background:#0d0d0d!important;border:1px solid rgba(255,255,255,.12)!important;color:#f5f5f5!important;border-radius:10px!important}
+input:focus,select:focus,textarea:focus{border-color:rgba(255,255,255,.4)!important;outline:none}
+@media (max-width:620px){.logo h1{font-size:46px!important}.logo .mark{width:72px;height:72px}}
+/* пиксельный шрифт заменяем на Inter везде, где он задан напрямую */
+@font-face{font-family:Pix;font-weight:400;font-display:swap;src:url(inter-600.ttf) format("truetype")}
+@font-face{font-family:Pix;font-weight:400;font-display:swap;src:url(inter-cyr-600.ttf) format("truetype");unicode-range:U+0400-045F,U+2116}
+.tabs{border-radius:12px!important;background:rgba(255,255,255,.04)!important;border:1px solid rgba(255,255,255,.08)!important;padding:4px!important}
+.tabs button{border-radius:9px!important;font-family:Inter,system-ui,sans-serif!important;font-size:14px!important;font-weight:600!important;color:#8f8f8f!important;box-shadow:none!important}
+.tabs button[aria-selected="true"]{background:#f5f5f5!important;color:#0a0a0a!important;box-shadow:none!important}
+button{box-shadow:none!important}
