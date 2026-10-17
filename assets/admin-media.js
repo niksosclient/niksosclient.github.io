@@ -40,6 +40,7 @@
       load();
     }));
   }
+  document.addEventListener("niksos:accounts-updated", () => load());
   const t = setInterval(() => { if (!loaded && sess() && $("dash") && getComputedStyle($("dash")).display !== "none") { loaded = true; load(); } }, 800);
   document.addEventListener("click", e => { if (e.target && e.target.id === "refresh") load(); if (e.target && e.target.id === "logout") loaded = false; });
 })();

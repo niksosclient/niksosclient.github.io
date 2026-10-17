@@ -5,7 +5,13 @@
   const ERR = {
     wrong: "Неверный пароль", none: "Профиль не найден", locked: "Слишком много попыток — подожди 10 минут",
     bad: "Неверные данные", banned: "Аккаунт заблокирован", forbidden: "У этого профиля нет прав администратора",
-    protected: "Нельзя снять главного администратора", no_user: "Игрок не найден — сначала зарегистрируй профиль в кабинете", self: "Нельзя менять самого себя", already: "Уже так и есть",
+    protected: "Главного администратора нельзя блокировать, удалять или лишать защиты",
+    staff_protected: "Управлять аккаунтом другого администратора может только главный админ",
+    confirm_required: "Для удаления введи точный ник выбранного игрока",
+    dependent_data: "Удаление отменено: найдены дополнительные связанные данные. Ничего не удалено",
+    retry: "Данные одновременно менялись другим запросом. Обнови список и повтори действие",
+    deleted: "Этот аккаунт удалён администрацией; ник зарезервирован",
+ no_user: "Игрок не найден — сначала зарегистрируй профиль в кабинете", self: "Нельзя менять самого себя", already: "Уже так и есть",
     bad_code: "Код: 3–32 символа (латиница/цифры) и не начинается с NIKSOS", no_promo: "Промокод не найден",
   };
   const PLAN = { "7d": "7 дней", "30d": "30 дней", "90d": "90 дней", forever: "Навсегда" };
@@ -14,6 +20,9 @@
   const msg = (el, t, k) => { el.textContent = t || ""; el.className = "msg" + (k ? " " + k : ""); };
   const busy = (b, on) => { b.disabled = on; b.classList.toggle("busy", on); };
   let S = null, selected = null, canManageStaff = false;
+  let userItems = [], accountApiReady = false, canManageAdminAccounts = false, actionBusy = false;
+  let deleteTarget = null;
+
 
   function fail(r) { return ERR[r && r.status] || "Ошибка: " + (r && r.status || "нет связи"); }
 
@@ -22,7 +31,7 @@
     if (r.status !== "ok") throw new Error(fail(r));
     S = s; sessionStorage.setItem("niksos", JSON.stringify(s));
     $("auth").style.display = "none"; $("dash").style.display = "block"; $("who").textContent = s.name;
-    renderStats(r); loadUsers(""); loadDownloads(); loadPromos(); loadPayments(); loadStaff(); loadDiscounts();
+    renderStats(r); loadUsers(""); loadDownloads(); loadPromos(); loadPayments(); loadStaff(); loadDiscounts(); loadAccountLog();
   }
 
   function renderStats(r) {
@@ -38,6 +47,13 @@
     const r = await A.users(S.name, S.hash, q);
     if (r.status !== "ok") { $("users").textContent = fail(r); return; }
     const u = r.users || [];
+    userItems = u;
+    accountApiReady = r.account_api_version === 1;
+    canManageAdminAccounts = r.can_manage_admins === true;
+    $("accountApiHint").textContent = accountApiReady
+      ? "Бан, разбан и удаление проверяют права на сервере. Главный админ защищён; обычный админ не может менять другого админа."
+      : "Для управления аккаунтами сначала выполни supabase/admin-accounts.sql в Supabase → SQL Editor, затем обнови панель.";
+    updateAccountButtons();
     $("users").innerHTML = u.length ? `<table><thead><tr><th>Ник</th><th>Подписка</th><th>До</th><th>ПК</th><th>Был в клиенте</th>
       <th>Скач. 7д</th><th>IP 7д</th><th>Ключей</th><th>Создан</th></tr></thead><tbody>` + u.map(x => `<tr data-n="${esc(x.name)}">
       <td><b>${esc(x.display)}</b> ${x.owner ? '<span class="tag adm" style="background:#ffc83d22;color:#ffc83d">ГЛ. АДМИН</span>' : x.role === "admin" ? '<span class="tag adm">ADMIN</span>' : ""} ${x.banned ? '<span class="tag ban">БАН</span>' : ""}</td>
@@ -50,7 +66,9 @@
     if (selected) $("users").querySelector(`tr[data-n="${CSS.escape(selected)}"]`)?.classList.add("sel");
   }
   function select(n) {
-    selected = n; $("selBox").hidden = false; $("selName").textContent = n; msg($("actMsg"));
+    if (actionBusy) return;
+    selected = n; $("selBox").hidden = false; $("selName").textContent = n;
+    $("accountReason").value = ""; msg($("actMsg")); updateAccountButtons();
     $("users").querySelectorAll("tr").forEach(tr => tr.classList.toggle("sel", tr.dataset.n === n));
   }
 
@@ -88,21 +106,85 @@
 
   $("searchForm").addEventListener("submit", e => { e.preventDefault(); loadUsers($("q").value); });
 
-  const CONFIRM = { revoke: "Забрать подписку у %?", ban: "Забанить %? Клиент отключится при следующей проверке.", reset_hwid: "Сбросить привязку ПК у %?" };
-  const DONE = { grant: "Подписка выдана", revoke: "Подписка забрана", reset_hwid: "ПК сброшен", unlock: "Блокировка входа снята", ban: "Игрок забанен", unban: "Игрок разбанен" };
-  document.querySelectorAll("[data-act]").forEach(b => b.addEventListener("click", async () => {
-    if (!selected) return;
-    const act = b.dataset.act;
-    if (CONFIRM[act] && !confirm(CONFIRM[act].replace("%", selected))) return;
-    busy(b, true); msg($("actMsg"), "…");
+  function updateAccountButtons() {
+    const u = userItems.find(x => x.name === selected);
+    const self = S && selected === S.name.toLowerCase();
+    const protectedTarget = !u || u.owner || self || (u.role === "admin" && !canManageAdminAccounts);
+    document.querySelectorAll("[data-act]").forEach(b => {
+      const account = ["ban", "unban", "delete"].includes(b.dataset.act);
+      b.disabled = actionBusy || (account && (!accountApiReady || protectedTarget));
+    });
+    $("accountReason").disabled = actionBusy;
+    $("deleteCancel").disabled = $("deleteConfirm").disabled = actionBusy;
+    $("deleteTyped").disabled = actionBusy;
+    $("deleteSubmit").disabled = actionBusy || !deleteTarget || $("deleteTyped").value !== deleteTarget || !$("deleteConfirm").checked;
+  }
+  async function loadAccountLog() {
+    if (!S) return;
     try {
-      const r = await A.action(S.name, S.hash, selected, act, act === "grant" ? parseInt($("days").value, 10) : null);
+      const r = await A.accountLog(S.name, S.hash);
       if (r.status !== "ok") throw new Error(fail(r));
-      msg($("actMsg"), DONE[act] + " — " + selected, "ok");
-      loadUsers($("q").value); refreshStats();
-    } catch (err) { msg($("actMsg"), err.message, "err"); }
-    finally { busy(b, false); }
+      const names = { ban: "Бан", unban: "Разбан", delete: "Удаление" };
+      $("accountLog").innerHTML = (r.items || []).length
+        ? '<table><thead><tr><th>Когда</th><th>Админ</th><th>Игрок</th><th>Действие</th><th>Причина</th></tr></thead><tbody>' +
+          r.items.map(x => `<tr><td>${fmt(x.at)}</td><td>${esc(x.by_name)}</td><td>${esc(x.target)}</td><td>${esc(names[x.action] || x.action)}</td><td class="reason-cell">${esc(x.reason || "—")}</td></tr>`).join("") + '</tbody></table>'
+        : '<div class="hint">Действий пока нет. Журнал ведётся с момента установки обновления.</div>';
+    } catch (e) {
+      $("accountLog").textContent = /^HTTP (400|404)$/.test(e.message || "")
+        ? "Установи supabase/admin-accounts.sql, чтобы включить журнал."
+        : "Журнал недоступен: " + e.message;
+    }
+  }
+  const CONFIRM = { revoke: "Забрать подписку у %?", ban: "Забанить %? Вход и API будут заблокированы. Запущенный клиент узнает о бане при следующей серверной проверке.", unban: "Разбанить %?", reset_hwid: "Сбросить привязку ПК у %?" };
+  const DONE = { grant: "Подписка выдана", revoke: "Подписка забрана", reset_hwid: "ПК сброшен", unlock: "Блокировка входа снята", ban: "Игрок забанен", unban: "Игрок разбанен", delete: "Аккаунт удалён, платежи сохранены, ник зарезервирован" };
+  async function runAction(act, target, confirmation = null) {
+    if (!S || actionBusy) return;
+    const session = S;
+    const reason = $("accountReason").value.trim();
+    actionBusy = true; updateAccountButtons();
+    msg($("actMsg"), "Выполняем…"); msg($("deleteMsg"));
+    try {
+      const r = ["ban", "unban", "delete"].includes(act)
+        ? await A.accountAction(session.name, session.hash, target, act, confirmation, reason)
+        : await A.action(session.name, session.hash, target, act, act === "grant" ? parseInt($("days").value, 10) : null);
+      if (r.status !== "ok") throw new Error(fail(r));
+      const text = DONE[act] + " — " + target;
+      msg($("usersMsg"), text, "ok"); msg($("actMsg"), text, "ok");
+      if (act === "delete") {
+        $("deleteDialog").close(); deleteTarget = null;
+        if (selected === target) { selected = null; $("selBox").hidden = true; }
+      }
+      await Promise.allSettled([loadUsers($("q").value), refreshStats(), loadAccountLog(), loadPayments(), loadDownloads(), loadStaff()]);
+      document.dispatchEvent(new CustomEvent("niksos:accounts-updated"));
+    } catch (err) {
+      const text = /^HTTP (400|404)$/.test(err.message || "")
+        ? "API не установлено или недоступно. Выполни supabase/admin-accounts.sql и обнови панель."
+        : /^HTTP /.test(err.message || "") ? "Сервер не подтвердил результат (" + err.message + "). Обнови список перед повтором." : err.message;
+      msg($("actMsg"), text, "err"); msg($("usersMsg"), text, "err");
+      if (act === "delete") msg($("deleteMsg"), text, "err");
+    } finally { actionBusy = false; updateAccountButtons(); }
+  }
+  document.querySelectorAll("[data-act]").forEach(b => b.addEventListener("click", async () => {
+    if (!selected || actionBusy || b.disabled) return;
+    const act = b.dataset.act, target = selected;
+    if (act === "delete") {
+      deleteTarget = target; $("deleteName").textContent = target;
+      $("deleteTyped").value = ""; $("deleteConfirm").checked = false; msg($("deleteMsg"));
+      updateAccountButtons(); $("deleteDialog").showModal(); $("deleteTyped").focus();
+      return;
+    }
+    if (CONFIRM[act] && !confirm(CONFIRM[act].replace("%", target))) return;
+    await runAction(act, target);
   }));
+  $("deleteTyped").addEventListener("input", updateAccountButtons);
+  $("deleteConfirm").addEventListener("change", updateAccountButtons);
+  $("deleteCancel").addEventListener("click", () => { if (!actionBusy) { $("deleteDialog").close(); deleteTarget = null; } });
+  $("deleteDialog").addEventListener("cancel", e => { if (actionBusy) e.preventDefault(); else deleteTarget = null; });
+  $("deleteForm").addEventListener("submit", async e => {
+    e.preventDefault();
+    if (actionBusy || !deleteTarget || $("deleteTyped").value !== deleteTarget || !$("deleteConfirm").checked) return;
+    await runAction("delete", deleteTarget, $("deleteTyped").value);
+  });
 
   $("genForm").addEventListener("submit", async e => {
     e.preventDefault();
@@ -291,7 +373,7 @@
     finally { busy($("stGive"), false); $("stGive").disabled = !canManageStaff; }
   });
 
-  $("refresh").addEventListener("click", () => { refreshStats(); loadUsers($("q").value); loadDownloads(); loadPromos(); loadStaff(); });
+  $("refresh").addEventListener("click", () => { refreshStats(); loadUsers($("q").value); loadDownloads(); loadPromos(); loadStaff(); loadPayments(); loadAccountLog(); });
   $("logout").addEventListener("click", () => { sessionStorage.removeItem("niksos"); location.href = "account.html"; });
 
   // сессия из кабинета

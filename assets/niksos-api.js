@@ -36,6 +36,10 @@
       stats: (n, h) => rpc("niksos_admin_stats", { p_name: n, p_pass: h }),
       users: (n, h, q) => rpc("niksos_admin_users", { p_name: n, p_pass: h, p_query: q || "" }),
       action: (n, h, target, action, days) => rpc("niksos_admin_action", { p_name: n, p_pass: h, p_target: target, p_action: action, p_days: days ?? null }),
+      accountAction: (n, h, target, action, confirmName = null, reason = null) =>
+        rpc("niksos_admin_account_action", { p_name: n, p_pass: h, p_target: target,
+          p_action: action, p_confirm: confirmName, p_reason: reason || null }),
+      accountLog: (n, h) => rpc("niksos_admin_account_log", { p_name: n, p_pass: h }),
       genKeys: (n, h, plan, count) => rpc("niksos_admin_gen_keys", { p_name: n, p_pass: h, p_plan: plan, p_count: count }),
       promoSave: (n, h, o) => rpc("niksos_admin_promo_save", { p_name: n, p_pass: h, p_code: o.code, p_days: o.days,
         p_max_uses: o.maxUses, p_expires: o.expires, p_one_per_ip: o.onePerIp, p_new_only: o.newOnly, p_note: o.note }),
