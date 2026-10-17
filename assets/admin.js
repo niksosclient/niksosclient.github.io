@@ -31,7 +31,8 @@
     if (r.status !== "ok") throw new Error(fail(r));
     S = s; sessionStorage.setItem("niksos", JSON.stringify(s));
     $("auth").style.display = "none"; $("dash").style.display = "block"; $("who").textContent = s.name;
-    renderStats(r); loadUsers(""); loadDownloads(); loadPromos(); loadPayments(); loadStaff(); loadDiscounts(); loadAccountLog();
+    renderStats(r);
+    void Promise.allSettled([loadUsers(""), loadDownloads(), loadPromos(), loadPayments(), loadStaff(), loadDiscounts(), loadAccountLog()]);
   }
 
   function renderStats(r) {
@@ -43,9 +44,15 @@
   }
   async function refreshStats() { const r = await A.stats(S.name, S.hash); if (r.status === "ok") renderStats(r); }
 
+  let usersRequest = 0;
   async function loadUsers(q) {
+    const request = ++usersRequest;
+    accountApiReady = false; updateAccountButtons();
+    $("accountApiHint").textContent = "Загружаем игроков…";
+    try {
     const r = await A.users(S.name, S.hash, q);
-    if (r.status !== "ok") { $("users").textContent = fail(r); return; }
+    if (request !== usersRequest) return;
+    if (r.status !== "ok") throw new Error(fail(r));
     const u = r.users || [];
     userItems = u;
     accountApiReady = r.account_api_version === 1;
@@ -64,6 +71,14 @@
       : '<div class="hint">Никого не нашлось</div>';
     $("users").querySelectorAll("tr[data-n]").forEach(tr => tr.addEventListener("click", () => select(tr.dataset.n)));
     if (selected) $("users").querySelector(`tr[data-n="${CSS.escape(selected)}"]`)?.classList.add("sel");
+    } catch (error) {
+      if (request !== usersRequest) return;
+      accountApiReady = false; userItems = []; updateAccountButtons();
+      const diagnostics = [error.rpcCode, error.rpcMessage].filter(Boolean).join(": ");
+      const text = "Не удалось загрузить игроков: " + error.message + (diagnostics ? " — " + diagnostics : "");
+      $("users").textContent = text;
+      $("accountApiHint").textContent = "Проверка API не завершена. Нажми «Найти» для повтора. Если ошибка повторится, пришли текст ошибки ниже (без паролей и ключей).";
+    }
   }
   function select(n) {
     if (actionBusy) return;

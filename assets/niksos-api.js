@@ -22,9 +22,26 @@
   }
 
   async function rpc(fn, body) {
-    const r = await fetch(`${base}/rest/v1/rpc/${fn}`, { method: "POST", headers: headers(), body: JSON.stringify(body) });
-    if (!r.ok) throw new Error("HTTP " + r.status);
-    return r.json();
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), 20000);
+    try {
+      const r = await fetch(`${base}/rest/v1/rpc/${fn}`, {
+        method: "POST", headers: headers(), body: JSON.stringify(body), signal: controller.signal
+      });
+      if (!r.ok) {
+        let detail = null;
+        try { detail = await r.json(); } catch (_) {}
+        const error = new Error("HTTP " + r.status);
+        // Only server diagnostics, never request bodies or credentials.
+        error.rpcCode = String(detail?.code || "").slice(0, 40);
+        error.rpcMessage = String(detail?.message || "").slice(0, 350);
+        throw error;
+      }
+      return await r.json();
+    } catch (error) {
+      if (error.name === "AbortError") throw new Error("Сервер не ответил за 20 секунд. Нажми «Найти», чтобы повторить загрузку.");
+      throw error;
+    } finally { clearTimeout(timer); }
   }
 
   window.NiksosApi = {
