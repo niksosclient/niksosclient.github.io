@@ -60,10 +60,10 @@
     }
     $("dlBtn").disabled = !on;
     const betaOwned = lic.beta === true, betaActive = lic.beta_active === true && on;
-    $("betaState").textContent = betaActive ? "Бета куплена · доступ активен" : betaOwned
-      ? "Бета куплена · продли основную подписку для доступа" : "Бета не куплена";
+    $("betaState").textContent = betaActive ? (lic.beta_admin === true ? "Бета выдана администратором · доступ активен" : "Бета куплена · доступ активен") : betaOwned
+      ? (lic.beta_admin === true ? "Бета выдана администратором · нужна основная подписка" : "Бета куплена · продли основную подписку для доступа") : "Бета не куплена";
     $("betaBuy").disabled = betaOwned || !on;
-    $("betaBuy").querySelector(".t").textContent = betaOwned ? "Бета уже куплена" : "Купить Бету — 50 ₽";
+    $("betaBuy").querySelector(".t").textContent = betaOwned ? "Бета уже доступна" : "Купить Бету — 50 ₽";
     // привязка к ПК
     const dev = lic.devices || 0, maxDev = lic.max_devices || 1;
     $("devCount").textContent = dev + " / " + maxDev;

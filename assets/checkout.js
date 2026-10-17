@@ -2,7 +2,7 @@
 (function(){
  const $=id=>document.getElementById(id),dialog=$("checkoutDialog");if(!dialog)return;
  const titles={"7d":"7 дней","30d":"30 дней","90d":"90 дней",forever:"Навсегда",beta:"Beta — разовое дополнение"};
- const errors={already_beta:"Бета уже куплена на этом аккаунте. Обнови кабинет.",no_license:"Для покупки Беты нужна активная основная подписка.",bad_plan:"Этот тариф недоступен.",discount_invalid:"Промокод не найден или отключён.",discount_expired:"Срок действия промокода истёк.",discount_plan:"Промокод не действует на выбранный тариф.",discount_used:"Этот промокод уже использован или закреплён за твоим заказом.",discount_limit:"Лимит промокода исчерпан или занят незавершёнными заказами.",net:"Нет связи с сервером. Попробуй ещё раз.",not_configured:"Оплата пока не настроена. Напиши в поддержку.",too_many:"Слишком много заказов. Попробуй позже.",wrong:"Сессия недействительна. Войди в профиль заново.",locked:"Слишком много попыток. Подожди 10 минут.",banned:"Аккаунт заблокирован.",pay_error:"Не удалось создать платёж. Попробуй позже.",error:"Не удалось получить ответ. Попробуй ещё раз."};
+ const errors={payment_pending:"У тебя уже есть незавершённый заказ Беты. Заверши его с прежним промокодом или дождись отмены, прежде чем менять код.",already_beta:"На этом аккаунте уже есть Бета. Обнови кабинет.",no_license:"Для покупки Беты нужна активная основная подписка.",bad_plan:"Этот тариф недоступен.",discount_invalid:"Промокод не найден или отключён.",discount_expired:"Срок действия промокода истёк.",discount_plan:"Промокод не действует на выбранный тариф.",discount_used:"Этот промокод уже использован или закреплён за твоим заказом.",discount_limit:"Лимит промокода исчерпан или занят незавершёнными заказами.",net:"Нет связи с сервером. Попробуй ещё раз.",not_configured:"Оплата пока не настроена. Напиши в поддержку.",too_many:"Слишком много заказов. Попробуй позже.",wrong:"Сессия недействительна. Войди в профиль заново.",locked:"Слишком много попыток. Подожди 10 минут.",banned:"Аккаунт заблокирован.",pay_error:"Не удалось создать платёж. Попробуй позже.",error:"Не удалось получить ответ. Попробуй ещё раз."};
  let cart=null,quote=null,revision=0,paying=false,requestId=null,returnFocus=null;
  const money=n=>Number(n).toLocaleString("ru-RU",{minimumFractionDigits:2,maximumFractionDigits:2})+" ₽";
  function message(text="",kind=""){const el=$("checkoutFeedback");el.textContent=text;el.dataset.kind=kind;}
@@ -32,7 +32,7 @@
   returnFocus=document.activeElement;cart=options;revision++;paying=false;$("checkoutCode").value="";invalidate();
   $("checkoutPlan").textContent=titles[cart.plan]+(cart.plan==="beta"?" · действует вместе с основной подпиской":"");$("checkoutProfile").textContent=cart.session.name;
   $("checkoutProvider").textContent=(cart.provider==="rollypay"?"RollyPay":"AnyPay")+(cart.test?" · тестовый платёж":"");
-  $("checkoutPay").textContent="Получаем стоимость…";dialog.showModal();$("checkoutCode").disabled=cart.plan==="beta";if(cart.plan==="beta")$("checkoutPay").focus();else $("checkoutCode").focus();apply();
+  $("checkoutPay").textContent="Получаем стоимость…";dialog.showModal();$("checkoutCode").disabled=false;$("checkoutCode").focus();apply();
  },close};
  $("checkoutForm").addEventListener("submit",e=>{e.preventDefault();apply();});
  $("checkoutCode").addEventListener("input",()=>{revision++;invalidate();$("checkoutApply").disabled=false;message(code()?"Нажми «Применить», чтобы проверить промокод.":"Нажми «Применить», чтобы обновить стоимость.");});
@@ -62,7 +62,7 @@
   }catch{message(errors.net+" Повторное нажатие проверит тот же заказ.","err");}
   finally{
    paying=false;for(const id of ["checkoutApply","checkoutCode","checkoutRemove","checkoutClose"])$(id).disabled=false;
-   $("checkoutCode").disabled=current.plan==="beta";$("checkoutPay").disabled=!quote;
+   $("checkoutCode").disabled=false;$("checkoutPay").disabled=!quote;
   }
  });
 })();

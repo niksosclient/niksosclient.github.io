@@ -14,13 +14,13 @@
  no_user: "Игрок не найден — сначала зарегистрируй профиль в кабинете", self: "Нельзя менять самого себя", already: "Уже так и есть",
     bad_code: "Код: 3–32 символа (латиница/цифры) и не начинается с NIKSOS", no_promo: "Промокод не найден",
   };
-  const PLAN = { "7d": "7 дней", "30d": "30 дней", "90d": "90 дней", forever: "Навсегда" };
+  const PLAN = { "7d": "7 дней", "30d": "30 дней", "90d": "90 дней", forever: "Навсегда", beta: "Бета" };
   const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
   const fmt = s => s ? new Date(s).toLocaleString("ru-RU", { day: "2-digit", month: "2-digit", year: "2-digit", hour: "2-digit", minute: "2-digit" }) : "—";
   const msg = (el, t, k) => { el.textContent = t || ""; el.className = "msg" + (k ? " " + k : ""); };
   const busy = (b, on) => { b.disabled = on; b.classList.toggle("busy", on); };
   let S = null, selected = null, canManageStaff = false;
-  let userItems = [], accountApiReady = false, canManageAdminAccounts = false, actionBusy = false;
+  let userItems = [], accountApiReady = false, canManageAdminAccounts = false, actionBusy = false, betaApiReady = false;
   let deleteTarget = null;
 
 
@@ -31,8 +31,7 @@
     if (r.status !== "ok") throw new Error(fail(r));
     S = s; sessionStorage.setItem("niksos", JSON.stringify(s));
     $("auth").style.display = "none"; $("dash").style.display = "block"; $("who").textContent = s.name;
-    renderStats(r);
-    void Promise.allSettled([loadUsers(""), loadDownloads(), loadPromos(), loadPayments(), loadStaff(), loadDiscounts(), loadAccountLog()]);
+    renderStats(r); loadUsers(""); loadDownloads(); loadPromos(); loadPayments(); loadStaff(); loadDiscounts(); loadAccountLog();
   }
 
   function renderStats(r) {
@@ -44,18 +43,13 @@
   }
   async function refreshStats() { const r = await A.stats(S.name, S.hash); if (r.status === "ok") renderStats(r); }
 
-  let usersRequest = 0;
   async function loadUsers(q) {
-    const request = ++usersRequest;
-    accountApiReady = false; updateAccountButtons();
-    $("accountApiHint").textContent = "Загружаем игроков…";
-    try {
     const r = await A.users(S.name, S.hash, q);
-    if (request !== usersRequest) return;
-    if (r.status !== "ok") throw new Error(fail(r));
+    if (r.status !== "ok") { $("users").textContent = fail(r); return; }
     const u = r.users || [];
     userItems = u;
     accountApiReady = r.account_api_version === 1;
+    betaApiReady = r.beta_api_version === 2;
     canManageAdminAccounts = r.can_manage_admins === true;
     $("accountApiHint").textContent = accountApiReady
       ? "Бан, разбан и удаление проверяют права на сервере. Главный админ защищён; обычный админ не может менять другого админа."
@@ -63,7 +57,7 @@
     updateAccountButtons();
     $("users").innerHTML = u.length ? `<table><thead><tr><th>Ник</th><th>Подписка</th><th>До</th><th>ПК</th><th>Был в клиенте</th>
       <th>Скач. 7д</th><th>IP 7д</th><th>Ключей</th><th>Создан</th></tr></thead><tbody>` + u.map(x => `<tr data-n="${esc(x.name)}">
-      <td><b>${esc(x.display)}</b> ${x.owner ? '<span class="tag adm" style="background:#ffc83d22;color:#ffc83d">ГЛ. АДМИН</span>' : x.role === "admin" ? '<span class="tag adm">ADMIN</span>' : ""} ${x.banned ? '<span class="tag ban">БАН</span>' : ""}</td>
+      <td><b>${esc(x.display)}</b> ${x.owner ? '<span class="tag adm" style="background:#ffc83d22;color:#ffc83d">ГЛ. АДМИН</span>' : x.role === "admin" ? '<span class="tag adm">ADMIN</span>' : ""} ${x.banned ? '<span class="tag ban">БАН</span>' : ""} ${x.beta ? '<span class="tag adm">BETA</span>' : ""}</td>
       <td>${x.active ? '<span class="tag on">' + (x.forever ? "навсегда" : "активна") + "</span>" : '<span class="tag off">нет</span>'}</td>
       <td>${x.forever ? "∞" : fmt(x.expires)}</td><td>${esc(x.devices)}</td><td>${fmt(x.last_seen)}</td>
       <td>${esc(x.dl_7d)}</td><td>${x.ips_7d > 2 ? '<span class="tag ban">' + esc(x.ips_7d) + "</span>" : esc(x.ips_7d)}</td>
@@ -71,14 +65,6 @@
       : '<div class="hint">Никого не нашлось</div>';
     $("users").querySelectorAll("tr[data-n]").forEach(tr => tr.addEventListener("click", () => select(tr.dataset.n)));
     if (selected) $("users").querySelector(`tr[data-n="${CSS.escape(selected)}"]`)?.classList.add("sel");
-    } catch (error) {
-      if (request !== usersRequest) return;
-      accountApiReady = false; userItems = []; updateAccountButtons();
-      const diagnostics = [error.rpcCode, error.rpcMessage].filter(Boolean).join(": ");
-      const text = "Не удалось загрузить игроков: " + error.message + (diagnostics ? " — " + diagnostics : "");
-      $("users").textContent = text;
-      $("accountApiHint").textContent = "Проверка API не завершена. Нажми «Найти» для повтора. Если ошибка повторится, пришли текст ошибки ниже (без паролей и ключей).";
-    }
   }
   function select(n) {
     if (actionBusy) return;
@@ -127,8 +113,15 @@
     const protectedTarget = !u || u.owner || self || (u.role === "admin" && !canManageAdminAccounts);
     document.querySelectorAll("[data-act]").forEach(b => {
       const account = ["ban", "unban", "delete"].includes(b.dataset.act);
-      b.disabled = actionBusy || (account && (!accountApiReady || protectedTarget));
+      const beta = ["beta_grant", "beta_revoke"].includes(b.dataset.act);
+      const betaProtected = !u || (u.owner && !self) || (u.role === "admin" && !canManageAdminAccounts && !self);
+      b.disabled = actionBusy || (account && (!accountApiReady || protectedTarget)) ||
+        (beta && (!betaApiReady || betaProtected || (b.dataset.act === "beta_grant" && u.beta_admin === true) ||
+          (b.dataset.act === "beta_revoke" && u.beta_admin !== true)));
     });
+    $("betaAdminInfo").textContent = !betaApiReady ? "Сначала выполни SQL-обновление Beta-промокодов и админки."
+      : !u ? "Выбери игрока." : (u.beta_admin ? "Бета выдана администратором." : u.beta ? "Бета куплена." : "Беты нет.") +
+      " Бета работает только с основной подпиской. Снятие ручной выдачи не отменяет оплаченную Бету.";
     $("accountReason").disabled = actionBusy;
     $("deleteCancel").disabled = $("deleteConfirm").disabled = actionBusy;
     $("deleteTyped").disabled = actionBusy;
@@ -139,7 +132,7 @@
     try {
       const r = await A.accountLog(S.name, S.hash);
       if (r.status !== "ok") throw new Error(fail(r));
-      const names = { ban: "Бан", unban: "Разбан", delete: "Удаление" };
+      const names = { beta_grant: "Выдал Бету", beta_revoke: "Снял ручную выдачу Беты", ban: "Бан", unban: "Разбан", delete: "Удаление" };
       $("accountLog").innerHTML = (r.items || []).length
         ? '<table><thead><tr><th>Когда</th><th>Админ</th><th>Игрок</th><th>Действие</th><th>Причина</th></tr></thead><tbody>' +
           r.items.map(x => `<tr><td>${fmt(x.at)}</td><td>${esc(x.by_name)}</td><td>${esc(x.target)}</td><td>${esc(names[x.action] || x.action)}</td><td class="reason-cell">${esc(x.reason || "—")}</td></tr>`).join("") + '</tbody></table>'
@@ -150,8 +143,8 @@
         : "Журнал недоступен: " + e.message;
     }
   }
-  const CONFIRM = { revoke: "Забрать подписку у %?", ban: "Забанить %? Вход и API будут заблокированы. Запущенный клиент узнает о бане при следующей серверной проверке.", unban: "Разбанить %?", reset_hwid: "Сбросить привязку ПК у %?" };
-  const DONE = { grant: "Подписка выдана", revoke: "Подписка забрана", reset_hwid: "ПК сброшен", unlock: "Блокировка входа снята", ban: "Игрок забанен", unban: "Игрок разбанен", delete: "Аккаунт удалён, платежи сохранены, ник зарезервирован" };
+  const CONFIRM = { beta_revoke: "Снять ручную выдачу Беты у %? Оплаченная Бета, если есть, сохранится.", revoke: "Забрать подписку у %?", ban: "Забанить %? Вход и API будут заблокированы. Запущенный клиент узнает о бане при следующей серверной проверке.", unban: "Разбанить %?", reset_hwid: "Сбросить привязку ПК у %?" };
+  const DONE = { beta_grant: "Бета выдана (основная подписка не менялась)", beta_revoke: "Ручная выдача Беты снята; оплаченный доступ, если есть, сохранён", grant: "Подписка выдана", revoke: "Подписка забрана", reset_hwid: "ПК сброшен", unlock: "Блокировка входа снята", ban: "Игрок забанен", unban: "Игрок разбанен", delete: "Аккаунт удалён, платежи сохранены, ник зарезервирован" };
   async function runAction(act, target, confirmation = null) {
     if (!S || actionBusy) return;
     const session = S;
