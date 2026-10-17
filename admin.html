@@ -272,6 +272,18 @@ body a[style*="underline"],body .hint a,body .desc a{color:#e6e6e6}
 </style>
 <link rel="stylesheet" href="assets/mono.css?v=20">
 <link rel="stylesheet" href="assets/checkout.css?v=30github">
+<style>
+button.btn.danger{background:#451a1a;border:1px solid #a84b4b;color:#ffe9e9}
+button.btn.danger:hover:not(:disabled){background:#612525}
+.account-reason{margin-top:18px}
+.reason-cell{white-space:normal;max-width:300px;overflow-wrap:anywhere}
+#deleteDialog{margin:auto;max-width:min(600px,calc(100vw - 32px));max-height:calc(100svh - 40px);overflow:auto;padding:28px;border:1px solid #744;border-radius:12px;background:#111;color:#eee;font:inherit}
+#deleteDialog::backdrop{background:rgba(0,0,0,.78)}
+#deleteDialog h2{font-size:28px;line-height:1.15;margin:0 0 18px}
+#deleteDialog p{margin:0 0 16px;color:#ccc}
+#deleteDialog .delete-accept{display:flex;gap:10px;align-items:flex-start;margin:16px 0}
+#deleteConfirm{width:18px;min-height:18px;flex:0 0 18px;margin-top:2px}
+</style>
 </head>
 <body>
 <nav class="nav" aria-label="Навигация">
@@ -317,6 +329,8 @@ body a[style*="underline"],body .hint a,body .desc a{color:#e6e6e6}
         <h2>Игроки</h2>
         <p class="desc">Поиск по нику. Нажми на строку, чтобы выбрать игрока.</p>
         <form class="row" id="searchForm"><input id="q" placeholder="Ник" maxlength="16"><button class="btn primary" type="submit">Найти</button></form>
+        <p class="hint" id="accountApiHint">Проверяем API управления аккаунтами…</p>
+        <div class="msg" id="usersMsg" role="status" aria-live="polite"></div>
         <div class="tbl" id="users"></div>
         <div class="sec" id="selBox" hidden>
           <h2>Игрок: <span class="grad" id="selName"></span></h2>
@@ -327,10 +341,19 @@ body a[style*="underline"],body .hint a,body .desc a{color:#e6e6e6}
             <button class="btn ghost" data-act="reset_hwid">Сбросить ПК</button>
             <button class="btn ghost" data-act="unlock">Снять блок входа</button>
             <button class="btn ghost" data-act="ban">Забанить</button>
-            <button class="btn ghost" data-act="unban">Разбанить</button>
+            <button class="btn ghost" data-act="unban" type="button">Разбанить</button>
+            <button class="btn danger" data-act="delete" type="button">Удалить аккаунт</button>
           </div>
+          <label class="account-reason" for="accountReason">Причина бана / разбана / удаления (необязательно)</label>
+          <input id="accountReason" maxlength="500" autocomplete="off" placeholder="Причина сохранится в журнале администраторов">
           <div class="msg" id="actMsg" role="status" aria-live="polite"></div>
         </div>
+      </div>
+
+      <div class="box sec">
+        <h2>Журнал аккаунтов</h2>
+        <p class="desc">Последние 100 банов, разбанов и удалений. Пароли и хэши в журнал не записываются.</p>
+        <div class="tbl" id="accountLog"></div>
       </div>
 
       <div class="box sec" id="discountBox">
@@ -408,9 +431,24 @@ body a[style*="underline"],body .hint a,body .desc a{color:#e6e6e6}
     </section>
   </div>
 </main>
+<dialog id="deleteDialog" aria-labelledby="deleteTitle" aria-describedby="deleteWarning">
+  <form id="deleteForm">
+    <h2 id="deleteTitle">Удалить аккаунт</h2>
+    <p id="deleteWarning">Профиль <b id="deleteName"></b>, его подписка, привязки ПК и заявки медиа будут удалены без возможности отмены в панели. Использованные ключи не станут доступными повторно.</p>
+    <p>Платежная история сохранится без действующего получателя. Ник останется зарезервирован, чтобы старый клиент не создал аккаунт заново. Это удаление профиля, а не разбан.</p>
+    <label for="deleteTyped">Введи точный ник, показанный выше</label>
+    <input id="deleteTyped" autocomplete="off" spellcheck="false" maxlength="16" required>
+    <label class="delete-accept"><input id="deleteConfirm" type="checkbox" required> Я понимаю последствия удаления</label>
+    <div class="acts">
+      <button class="btn ghost" id="deleteCancel" type="button">Отмена</button>
+      <button class="btn danger" id="deleteSubmit" type="submit" disabled>Удалить безвозвратно</button>
+    </div>
+    <div class="msg" id="deleteMsg" role="status" aria-live="polite"></div>
+  </form>
+</dialog>
 <script src="assets/config.js?v=13"></script>
-<script src="assets/niksos-api.js?v=30github"></script>
-<script src="assets/admin.js?v=30github"></script>
-<script src="assets/admin-media.js?v=1"></script>
+<script src="assets/niksos-api.js?v=31accounts"></script>
+<script src="assets/admin.js?v=31accounts"></script>
+<script src="assets/admin-media.js?v=31accounts"></script>
 </body>
 </html>
