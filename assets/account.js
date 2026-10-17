@@ -1,6 +1,6 @@
 (function () {
   const $ = id => document.getElementById(id);
-  const PLAN = { "7d": "7 дней", "30d": "30 дней", "90d": "90 дней", forever: "Навсегда", hwid: "Сброс привязки ПК" };
+  const PLAN = { "7d": "7 дней", "30d": "30 дней", "90d": "90 дней", forever: "Навсегда", hwid: "Сброс привязки ПК", beta: "Beta" };
   const AUTH_ERR = {
     deleted: "Этот аккаунт удалён администрацией. Ник зарезервирован; обратись в поддержку",
     wrong: "Неверный пароль", none: "Такого профиля нет — зарегистрируйся",
@@ -59,6 +59,11 @@
       $("statusSmall").textContent = lic.expires ? "Закончилась " + fmtDate(lic.expires) + ". Продли ниже." : "Купи подписку ниже или активируй ключ/промокод справа.";
     }
     $("dlBtn").disabled = !on;
+    const betaOwned = lic.beta === true, betaActive = lic.beta_active === true && on;
+    $("betaState").textContent = betaActive ? "Бета куплена · доступ активен" : betaOwned
+      ? "Бета куплена · продли основную подписку для доступа" : "Бета не куплена";
+    $("betaBuy").disabled = betaOwned || !on;
+    $("betaBuy").querySelector(".t").textContent = betaOwned ? "Бета уже куплена" : "Купить Бету — 50 ₽";
     // привязка к ПК
     const dev = lic.devices || 0, maxDev = lic.max_devices || 1;
     $("devCount").textContent = dev + " / " + maxDev;
@@ -76,7 +81,7 @@
       ? "<table><thead><tr><th>Тариф</th><th>Дата активации</th></tr></thead><tbody>" +
         h.map(x => `<tr><td>${x.plan === "promo" ? "Промокод " + esc(x.code) + " (" + (x.days ? "+" + x.days + " дн." : "навсегда") + ")"
           : (PLAN[x.plan] || esc(x.plan)) + (x.via === "pay" ? " — оплата " + esc(x.amount) + " ₽" + (x.test ? " (тест)" : "")
-          + (x.state === "refunded" ? " · возврат, дни сняты" : x.state === "chargeback" ? " · отменена банком, дни сняты" : "") : "")}</td><td>${fmtDate(x.at)}</td></tr>`).join("") + "</tbody></table>"
+          + (x.state === "refunded" ? " · возврат, доступ пересчитан" : x.state === "chargeback" ? " · отменена банком, доступ пересчитан" : "") : "")}</td><td>${fmtDate(x.at)}</td></tr>`).join("") + "</tbody></table>"
       : '<div class="empty">Пока нет покупок и активаций</div>';
   }
 
@@ -97,6 +102,7 @@
   // Вернулись со страницы оплаты: ждём колбэк, заодно сверяем платёж сами
   async function checkPaid() {
     if (sessionStorage.getItem("niksos_pay_kind") === "hwid") { sessionStorage.removeItem("niksos_pay_kind"); return checkHwidPaid(); }
+    const buyingBeta = sessionStorage.getItem("niksos_pay_kind") === "beta";
     if (payBack === "fail") return msg($("buyMsg"), "Оплата не прошла или отменена. Деньги не списаны — можно попробовать ещё раз.", "err");
     const was = lastLic ? (lastLic.forever ? Infinity : +new Date(lastLic.expires || 0)) : 0;
     msg($("buyMsg"), "Проверяем оплату…");
@@ -106,8 +112,16 @@
       try {
         const lic = await NiksosApi.license(session.name, session.hash);
         if (lic.status === "ok") {
+          if (buyingBeta && lic.beta === true) {
+            render(lic); sessionStorage.removeItem("niksos_pay_kind");
+            return msg($("buyMsg"), "Бета куплена! Лаунчер получит доступ при следующей серверной проверке. Если основная подписка закончилась — сначала продли её.", "ok");
+          }
+          if (buyingBeta && (lic.history || []).some(x => x.plan === "beta" && x.test === true && x.state === "paid")) {
+            render(lic); sessionStorage.removeItem("niksos_pay_kind");
+            return msg($("buyMsg"), "Тестовый платёж обработан. Настоящий Beta-доступ не выдаётся.", "ok");
+          }
           const now = lic.forever ? Infinity : +new Date(lic.expires || 0);
-          if (now > was) { render(lic); return msg($("buyMsg"), "Оплата прошла, подписка начислена 🎉 Можно скачивать клиент.", "ok"); }
+          if (!buyingBeta && now > was) { render(lic); return msg($("buyMsg"), "Оплата прошла, подписка начислена 🎉 Можно скачивать клиент.", "ok"); }
         }
       } catch (e) {}
       await new Promise(r => setTimeout(r, 5000));
@@ -135,7 +149,7 @@
   document.querySelectorAll("[data-plan]").forEach(b => b.addEventListener("click", () => {
     if (!session) return;
     const prov = (document.querySelector('input[name="prov"]:checked') || {}).value || PROVS[0];
-    NiksosCheckout.open({ session: { ...session }, plan: b.dataset.plan, test: $("testPay").checked, provider: prov });
+    NiksosCheckout.open({ session: { ...session }, plan: b.dataset.plan, test: $("testPay").checked, provider: b.dataset.plan === "beta" ? "rollypay" : prov });
   }));
   function showAuth() { NiksosCheckout.close(); $("dash").style.display = "none"; $("auth").style.display = "block"; }
 
