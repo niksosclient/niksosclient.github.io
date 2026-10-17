@@ -338,12 +338,15 @@ button.btn.danger:hover:not(:disabled){background:#612525}
             <select id="days"><option value="7">+7 дней</option><option value="30" selected>+30 дней</option><option value="90">+90 дней</option><option value="0">Навсегда</option></select>
             <button class="btn primary" data-act="grant">Выдать подписку</button>
             <button class="btn ghost" data-act="revoke">Забрать подписку</button>
+            <button class="btn primary" data-act="beta_grant" type="button" disabled>Выдать Бету</button>
+            <button class="btn ghost" data-act="beta_revoke" type="button" disabled>Снять ручную выдачу Беты</button>
             <button class="btn ghost" data-act="reset_hwid">Сбросить ПК</button>
             <button class="btn ghost" data-act="unlock">Снять блок входа</button>
             <button class="btn ghost" data-act="ban">Забанить</button>
             <button class="btn ghost" data-act="unban" type="button">Разбанить</button>
             <button class="btn danger" data-act="delete" type="button">Удалить аккаунт</button>
           </div>
+          <p class="hint" id="betaAdminInfo">Бета работает только с активной основной подпиской. Снятие ручной выдачи не отменяет оплаченную Бету.</p>
           <label class="account-reason" for="accountReason">Причина бана / разбана / удаления (необязательно)</label>
           <input id="accountReason" maxlength="500" autocomplete="off" placeholder="Причина сохранится в журнале администраторов">
           <div class="msg" id="actMsg" role="status" aria-live="polite"></div>
@@ -352,7 +355,7 @@ button.btn.danger:hover:not(:disabled){background:#612525}
 
       <div class="box sec">
         <h2>Журнал аккаунтов</h2>
-        <p class="desc">Последние 100 банов, разбанов и удалений. Пароли и хэши в журнал не записываются.</p>
+        <p class="desc">Последние 100 банов, разбанов, удалений и ручных изменений Beta-доступа. Пароли и хэши в журнал не записываются.</p>
         <div class="tbl" id="accountLog"></div>
       </div>
 
@@ -369,6 +372,7 @@ button.btn.danger:hover:not(:disabled){background:#612525}
           <fieldset class="discount-plans"><legend>Доступные тарифы</legend>
             <label><input type="checkbox" name="dPlan" value="7d" checked>7 дней</label><label><input type="checkbox" name="dPlan" value="30d" checked>30 дней</label>
             <label><input type="checkbox" name="dPlan" value="90d" checked>90 дней</label><label><input type="checkbox" name="dPlan" value="forever" checked>Навсегда</label>
+            <label><input type="checkbox" name="dPlan" value="beta">Бета</label>
           </fieldset>
           <label class="discount-one"><input id="dOne" type="checkbox" checked>Один заказ с кодом на профиль</label>
           <div class="row" style="margin-top:12px"><label>Заметка<input id="dNote" maxlength="200" placeholder="Например, акция для зрителей"></label>
@@ -447,8 +451,8 @@ button.btn.danger:hover:not(:disabled){background:#612525}
   </form>
 </dialog>
 <script src="assets/config.js?v=13"></script>
-<script src="assets/niksos-api.js?v=32loading"></script>
-<script src="assets/admin.js?v=32loading"></script>
-<script src="assets/admin-media.js?v=32loading"></script>
+<script src="assets/niksos-api.js?v=31accounts"></script>
+<script src="assets/admin.js?v=33beta-admin"></script>
+<script src="assets/admin-media.js?v=31accounts"></script>
 </body>
 </html>
