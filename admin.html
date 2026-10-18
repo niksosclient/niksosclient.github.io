@@ -312,13 +312,13 @@ button.btn.danger:hover:not(:disabled){background:#612525}
       <div class="stats" id="stats"></div>
       <div class="box sec" id="announcementsBox">
         <h2>Обновления в лаунчере</h2>
-        <p class="desc">Опубликуй объявление — пользователи увидят его в лаунчере. Номер сборки указывать не нужно. Файлы автоматически не устанавливаются.</p>
+        <p class="desc">Опубликуй объявление — пользователи увидят его в лаунчере. Номер сборки указывать не нужно. Пользователь сможет скачать и запустить установщик прямо из лаунчера.</p>
         <form id="announcementForm">
           <label for="announcementTitle">Заголовок</label>
           <input id="announcementTitle" maxlength="100" required placeholder="Доступно обновление Niksos">
           <label for="announcementBody">Что изменилось</label>
           <textarea id="announcementBody" maxlength="2000" rows="5" required placeholder="Расскажи, что нового и зачем обновляться." style="width:100%;resize:vertical;padding:12px;background:#171717;color:#eee;border:1px solid #555;font:inherit"></textarea>
-          <p class="hint">Кнопка в лаунчере откроет скачивание в кабинете сайта. Сначала выложи установщик, затем публикуй объявление.</p>
+          <p class="hint">Кнопка в лаунчере скачает и откроет проверенный установщик. Сначала выложи установщик, затем публикуй объявление.</p>
           <button id="announcementPublish" type="submit" class="btn primary">Опубликовать</button>
           <button id="announcementRefresh" type="button" class="btn ghost">Обновить список</button>
         </form>
