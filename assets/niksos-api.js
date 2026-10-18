@@ -22,26 +22,9 @@
   }
 
   async function rpc(fn, body) {
-    const controller = new AbortController();
-    const timer = setTimeout(() => controller.abort(), 20000);
-    try {
-      const r = await fetch(`${base}/rest/v1/rpc/${fn}`, {
-        method: "POST", headers: headers(), body: JSON.stringify(body), signal: controller.signal
-      });
-      if (!r.ok) {
-        let detail = null;
-        try { detail = await r.json(); } catch (_) {}
-        const error = new Error("HTTP " + r.status);
-        // Only server diagnostics, never request bodies or credentials.
-        error.rpcCode = String(detail?.code || "").slice(0, 40);
-        error.rpcMessage = String(detail?.message || "").slice(0, 350);
-        throw error;
-      }
-      return await r.json();
-    } catch (error) {
-      if (error.name === "AbortError") throw new Error("Сервер не ответил за 20 секунд. Нажми «Найти», чтобы повторить загрузку.");
-      throw error;
-    } finally { clearTimeout(timer); }
+    const r = await fetch(`${base}/rest/v1/rpc/${fn}`, { method: "POST", headers: headers(), body: JSON.stringify(body) });
+    if (!r.ok) throw new Error("HTTP " + r.status);
+    return r.json();
   }
 
   window.NiksosApi = {
@@ -84,19 +67,62 @@
     buy: (name, hash, plan, test, provider, checkout = {}) => NiksosApi.pay({ action: "create", name, pass: hash, plan, test: !!test, provider, ...checkout }),
     paySync: (name, hash) => NiksosApi.pay({ action: "sync", name, pass: hash }),
     hwidReset: (name, hash) => rpc("niksos_hwid_reset", { p_name: name, p_pass: hash }),
-    // Edge Function отдаёт сам jar (с меткой владельца), а при ошибке — JSON {status}
-    async download(name, hash) {
+    // Edge authorizes once; Storage serves four private parts directly.
+    // Verify every part before offering a single ordinary EXE to the user.
+    async download(name, hash, onProgress = () => {}) {
       const r = await fetch(`${base}/functions/v1/niksos-download`, {
         method: "POST", headers: headers(), body: JSON.stringify({ name, pass: hash }) });
       const type = r.headers.get("content-type") || "";
+      // Compatibility with the previous binary download handler during rollout.
       if (r.ok && !type.includes("application/json")) {
         const blob = await r.blob();
         const cd = r.headers.get("content-disposition") || "";
         const m = /filename="?([^";]+)"?/i.exec(cd);
-        return { status: "ok", blob, filename: m ? m[1] : "niksos-client.jar" };
+        return { status: "ok", blob, filename: m ? m[1] : "Niksos-Launcher-Setup-0.1.13.exe" };
       }
       let j = {}; try { j = await r.json(); } catch (e) {}
-      return j.status ? j : { status: "error" };
+      if (!r.ok || j.status !== "parts") return j.status ? j : { status: "error" };
+      const origin = new URL(base).origin;
+      if (!Array.isArray(j.parts) || j.parts.length !== 4 ||
+          j.filename !== "Niksos-Launcher-Setup-0.1.13.exe" ||
+          !Number.isSafeInteger(j.bytes) || j.bytes <= 0 || j.bytes > 200000000 ||
+          !/^[a-f0-9]{64}$/.test(j.sha256)) return { status: "bad_download" };
+      let total = 0;
+      // Validate the whole manifest BEFORE fetching anything. Never send account
+      // hashes or API keys to storage URLs, and never follow their redirects.
+      const urls = [];
+      for (let i = 0; i < j.parts.length; i++) {
+        const part = j.parts[i];
+        if (!part || !Number.isSafeInteger(part.bytes) || part.bytes <= 0 ||
+            part.bytes >= 50000000 || !/^[a-f0-9]{64}$/.test(part.sha256) ||
+            typeof part.url !== "string") return { status: "bad_download" };
+        let url; try { url = new URL(part.url); } catch (e) { return { status: "bad_download" }; }
+        if (url.protocol !== "https:" || url.origin !== origin || url.username || url.password ||
+            url.pathname !== `/storage/v1/object/sign/niksos-builds/${j.filename}.part${i + 1}`) {
+          return { status: "bad_download" };
+        }
+        urls.push(url.href); total += part.bytes;
+      }
+      if (total !== j.bytes) return { status: "bad_download" };
+      const chunks = [];
+      for (let i = 0; i < j.parts.length; i++) {
+        onProgress(i + 1, j.parts.length);
+        let response;
+        try {
+          response = await fetch(urls[i], { credentials: "omit", cache: "no-store",
+            referrerPolicy: "no-referrer", redirect: "error", signal: AbortSignal.timeout(300000) });
+        } catch (e) { return { status: "download_error" }; }
+        if (!response.ok) return { status: "no_file" };
+        const blob = await response.blob();
+        if (blob.size !== j.parts[i].bytes) return { status: "integrity" };
+        const digest = await crypto.subtle.digest("SHA-256", await blob.arrayBuffer());
+        const hex = Array.from(new Uint8Array(digest), b => b.toString(16).padStart(2, "0")).join("");
+        if (hex !== j.parts[i].sha256) return { status: "integrity" };
+        chunks.push(blob);
+      }
+      const blob = new Blob(chunks, { type: "application/vnd.microsoft.portable-executable" });
+      if (blob.size !== j.bytes) return { status: "integrity" };
+      return { status: "ok", blob, filename: j.filename };
     },
   };
 })();

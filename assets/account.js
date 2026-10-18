@@ -205,16 +205,20 @@
   $("dlBtn").addEventListener("click", async () => {
     busy($("dlBtn"), true); msg($("dlMsg"), "Готовим файл…");
     try {
-      const r = await NiksosApi.download(session.name, session.hash);
+      const r = await NiksosApi.download(session.name, session.hash,
+        (part, total) => msg($("dlMsg"), `Загружаем установщик: часть ${part} из ${total}… Не закрывай страницу.`));
       if (r.status === "ok" && r.blob) {
         const url = URL.createObjectURL(r.blob), a = document.createElement("a");
         a.href = url; a.download = r.filename; document.body.appendChild(a); a.click(); a.remove();
         setTimeout(() => URL.revokeObjectURL(url), 60000);
-        msg($("dlMsg"), "Скачивание началось. Файл привязан к твоему профилю — не передавай его.", "ok");
+        msg($("dlMsg"), "Скачивание установщика началось. Для запуска понадобится аккаунт с активной подпиской.", "ok");
       }
       else if (r.status === "no_license") msg($("dlMsg"), "Нет активной подписки", "err");
       else if (r.status === "limit") msg($("dlMsg"), "Лимит скачиваний на сегодня исчерпан — попробуй завтра", "err");
-      else if (r.status === "no_file") msg($("dlMsg"), "Файл клиента ещё не загружен — напиши в поддержку", "err");
+      else if (r.status === "no_file") msg($("dlMsg"), "Одна из частей установщика недоступна — напиши в поддержку", "err");
+      else if (r.status === "integrity") msg($("dlMsg"), "Установщик повреждён: проверка файла не прошла. Напиши в поддержку.", "err");
+      else if (r.status === "bad_download") msg($("dlMsg"), "Неверные данные загрузки — обнови страницу Ctrl+F5. Если не помогло, напиши в поддержку.", "err");
+      else if (r.status === "download_error") msg($("dlMsg"), "Загрузка прервалась. Проверь соединение и попробуй снова.", "err");
       else msg($("dlMsg"), AUTH_ERR[r.status] || "Не удалось скачать — попробуй позже", "err");
     } catch (err) { msg($("dlMsg"), "Нет связи с сервером — попробуй ещё раз", "err"); }
     finally { busy($("dlBtn"), false); $("dlBtn").disabled = !$("pill").classList.contains("on"); }
