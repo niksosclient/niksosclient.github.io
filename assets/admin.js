@@ -31,6 +31,7 @@
     if (r.status !== "ok") throw new Error(fail(r));
     S = s; sessionStorage.setItem("niksos", JSON.stringify(s));
     $("auth").style.display = "none"; $("dash").style.display = "block"; $("who").textContent = s.name;
+    window.NiksosAdminNotifications?.start(S);
     renderStats(r); loadUsers(""); loadDownloads(); loadPromos(); loadPayments(); loadStaff(); loadDiscounts(); loadAccountLog();
   }
 
@@ -382,7 +383,7 @@
   });
 
   $("refresh").addEventListener("click", () => { refreshStats(); loadUsers($("q").value); loadDownloads(); loadPromos(); loadStaff(); loadPayments(); loadAccountLog(); });
-  $("logout").addEventListener("click", () => { sessionStorage.removeItem("niksos"); location.href = "account.html"; });
+  $("logout").addEventListener("click", () => { sessionStorage.removeItem("niksos"); window.NiksosAdminNotifications?.stop(); location.href = "account.html"; });
 
   // сессия из кабинета
   (async () => {

@@ -78,13 +78,13 @@
         const blob = await r.blob();
         const cd = r.headers.get("content-disposition") || "";
         const m = /filename="?([^";]+)"?/i.exec(cd);
-        return { status: "ok", blob, filename: m ? m[1] : "Niksos-Launcher-Setup-0.1.13.exe" };
+        return { status: "ok", blob, filename: m ? m[1] : "Niksos-Launcher-Setup.exe" };
       }
       let j = {}; try { j = await r.json(); } catch (e) {}
       if (!r.ok || j.status !== "parts") return j.status ? j : { status: "error" };
       const origin = new URL(base).origin;
       if (!Array.isArray(j.parts) || j.parts.length !== 4 ||
-          j.filename !== "Niksos-Launcher-Setup-0.1.13.exe" ||
+          !["Niksos-Launcher-Setup-0.1.13.exe", "Niksos-Launcher-Setup.exe"].includes(j.filename) ||
           !Number.isSafeInteger(j.bytes) || j.bytes <= 0 || j.bytes > 200000000 ||
           !/^[a-f0-9]{64}$/.test(j.sha256)) return { status: "bad_download" };
       let total = 0;
