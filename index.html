@@ -119,7 +119,6 @@ footer a:hover{color:var(--yellow)}
 @media (max-width:620px){.splash{right:auto;left:50%;bottom:-34px;transform:translateX(-50%) rotate(-8deg);font-size:20px;animation:none}.title p{margin-top:52px}}
 </style>
 <link rel="stylesheet" href="assets/mono.css?v=20">
-<link rel="stylesheet" href="assets/extras.css?v=2">
 </head>
 <body>
 
@@ -176,47 +175,6 @@ footer a:hover{color:var(--yellow)}
   </div>
 </section>
 
-<section id="studio">
-  <div class="wrap">
-    <h2 class="sec-t">Собери свой стиль</h2>
-    <p class="sec-s">Нарисуй прицел и примерь косметику Niksos прямо здесь — ещё до установки.</p>
-    <div class="nx-two">
-      <div class="nx-card">
-        <h3>Прицел</h3>
-        <p style="opacity:.7">ЛКМ — рисовать · ПКМ — стирать. Сохрани в облако — прицел появится в клиенте (Прицел → режим Cloud). Рисовать можно и в самой игре.</p>
-        <div class="nx-row" style="align-items:flex-start">
-          <div id="nx-grid"></div>
-          <div class="nx-prev"><canvas id="nx-cprev" width="15" height="15" style="width:60px;height:60px;image-rendering:pixelated"></canvas></div>
-        </div>
-        <div class="nx-row">
-          <button class="nx-btn on" data-tool="brush">Кисть</button><button class="nx-btn" data-tool="eraser">Ластик</button>
-          <button class="nx-btn on" data-tool="mirror">Симметрия</button><button class="nx-btn" data-tool="clear">Очистить</button>
-          <input type="color" id="nx-color" class="nx-in" style="padding:2px;width:44px;height:36px">
-        </div>
-        <div class="nx-row" id="nx-presets"></div>
-        <div class="nx-row"><input id="nx-ccode" class="nx-in" readonly style="flex:1;min-width:0"><button class="nx-btn" id="nx-copy">Скопировать код</button></div>
-        <div class="nx-row"><button class="nx-btn" id="nx-csave">☁ Сохранить в облако</button><button class="nx-btn" id="nx-cload">☁ Загрузить</button><small id="nx-cstat" style="opacity:.7"></small></div>
-      </div>
-      <div class="nx-card">
-        <h3>Примерка</h3>
-        <p style="opacity:.7">Введи ник Minecraft — покажем твой скин с косметикой Niksos.</p>
-        <div class="nx-skin" id="nx-skin"><div class="aura"></div><div class="wings"></div><div class="halo"></div><img alt="Скин"></div>
-        <div class="nx-row"><input id="nx-nick" class="nx-in" placeholder="Ник в Minecraft" maxlength="16" style="flex:1"><button class="nx-btn" id="nx-try">Примерить</button></div>
-        <div class="nx-row"><button class="nx-btn" data-cos="w">Крылья</button><button class="nx-btn" data-cos="h">Нимб</button><button class="nx-btn" data-cos="a">Аура</button></div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<section id="servers">
-  <div class="wrap">
-    <h2 class="sec-t">Сервера в один клик</h2>
-    <p class="sec-s">Популярные сервера встроены в меню клиента. Онлайн — в реальном времени.</p>
-    <div class="nx-srv" id="nx-servers"></div>
-    <div class="nx-card" style="margin-top:16px"><h3>⚡ Мини-игра «Разлом»</h3><p style="opacity:.7">Заскучал в очереди? Прямо в главном меню — выживание против волн, улучшения и босс на 3:00.</p></div>
-  </div>
-</section>
-
 <section id="pricing">
   <div class="wrap">
     <h2 class="sec-t">Цены</h2>
@@ -268,6 +226,5 @@ footer a:hover{color:var(--yellow)}
 <script>
 document.querySelectorAll("[data-discord]").forEach(a => { a.href = NIKSOS.links.discord; a.target = "_blank"; a.rel = "noopener"; });
 </script>
-<script src="assets/extras.js?v=2"></script>
 </body>
 </html>
