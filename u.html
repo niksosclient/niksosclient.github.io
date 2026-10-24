@@ -194,7 +194,7 @@ img{display:block;max-width:100%}
 </div>
 </div>
 
-<!-- Правильные относительные пути к вашим ассетам из папки site/ -->
+<!-- ЗДЕСЬ ИСПРАВЛЕННАЯ ПОЛНАЯ ССЫЛКА НА БИБЛИОТЕКУ SUPABASE -->
 <script src="https://jsdelivr.net"></script>
 <script src="../assets/config.js"></script>
 
@@ -214,9 +214,8 @@ function goToNick() {
 
 async function loadProfile(nickname) {
   try {
-    // Проверяем наличие инициализированного Supabase клиента
     if (typeof supabase === 'undefined') {
-      console.error("Supabase не инициализирован. Проверьте ../assets/config.js");
+      console.error("Supabase не инициализирован. Проверь подключение скриптов.");
       document.getElementById('stateLoading').style.display = 'none';
 document.getElementById('nfName').textContent = nickname;
 document.getElementById('stateNotFound').style.display = 'flex';
