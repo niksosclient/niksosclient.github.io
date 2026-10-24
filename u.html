@@ -382,13 +382,117 @@ function copyLink() {
 }
 
 // ── Init ──
-const nick = getNickFromUrl();
-if (!nick) {
-  document.getElementById('stateLoading').style.display='none';
-  document.getElementById('stateNoNick').style.display='flex';
-} else {
-  loadProfile(nick);
+// ── Функция получения ника из Query-параметра (?name=ник) ──
+function getNickFromUrl() {
+  const qs = new URLSearchParams(window.location.search);
+  return qs.get("name");
 }
-</script>
-</body>
-</html>
+
+// ── Функция загрузки профиля через Supabase RPC ──
+async function loadProfile(nickname) {
+  try {
+    // Вызываем вашу безопасную функцию RPC из базы данных
+    const { data, error } = await supabase.rpc('niksos_public_profile', { p_name: nickname });
+
+    if (error) throw error;
+
+    if (!data) {
+      // Если игрок забанен или не найден
+      document.getElementById('stateLoading').style.display = 'none';
+      document.getElementById('stateNoNick').style.display = 'flex';
+      // Можно вывести кастомный текст в блок ошибки, если он есть
+      return;
+    }
+
+    // Рендерим полученные данные (имя, часы, убийства и т.д.)
+    renderProfile(data);
+
+  } catch (err) {
+    console.error("Ошибка при загрузке профиля:", err);
+    document.getElementById('stateLoading').style.display = 'none';
+    alert("Не удалось загрузить данные профиля.");
+  }
+}
+
+function renderProfile(player) {
+  // Заполняем элементы данными, полученными из Supabase RPC
+  // Убедитесь, что эти ID (name, hours, kills) совпадают с вашей версткой выше
+  if (document.getElementById('username')) document.getElementById('username').textContent = player.name;
+  if (document.getElementById('hours')) document.getElementById('hours').textContent = Math.round(player.hours) + " ч.";
+  if (document.getElementById('kills')) document.getElementById('kills').textContent = player.kills;
+  if (document.getElementById('deaths')) document.getElementById('deaths').textContent = player.deaths;
+  if (document.getElementById('sessions')) document.getElementById('sessions').textContent = player.sessions;
+  if (document.getElementById('fav_server')) document.getElementById('fav_server').textContent = player.fav_server;
+
+  // Показываем профиль и скрываем загрузку
+  document.getElementById('stateLoading').style.display = 'none';
+  document.getElementById('profile').style.display = 'block';
+}
+
+function copyLink() {
+  navigator.clipboard.writeText(location.href).then(() => {
+    const b = event.target.closest('.share-btn');
+    const old = b.textContent;
+    b.textContent = '✅ Скопировано!';
+    setTimeout(() => { b.textContent = old; }, 2000);
+  });
+}
+
+// ── Init ──
+// ── Функция получения ника из Query-параметра (?name=ник) ──
+function getNickFromUrl() {
+  const qs = new URLSearchParams(window.location.search);
+  return qs.get("name");
+}
+
+// ── Функция загрузки профиля через Supabase RPC ──
+async function loadProfile(nickname) {
+  try {
+    // Вызываем вашу безопасную функцию RPC из базы данных
+    const { data, error } = await supabase.rpc('niksos_public_profile', { p_name: nickname });
+
+    if (error) throw error;
+
+    if (!data) {
+      // Если игрок забанен или не найден
+      document.getElementById('stateLoading').style.display = 'none';
+      document.getElementById('stateNoNick').style.display = 'flex';
+      // Можно вывести кастомный текст в блок ошибки, если он есть
+      return;
+    }
+
+    // Рендерим полученные данные (имя, часы, убийства и т.д.)
+    renderProfile(data);
+
+  } catch (err) {
+    console.error("Ошибка при загрузке профиля:", err);
+    document.getElementById('stateLoading').style.display = 'none';
+    alert("Не удалось загрузить данные профиля.");
+  }
+}
+
+function renderProfile(player) {
+  // Заполняем элементы данными, полученными из Supabase RPC
+  // Убедитесь, что эти ID (name, hours, kills) совпадают с вашей версткой выше
+  if (document.getElementById('username')) document.getElementById('username').textContent = player.name;
+  if (document.getElementById('hours')) document.getElementById('hours').textContent = Math.round(player.hours) + " ч.";
+  if (document.getElementById('kills')) document.getElementById('kills').textContent = player.kills;
+  if (document.getElementById('deaths')) document.getElementById('deaths').textContent = player.deaths;
+  if (document.getElementById('sessions')) document.getElementById('sessions').textContent = player.sessions;
+  if (document.getElementById('fav_server')) document.getElementById('fav_server').textContent = player.fav_server;
+
+  // Показываем профиль и скрываем загрузку
+  document.getElementById('stateLoading').style.display = 'none';
+  document.getElementById('profile').style.display = 'block';
+}
+
+function copyLink() {
+  navigator.clipboard.writeText(location.href).then(() => {
+    const b = event.target.closest('.share-btn');
+    const old = b.textContent;
+    b.textContent = '✅ Скопировано!';
+    setTimeout(() => { b.textContent = old; }, 2000);
+  });
+}
+
+// ── Init ──
