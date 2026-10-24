@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Топ игроков — Niksos Client</title>
+<link rel="icon" href="assets/favicon.png?v=20">
+<style>
+:root{--bg:#0a0a0a;--surface:#111;--surface2:#1a1a1a;--line:rgba(255,255,255,.09);--text:#fff;--muted:rgba(255,255,255,.55);--dim:rgba(255,255,255,.32);--yellow:#ffd855;--green:#5dffa5;--r:14px;}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font:15px/1.6 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+.wrap{max-width:900px;margin:0 auto;padding:0 24px}
+.nav{position:fixed;top:0;left:0;right:0;z-index:50;display:flex;align-items:center;gap:8px;padding:12px 24px;background:rgba(10,10,10,.8);backdrop-filter:blur(16px);border-bottom:1px solid var(--line)}
+.nav .brand{display:flex;align-items:center;gap:8px;font-weight:800}
+.nav .brand img{width:26px;height:26px;border-radius:6px}
+.nav a.back{margin-left:auto;font-size:13px;color:var(--muted);border:1px solid var(--line);border-radius:8px;padding:6px 14px;transition:.2s}
+.nav a.back:hover{color:#fff;background:rgba(255,255,255,.07)}
+.page{padding:80px 0 60px}
+.head{padding:40px 0 28px;text-align:center}
+.head h1{font-size:clamp(28px,5vw,52px);font-weight:900;letter-spacing:-.03em;margin-bottom:8px}
+.head p{color:var(--muted)}
+.upd{font-size:12px;color:var(--dim);margin-top:6px}
+
+/* tabs */
+.tabs{display:flex;gap:6px;margin-bottom:20px;border-bottom:1px solid var(--line);padding-bottom:0}
+.tab{padding:10px 18px;border-radius:10px 10px 0 0;font-size:14px;font-weight:600;cursor:pointer;color:var(--muted);border:1px solid transparent;border-bottom:none;transition:.15s;position:relative;bottom:-1px}
+.tab.active{background:var(--surface);border-color:var(--line);color:#fff}
+.tab:hover:not(.active){color:#fff}
+
+/* table */
+.lb-table{width:100%;border-collapse:collapse}
+.lb-table th{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);padding:10px 12px;text-align:left;border-bottom:1px solid var(--line)}
+.lb-table td{padding:10px 12px;border-bottom:1px solid rgba(255,255,255,.04);vertical-align:middle}
+.lb-table tr:hover td{background:rgba(255,255,255,.03)}
+.rank{font-size:18px;font-weight:900;width:36px;color:var(--dim)}
+.rank.g1{color:#ffd700}.rank.g2{color:#c0c0c0}.rank.g3{color:#cd7f32}
+.player-cell{display:flex;align-items:center;gap:10px}
+.av{width:32px;height:32px;border-radius:50%;background:var(--surface2);overflow:hidden;flex:none}
+.av img{width:100%;height:100%;object-fit:cover}
+.pname{font-weight:700;font-size:14px}
+.pname a:hover{text-decoration:underline}
+.prole{font-size:11px;color:var(--muted)}
+.val{font-weight:700;font-size:14px}
+.val.hi{color:var(--yellow)}
+.val.green{color:var(--green)}
+.loading{text-align:center;padding:60px;color:var(--muted)}
+.empty{text-align:center;padding:60px;color:var(--dim);font-size:14px}
+</style>
+</head>
+<body>
+<nav class="nav">
+  <a class="brand" href="index.html"><img src="assets/logo-white.svg?v=20" alt="">Niksos</a>
+  <a class="back" href="index.html">← Главная</a>
+</nav>
+
+<div class="page"><div class="wrap">
+  <div class="head">
+    <h1>🏆 Топ игроков</h1>
+    <p>Реальные данные — часы в клиенте, убийства, сессии</p>
+    <div class="upd" id="updTime"></div>
+  </div>
+
+  <div class="tabs">
+    <div class="tab active" onclick="switchTab('hours')">⏱ По часам</div>
+    <div class="tab" onclick="switchTab('kills')">⚔️ По убийствам</div>
+    <div class="tab" onclick="switchTab('sessions')">🎮 По сессиям</div>
+  </div>
+
+  <table class="lb-table">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Игрок</th>
+        <th id="thVal">Часов</th>
+        <th>Убийств</th>
+      </tr>
+    </thead>
+    <tbody id="lbBody">
+      <tr><td colspan="4" class="loading">Загрузка…</td></tr>
+    </tbody>
+  </table>
+</div></div>
+
+<script src="assets/config.js?v=13"></script>
+<script>
+let allData = [];
+let sortKey = 'hours';
+let loading = false;
+
+async function loadLeaderboard() {
+  const C = window.NIKSOS;
+  const r = await fetch(`${C.supabaseUrl}/rest/v1/rpc/niksos_leaderboard`, {
+    method:'POST',
+    headers:{'Content-Type':'application/json','apikey':C.supabaseKey},
+    body:JSON.stringify({p_limit:100})
+  });
+  return r.ok ? r.json() : [];
+}
+
+function fmt(n) {
+  if(!n) return '0';
+  if(n>=1000) return (n/1000).toFixed(1).replace('.0','')+'k';
+  return Math.round(n).toLocaleString('ru');
+}
+
+function renderRank(i) {
+  if(i===0) return '<span class="rank g1">🥇</span>';
+  if(i===1) return '<span class="rank g2">🥈</span>';
+  if(i===2) return '<span class="rank g3">🥉</span>';
+  return `<span class="rank">${i+1}</span>`;
+}
+
+function render() {
+  const sorted = [...allData].sort((a,b)=>(b[sortKey]||0)-(a[sortKey]||0));
+  const tbody = document.getElementById('lbBody');
+  if(!sorted.length){ tbody.innerHTML='<tr><td colspan="4" class="empty">Пока никого нет. Заходи в клиент!</td></tr>'; return; }
+
+  document.getElementById('thVal').textContent = sortKey==='hours'?'Часов':sortKey==='kills'?'Убийств':'Сессий';
+
+  tbody.innerHTML = sorted.slice(0,50).map((p,i)=>{
+    const role = p.role==='admin'||p.role==='owner'?'👑 Администратор':p.role==='staff'?'🛡 Стафф':'🎮 Игрок';
+    const valMain = sortKey==='hours'?fmt(p.hours):sortKey==='kills'?fmt(p.kills):fmt(p.sessions);
+    return `<tr>
+      <td>${renderRank(i)}</td>
+      <td>
+        <div class="player-cell">
+          <div class="av"><img src="https://mc-heads.net/avatar/${encodeURIComponent(p.name)}/32" loading="lazy" onerror="this.style.display='none'"></div>
+          <div>
+            <div class="pname"><a href="u.html?u=${encodeURIComponent(p.name)}">${p.name}</a></div>
+            <div class="prole">${role}</div>
+          </div>
+        </div>
+      </td>
+      <td><span class="val hi">${valMain}</span></td>
+      <td><span class="val green">${fmt(p.kills)}</span></td>
+    </tr>`;
+  }).join('');
+}
+
+function switchTab(key) {
+  sortKey = key;
+  document.querySelectorAll('.tab').forEach((t,i)=>{
+    t.classList.toggle('active', ['hours','kills','sessions'][i]===key);
+  });
+  render();
+}
+
+(async ()=>{
+  allData = await loadLeaderboard() || [];
+  document.getElementById('updTime').textContent = 'Обновлено: ' + new Date().toLocaleTimeString('ru');
+  render();
+  // Auto-refresh every hour
+  setInterval(async()=>{ allData = await loadLeaderboard()||[]; render(); document.getElementById('updTime').textContent='Обновлено: '+new Date().toLocaleTimeString('ru'); }, 3600000);
+})();
+</script>
+</body>
+</html>

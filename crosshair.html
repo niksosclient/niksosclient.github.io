@@ -1,0 +1,369 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Прицел — Niksos Client</title>
+<link rel="icon" href="assets/favicon.png?v=20">
+<style>
+:root{
+  --bg:#0a0a0a;--surface:#111;--surface2:#1a1a1a;--line:rgba(255,255,255,.09);
+  --text:#fff;--muted:rgba(255,255,255,.58);--dim:rgba(255,255,255,.35);
+  --yellow:#ffd855;--green:#5dffa5;--r:14px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font:15px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+.wrap{max-width:1060px;margin:0 auto;padding:0 24px}
+.nav{position:fixed;top:0;left:0;right:0;z-index:50;display:flex;align-items:center;gap:8px;padding:12px 24px;background:rgba(10,10,10,.8);backdrop-filter:blur(16px);border-bottom:1px solid var(--line)}
+.nav .brand{display:flex;align-items:center;gap:8px;font-weight:800}
+.nav .brand img{width:26px;height:26px;border-radius:6px}
+.nav a.back{margin-left:auto;font-size:13px;color:var(--muted);border:1px solid var(--line);border-radius:8px;padding:6px 14px;transition:.2s}
+.nav a.back:hover{color:#fff;background:rgba(255,255,255,.07)}
+
+.page{padding:80px 0 60px}
+.head{padding:40px 0 28px;text-align:center}
+.head h1{font-size:clamp(28px,5vw,52px);font-weight:900;letter-spacing:-.03em;margin-bottom:8px}
+.head p{color:var(--muted);font-size:15px}
+
+/* layout */
+.editor-wrap{display:grid;grid-template-columns:1fr auto;gap:28px;align-items:start}
+@media(max-width:720px){.editor-wrap{grid-template-columns:1fr}}
+
+/* canvas */
+.canvas-container{display:flex;flex-direction:column;gap:12px}
+.canvas-bg{display:flex;align-items:center;justify-content:center;border:1px solid var(--line);border-radius:var(--r);background:#1a1a1a;padding:24px;position:relative}
+#cvEdit{image-rendering:pixelated;cursor:crosshair;border-radius:4px;touch-action:none}
+.canvas-info{text-align:center;font-size:12px;color:var(--dim)}
+
+/* preview */
+.preview-box{display:flex;flex-direction:column;align-items:center;gap:12px;padding:20px;border:1px solid var(--line);border-radius:var(--r);background:var(--surface)}
+.preview-box .lbl{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.preview-bg{width:140px;height:140px;border-radius:8px;display:flex;align-items:center;justify-content:center;position:relative;background:url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"><rect width="8" height="8" fill="%23222"/><rect x="8" y="8" width="8" height="8" fill="%23222"/><rect x="8" width="8" height="8" fill="%23333"/><rect y="8" width="8" height="8" fill="%23333"/></svg>')}
+#cvPreview{image-rendering:pixelated}
+.mc-preview{width:140px;height:140px;background:#74b6f0;border-radius:8px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
+.mc-preview::before{content:"";position:absolute;inset:0;background:url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 140 140"><rect fill="%234a8a3f" width="140" height="80" y="60"/><rect fill="%2374b6f0" width="140" height="60"/></svg>')}
+#cvMcPreview{image-rendering:pixelated;position:relative;z-index:1}
+
+/* tools panel */
+.panel{display:flex;flex-direction:column;gap:16px;min-width:200px}
+.panel-section h3{font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:10px}
+
+/* color swatch */
+.color-row{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px}
+.swatch{width:28px;height:28px;border-radius:6px;cursor:pointer;border:2px solid transparent;transition:.15s;flex:none}
+.swatch:hover,.swatch.active{border-color:#fff;transform:scale(1.15)}
+.custom-color{position:relative;width:28px;height:28px}
+.custom-color input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+.custom-color .swatch{pointer-events:none}
+
+/* tool btns */
+.tool-row{display:flex;gap:6px;flex-wrap:wrap}
+.tbtn{display:inline-flex;align-items:center;justify-content:center;gap:5px;padding:8px 12px;border-radius:8px;font-size:13px;font-weight:600;border:1px solid var(--line);background:rgba(255,255,255,.05);cursor:pointer;transition:.15s;white-space:nowrap}
+.tbtn:hover,.tbtn.active{background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.3)}
+
+/* presets */
+.preset-row{display:flex;flex-direction:column;gap:6px}
+.preset{display:flex;align-items:center;gap:10px;padding:8px 12px;border:1px solid var(--line);border-radius:8px;cursor:pointer;transition:.15s;background:var(--surface)}
+.preset:hover{background:var(--surface2);border-color:rgba(255,255,255,.2)}
+.preset canvas{image-rendering:pixelated;flex:none}
+.preset .pname{font-size:13px;font-weight:600}
+
+/* save panel */
+.save-panel{border-top:1px solid var(--line);padding-top:16px}
+.save-panel .note{font-size:12px;color:var(--dim);margin-top:8px}
+.btn-save{width:100%;padding:11px;border-radius:10px;font-size:15px;font-weight:700;background:#fff;color:#000;border:none;cursor:pointer;transition:.15s}
+.btn-save:hover{opacity:.88;transform:translateY(-1px)}
+.btn-save:disabled{opacity:.4;cursor:not-allowed;transform:none}
+.login-note{font-size:12px;color:var(--muted);text-align:center;margin-top:6px}
+.login-note a{color:#fff;text-decoration:underline}
+
+.toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(60px);background:var(--surface2);border:1px solid var(--line);border-radius:10px;padding:12px 20px;font-size:14px;font-weight:600;transition:.3s;z-index:100;pointer-events:none;opacity:0}
+.toast.show{transform:translateX(-50%) translateY(0);opacity:1}
+</style>
+</head>
+<body>
+<nav class="nav">
+  <a class="brand" href="index.html"><img src="assets/logo-white.svg?v=20" alt="">Niksos</a>
+  <a class="back" href="index.html">← Главная</a>
+</nav>
+
+<div class="page">
+<div class="wrap">
+  <div class="head">
+    <h1>🎯 Нарисуй прицел</h1>
+    <p>Пиксель за пикселем. Сохраняется в аккаунт — доступен в клиенте.</p>
+  </div>
+
+  <div class="editor-wrap">
+    <!-- Canvas area -->
+    <div class="canvas-container">
+      <div class="canvas-bg">
+        <canvas id="cvEdit" width="256" height="256" style="width:256px;height:256px"></canvas>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+        <div class="preview-box">
+          <div class="lbl">Превью</div>
+          <div class="preview-bg"><canvas id="cvPreview" width="32" height="32" style="width:64px;height:64px"></canvas></div>
+        </div>
+        <div class="preview-box">
+          <div class="lbl">В игре</div>
+          <div class="mc-preview"><canvas id="cvMcPreview" width="32" height="32" style="width:64px;height:64px"></canvas></div>
+        </div>
+      </div>
+      <div class="canvas-info">ЛКМ — рисовать · ПКМ — стирать · сетка 16×16</div>
+    </div>
+
+    <!-- Side panel -->
+    <div class="panel">
+
+      <div class="panel-section">
+        <h3>Цвет</h3>
+        <div class="color-row" id="colorRow">
+          <!-- swatches via JS -->
+        </div>
+        <div class="custom-color">
+          <div class="swatch" id="customSwatch" style="background:#ffffff"></div>
+          <input type="color" id="customColor" value="#ffffff" title="Свой цвет">
+        </div>
+      </div>
+
+      <div class="panel-section">
+        <h3>Инструменты</h3>
+        <div class="tool-row">
+          <button class="tbtn active" id="tBrush" onclick="setTool('brush')">🖌 Кисть</button>
+          <button class="tbtn" id="tEraser" onclick="setTool('eraser')">⬜ Ластик</button>
+          <button class="tbtn" id="tMirror" onclick="toggleMirror()">↔ Зеркало</button>
+        </div>
+        <div class="tool-row" style="margin-top:6px">
+          <button class="tbtn" onclick="clearCanvas()">🗑 Очистить</button>
+          <button class="tbtn" onclick="fillCenter()">✚ Крест</button>
+        </div>
+      </div>
+
+      <div class="panel-section">
+        <h3>Заготовки</h3>
+        <div class="preset-row" id="presetRow"></div>
+      </div>
+
+      <div class="save-panel">
+        <button class="btn-save" id="btnSave" onclick="saveCrosshair()">💾 Сохранить в аккаунт</button>
+        <div class="login-note">Нужен аккаунт. <a href="account.html">Войти</a></div>
+        <div class="note" id="saveNote"></div>
+      </div>
+
+    </div>
+  </div>
+</div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="assets/config.js?v=13"></script>
+<script src="assets/niksos-api.js?v=20"></script>
+<script>
+const GRID = 16, SCALE = 256/GRID;
+const pixels = new Array(GRID*GRID).fill(null); // null = transparent
+
+// ── Colors ──
+const PALETTE = ['#ffffff','#ff4444','#ff8800','#ffdd00','#44ff44','#00ccff','#8844ff','#ff44cc','#000000','#555555','#aaaaaa'];
+let currentColor = '#ffffff';
+let tool = 'brush';
+let mirror = false;
+
+const colorRow = document.getElementById('colorRow');
+PALETTE.forEach(c => {
+  const s = document.createElement('div');
+  s.className = 'swatch' + (c===currentColor?' active':'');
+  s.style.background = c;
+  s.onclick = () => { currentColor=c; updateActiveColor(); };
+  colorRow.appendChild(s);
+});
+
+const customColor = document.getElementById('customColor');
+const customSwatch = document.getElementById('customSwatch');
+customColor.addEventListener('input', () => {
+  currentColor = customColor.value;
+  customSwatch.style.background = currentColor;
+  updateActiveColor(true);
+});
+
+function updateActiveColor(isCustom=false) {
+  document.querySelectorAll('.color-row .swatch').forEach(s=>{
+    s.classList.toggle('active', s.style.background === currentColor || (isCustom && s===customSwatch));
+  });
+  if(!isCustom){customSwatch.style.background=currentColor;customColor.value=currentColor;}
+}
+
+function setTool(t) {
+  tool = t;
+  document.getElementById('tBrush').classList.toggle('active',t==='brush');
+  document.getElementById('tEraser').classList.toggle('active',t==='eraser');
+}
+
+function toggleMirror() {
+  mirror = !mirror;
+  document.getElementById('tMirror').classList.toggle('active',mirror);
+}
+
+// ── Canvas ──
+const cvEdit = document.getElementById('cvEdit');
+const ctx = cvEdit.getContext('2d');
+const cvPrev = document.getElementById('cvPreview');
+const ctxP = cvPrev.getContext('2d');
+const cvMc = document.getElementById('cvMcPreview');
+const ctxM = cvMc.getContext('2d');
+
+function draw() {
+  ctx.clearRect(0,0,256,256);
+  // grid
+  ctx.strokeStyle = 'rgba(255,255,255,.06)';
+  ctx.lineWidth=1;
+  for(let i=0;i<=GRID;i++){
+    ctx.beginPath();ctx.moveTo(i*SCALE,0);ctx.lineTo(i*SCALE,256);ctx.stroke();
+    ctx.beginPath();ctx.moveTo(0,i*SCALE);ctx.lineTo(256,i*SCALE);ctx.stroke();
+  }
+  // pixels
+  pixels.forEach((c,i)=>{
+    if(!c) return;
+    const x=(i%GRID)*SCALE, y=Math.floor(i/GRID)*SCALE;
+    ctx.fillStyle=c;
+    ctx.fillRect(x+1,y+1,SCALE-2,SCALE-2);
+  });
+  drawPreview();
+}
+
+function drawPreview() {
+  ctxP.clearRect(0,0,32,32);
+  ctxM.clearRect(0,0,32,32);
+  // mc background
+  ctxM.fillStyle='#74b6f0';ctxM.fillRect(0,0,32,32);
+  ctxM.fillStyle='#4a8a3f';ctxM.fillRect(0,20,32,12);
+
+  pixels.forEach((c,i)=>{
+    if(!c) return;
+    const px=i%GRID, py=Math.floor(i/GRID);
+    ctxP.fillStyle=c;ctxP.fillRect(px*2,py*2,2,2);
+    ctxM.fillStyle=c;ctxM.fillRect(px*2,py*2,2,2);
+  });
+}
+
+function paintAt(x, y) {
+  const px=Math.floor(x/SCALE), py=Math.floor(y/SCALE);
+  if(px<0||px>=GRID||py<0||py>=GRID) return;
+  const val = tool==='eraser' ? null : currentColor;
+  pixels[py*GRID+px] = val;
+  if(mirror) {
+    const mx = GRID-1-px;
+    pixels[py*GRID+mx] = val;
+  }
+  draw();
+}
+
+let painting=false;
+cvEdit.addEventListener('mousedown', e=>{
+  painting=true;
+  if(e.button===2){tool_was=tool;setTool('eraser');}
+  const r=cvEdit.getBoundingClientRect();
+  paintAt((e.clientX-r.left)*(GRID*SCALE/r.width), (e.clientY-r.top)*(GRID*SCALE/r.height));
+});
+cvEdit.addEventListener('mousemove', e=>{
+  if(!painting) return;
+  const r=cvEdit.getBoundingClientRect();
+  paintAt((e.clientX-r.left)*(GRID*SCALE/r.width), (e.clientY-r.top)*(GRID*SCALE/r.height));
+});
+cvEdit.addEventListener('mouseup', e=>{ painting=false; if(e.button===2&&tool_was){setTool(tool_was);tool_was=null;} });
+cvEdit.addEventListener('contextmenu',e=>e.preventDefault());
+let tool_was=null;
+
+// Touch
+cvEdit.addEventListener('touchstart',e=>{e.preventDefault();painting=true;handleTouch(e);},{passive:false});
+cvEdit.addEventListener('touchmove',e=>{e.preventDefault();handleTouch(e);},{passive:false});
+cvEdit.addEventListener('touchend',()=>{painting=false;});
+function handleTouch(e){
+  const t=e.touches[0];const r=cvEdit.getBoundingClientRect();
+  paintAt((t.clientX-r.left)*(GRID*SCALE/r.width),(t.clientY-r.top)*(GRID*SCALE/r.height));
+}
+
+function clearCanvas() {
+  pixels.fill(null);
+  draw();
+}
+
+function fillCenter() {
+  pixels.fill(null);
+  const c=currentColor, mid=Math.floor(GRID/2);
+  // крест
+  for(let i=mid-3;i<=mid+3;i++){
+    if(i<0||i>=GRID) continue;
+    pixels[mid*GRID+i]=c;
+    pixels[i*GRID+mid]=c;
+  }
+  pixels[mid*GRID+mid]=null; // gap в центре
+  draw();
+}
+
+// ── Presets ──
+const PRESETS = [
+  { name:'Крест', data: (()=>{ const p=new Array(GRID*GRID).fill(null); const mid=Math.floor(GRID/2); for(let i=mid-3;i<=mid+3;i++){if(i>=0&&i<GRID){p[mid*GRID+i]='#fff';p[i*GRID+mid]='#fff';}} p[mid*GRID+mid]=null; return p; })() },
+  { name:'Точка', data: (()=>{ const p=new Array(GRID*GRID).fill(null); const mid=Math.floor(GRID/2); p[mid*GRID+mid]='#fff'; p[mid*GRID+mid-1]='#fff'; p[(mid-1)*GRID+mid]='#fff'; p[mid*GRID+mid+1]='#fff'; p[(mid+1)*GRID+mid]='#fff'; return p; })() },
+  { name:'Круг', data: (()=>{ const p=new Array(GRID*GRID).fill(null); const cx=7.5,cy=7.5,r=5; for(let y=0;y<GRID;y++) for(let x=0;x<GRID;x++){ const d=Math.sqrt((x-cx)**2+(y-cy)**2); if(d>r-0.8&&d<r+0.8) p[y*GRID+x]='#fff'; } return p; })() },
+];
+
+const presetRow = document.getElementById('presetRow');
+PRESETS.forEach(pr=>{
+  const el=document.createElement('div');
+  el.className='preset';
+  const pcv=document.createElement('canvas');
+  pcv.width=16;pcv.height=16;pcv.style.cssText='width:32px;height:32px;image-rendering:pixelated';
+  const pctx=pcv.getContext('2d');
+  pr.data.forEach((c,i)=>{if(!c)return;const px=i%GRID,py=Math.floor(i/GRID);pctx.fillStyle=c;pctx.fillRect(px,py,1,1);});
+  el.appendChild(pcv);
+  const nm=document.createElement('div');nm.className='pname';nm.textContent=pr.name;
+  el.appendChild(nm);
+  el.onclick=()=>{ pr.data.forEach((c,i)=>pixels[i]=c); draw(); };
+  presetRow.appendChild(el);
+});
+
+// ── Save ──
+function toast(msg, ok=true) {
+  const t=document.getElementById('toast');
+  t.textContent=(ok?'✅ ':'❌ ')+msg;
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2500);
+}
+
+async function saveCrosshair() {
+  const btn=document.getElementById('btnSave');
+  const note=document.getElementById('saveNote');
+  // Получаем сессию из localStorage (кабинет)
+  const name=localStorage.getItem('niksos_name');
+  const hash=localStorage.getItem('niksos_hash');
+  if(!name||!hash){
+    note.textContent='Войди в кабинет, чтобы сохранить.';
+    toast('Нужен вход в кабинет', false);
+    return;
+  }
+  const data = JSON.stringify(
+    pixels.map((c,i)=>c?{x:i%GRID,y:Math.floor(i/GRID),color:c}:null).filter(Boolean)
+  );
+  btn.disabled=true; btn.textContent='Сохраняю…';
+  try {
+    const C=window.NIKSOS;
+    const r=await fetch(`${C.supabaseUrl}/rest/v1/rpc/niksos_crosshair_save`,{
+      method:'POST',
+      headers:{'Content-Type':'application/json','apikey':C.supabaseKey},
+      body:JSON.stringify({p_name:name,p_pass:hash,p_data:data})
+    });
+    const res=await r.json();
+    if(res==='ok'){ toast('Прицел сохранён!'); note.textContent=''; }
+    else { toast('Ошибка: '+res, false); }
+  } catch(e){ toast('Сетевая ошибка', false); }
+  btn.disabled=false; btn.textContent='💾 Сохранить в аккаунт';
+}
+
+draw();
+</script>
+</body>
+</html>

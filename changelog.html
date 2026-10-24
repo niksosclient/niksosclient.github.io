@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Обновления — Niksos Client</title>
+<link rel="icon" href="assets/favicon.png?v=20">
+<style>
+:root{--bg:#0a0a0a;--surface:#111;--surface2:#1a1a1a;--line:rgba(255,255,255,.09);--text:#fff;--muted:rgba(255,255,255,.55);--dim:rgba(255,255,255,.32);--green:#5dffa5;--yellow:#ffd855;--r:14px;}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font:15px/1.6 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+.wrap{max-width:760px;margin:0 auto;padding:0 24px}
+.nav{position:fixed;top:0;left:0;right:0;z-index:50;display:flex;align-items:center;gap:8px;padding:12px 24px;background:rgba(10,10,10,.8);backdrop-filter:blur(16px);border-bottom:1px solid var(--line)}
+.nav .brand{display:flex;align-items:center;gap:8px;font-weight:800}
+.nav .brand img{width:26px;height:26px;border-radius:6px}
+.nav a.back{margin-left:auto;font-size:13px;color:var(--muted);border:1px solid var(--line);border-radius:8px;padding:6px 14px;transition:.2s}
+.nav a.back:hover{color:#fff;background:rgba(255,255,255,.07)}
+.page{padding:80px 0 80px}
+.head{padding:40px 0 40px;text-align:center}
+.head h1{font-size:clamp(28px,5vw,52px);font-weight:900;letter-spacing:-.03em;margin-bottom:8px}
+.head p{color:var(--muted)}
+
+/* timeline */
+.timeline{display:flex;flex-direction:column;gap:0}
+.entry{position:relative;padding:0 0 40px 40px;border-left:2px solid var(--line)}
+.entry:last-child{border-left-color:transparent}
+.entry::before{content:"";position:absolute;left:-7px;top:6px;width:12px;height:12px;border-radius:50%;background:var(--surface2);border:2px solid var(--line)}
+.entry.latest::before{background:var(--green);border-color:var(--green);box-shadow:0 0 12px var(--green)}
+.entry .date{font-size:12px;color:var(--dim);font-weight:600;letter-spacing:.06em;text-transform:uppercase;margin-bottom:6px}
+.entry .ver{display:inline-flex;align-items:center;gap:8px;margin-bottom:10px}
+.entry .ver .vtag{font-size:20px;font-weight:900;letter-spacing:-.02em}
+.entry .ver .badge{display:inline-flex;padding:2px 8px;border-radius:6px;font-size:11px;font-weight:700;border:1px solid}
+.badge.new{color:var(--green);border-color:rgba(93,255,165,.3);background:rgba(93,255,165,.08)}
+.badge.fix{color:#60a5fa;border-color:rgba(96,165,250,.3);background:rgba(96,165,250,.08)}
+.badge.beta{color:var(--yellow);border-color:rgba(255,216,85,.3);background:rgba(255,216,85,.08)}
+.entry .desc{color:var(--muted);font-size:14px;margin-bottom:14px}
+.changes{list-style:none;display:flex;flex-direction:column;gap:5px}
+.changes li{display:flex;align-items:baseline;gap:8px;font-size:14px}
+.changes li::before{content:"·";color:var(--dim);font-size:18px;line-height:1;flex:none}
+.changes li b{font-weight:700;color:#fff}
+.changes li span{color:var(--muted)}
+</style>
+</head>
+<body>
+<nav class="nav">
+  <a class="brand" href="index.html"><img src="assets/logo-white.svg?v=20" alt="">Niksos</a>
+  <a class="back" href="index.html">← Главная</a>
+</nav>
+
+<div class="page"><div class="wrap">
+  <div class="head">
+    <h1>📋 Обновления</h1>
+    <p>История версий Niksos Client</p>
+  </div>
+
+  <div class="timeline" id="timeline">
+    <!-- Заполняется из JS — правь массив CHANGELOG ниже -->
+  </div>
+</div></div>
+
+<script>
+// ── ПРАВЬ ТОЛЬКО ЭТОТ МАССИВ ──────────────────────────────────
+// type: "new" | "fix" | "beta"
+// Первый элемент = самый свежий (автоматом получает метку "latest")
+const CHANGELOG = [
+  {
+    version: '1.21.11-r5',
+    date: '2025-01-01',
+    type: 'new',
+    desc: 'Крупное обновление: профили игроков, прицел, топ.',
+    changes: [
+      { tag: 'Новое', text: 'Публичные профили /u/[ник] с достижениями и статой' },
+      { tag: 'Новое', text: 'Редактор прицела с сохранением в облако' },
+      { tag: 'Новое', text: 'Таблица топ-50 игроков по часам, убийствам и сессиям' },
+      { tag: 'Новое', text: 'Система достижений: Тру Адам, АФК-чел, Ветеран и др.' },
+      { tag: 'Новое', text: 'Страница обновлений (эта страница)' },
+      { tag: 'Улучшение', text: 'Косметика — интерактивное демо на сайте' },
+      { tag: 'Улучшение', text: 'HUD-редактор — живое демо с перетаскиванием' },
+    ]
+  },
+  {
+    version: '1.21.11-r4',
+    date: '2024-11-15',
+    type: 'fix',
+    desc: 'Патч стабильности и исправления оплаты.',
+    changes: [
+      { tag: 'Исправлено', text: 'Оплата СБП теперь подтверждается без задержки' },
+      { tag: 'Исправлено', text: 'HWID-сброс мог не применяться с первого раза' },
+      { tag: 'Исправлено', text: 'Лаунчер не обновлял клиент при smashed кэше' },
+    ]
+  },
+  {
+    version: '1.21.11-r3',
+    date: '2024-10-01',
+    type: 'new',
+    desc: 'Поддержка уведомлений из админки и Beta-доступ.',
+    changes: [
+      { tag: 'Новое', text: 'Уведомления от администрации прямо в лаунчере' },
+      { tag: 'Новое', text: 'Beta-подписка: ранний доступ к новым функциям' },
+      { tag: 'Новое', text: 'Промокоды теперь суммируются со скидками' },
+      { tag: 'Улучшение', text: 'FPS-буст: дополнительные оптимизации рендера' },
+    ]
+  },
+  {
+    version: '1.21.11-r2',
+    date: '2024-08-20',
+    type: 'fix',
+    desc: 'Исправления после первого релиза.',
+    changes: [
+      { tag: 'Исправлено', text: 'Косметика не отображалась у других игроков с Niksos' },
+      { tag: 'Исправлено', text: 'IRC-чат зависал при долгом отсутствии соединения' },
+      { tag: 'Исправлено', text: 'Waypoints сбрасывались после перезахода' },
+    ]
+  },
+  {
+    version: '1.21.11-r1',
+    date: '2024-07-01',
+    type: 'new',
+    desc: 'Первый публичный релиз Niksos Client.',
+    changes: [
+      { tag: 'Запуск', text: 'Около 100 модулей: HUD, PvP, визуалы, анимации' },
+      { tag: 'Запуск', text: 'Система аккаунтов, лицензий и HWID-защита' },
+      { tag: 'Запуск', text: 'Косметика: крылья, шляпы, питомцы, ауры' },
+      { tag: 'Запуск', text: 'Облачные конфиги и IRC-чат' },
+      { tag: 'Запуск', text: 'Встроенные сервера: FunTime, HolyWorld, ReallyWorld' },
+    ]
+  },
+];
+// ─────────────────────────────────────────────────────────────
+
+const TYPE_LABEL = {new:'Новое',fix:'Исправление',beta:'Beta'};
+
+const tl = document.getElementById('timeline');
+CHANGELOG.forEach((e,i)=>{
+  const el = document.createElement('div');
+  el.className = 'entry' + (i===0?' latest':'');
+  el.innerHTML = `
+    <div class="date">${new Date(e.date).toLocaleDateString('ru',{day:'numeric',month:'long',year:'numeric'})}</div>
+    <div class="ver">
+      <span class="vtag">v${e.version}</span>
+      <span class="badge ${e.type}">${TYPE_LABEL[e.type]||e.type}</span>
+      ${i===0?'<span class="badge new">Актуально</span>':''}
+    </div>
+    ${e.desc?`<div class="desc">${e.desc}</div>`:''}
+    <ul class="changes">
+      ${e.changes.map(c=>`<li><b>${c.tag}:</b> <span>${c.text}</span></li>`).join('')}
+    </ul>`;
+  tl.appendChild(el);
+});
+</script>
+</body>
+</html>

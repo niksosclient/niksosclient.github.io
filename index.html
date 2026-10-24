@@ -132,6 +132,8 @@ footer a:hover{color:var(--yellow)}
       <a href="#faq">FAQ</a>
       <a href="friends.html">Друзья</a>
       <a href="media.html">Медиа</a>
+      <a href="leaderboard.html">Топ</a>
+      <a href="changelog.html">Обновления</a>
     </nav>
     <a class="mc" href="account.html">Кабинет</a>
   </div>
@@ -182,10 +184,10 @@ footer a:hover{color:var(--yellow)}
     <div class="gui">
       <div class="gt">Выбери срок</div>
       <div class="plans">
-        <div class="plan"><div class="n">7 дней</div><div class="pr">40<small> руб</small></div><div class="s">попробовать</div><a class="mc" href="account.html?buy=7d">Купить</a></div>
-        <div class="plan hot"><span class="tag">чаще берут</span><div class="n">30 дней</div><div class="pr">120<small> руб</small></div><div class="s">4 руб в день</div><a class="mc p" href="account.html?buy=30d">Купить</a></div>
-        <div class="plan"><div class="n">90 дней</div><div class="pr">190<small> руб</small></div><div class="s">≈ 2,1 руб в день</div><a class="mc" href="account.html?buy=90d">Купить</a></div>
-        <div class="plan"><div class="n">Навсегда</div><div class="pr">280<small> руб</small></div><div class="s">один платёж</div><a class="mc" href="account.html?buy=forever">Купить</a></div>
+        <div class="plan"><div class="n">7 дней</div><div class="pr">119<small> руб</small></div><div class="s">попробовать</div><a class="mc" href="account.html?buy=7d">Купить</a></div>
+        <div class="plan hot"><span class="tag">чаще берут</span><div class="n">30 дней</div><div class="pr">239<small> руб</small></div><div class="s">≈ 8 руб в день</div><a class="mc p" href="account.html?buy=30d">Купить</a></div>
+        <div class="plan"><div class="n">90 дней</div><div class="pr">349<small> руб</small></div><div class="s">≈ 3,9 руб в день</div><a class="mc" href="account.html?buy=90d">Купить</a></div>
+        <div class="plan"><div class="n">Навсегда</div><div class="pr">439<small> руб</small></div><div class="s">один платёж</div><a class="mc" href="account.html?buy=forever">Купить</a></div>
       </div>
       <div class="addon"><b>Beta — 50 руб. один раз.</b> Дополнение к активной подписке: доступ к Beta-функциям и статус Beta в лаунчере. Состав новых функций пока не определён. <a href="account.html?buy=beta">Купить в кабинете</a>.</div>
       <p class="note">Оплата картой или СБП прямо в <a href="account.html">кабинете</a>, подписка начисляется сразу. Сроки складываются: новая покупка продлевает текущую.</p>
@@ -216,6 +218,193 @@ footer a:hover{color:var(--yellow)}
     </div>
   </div>
 </section>
+
+<!-- ── КОСМЕТИКА: примерка ── -->
+<section id="cosmetics">
+  <div class="wrap">
+    <h2 class="sec-t">Косметика</h2>
+    <p class="sec-s">Примерь на свой скин. Введи ник — и крылья, шляпы и ауры появятся прямо на тебе.</p>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:start;margin-top:28px">
+      <!-- Skin viewer -->
+      <div style="display:flex;flex-direction:column;align-items:center;gap:12px">
+        <div id="skinViewer" style="width:220px;height:300px;background:linear-gradient(180deg,#1a2a3a,#0d1a0d);border-radius:16px;border:1px solid rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden">
+          <img id="skinImg" src="" alt="" style="height:260px;image-rendering:pixelated;display:none">
+          <div id="skinPlaceholder" style="font-size:48px">🧍</div>
+          <div id="cosOverlay" style="position:absolute;top:10px;right:10px;font-size:32px;line-height:1;display:none"></div>
+        </div>
+        <div style="display:flex;gap:8px;align-items:center;width:100%;max-width:280px">
+          <input id="nickInputCos" type="text" placeholder="Введи ник Minecraft…" style="flex:1;background:rgba(0,0,0,.6);border:1px solid rgba(255,255,255,.15);border-radius:10px;color:#fff;font-family:Pix,monospace;font-size:14px;padding:8px 12px;outline:none">
+          <button onclick="loadSkin()" style="padding:8px 16px;background:#fff;color:#000;border:none;border-radius:10px;font-family:Pix,monospace;font-size:14px;cursor:pointer;font-weight:700">→</button>
+        </div>
+        <div id="skinNote" style="font-size:12px;color:rgba(255,255,255,.4);text-align:center"></div>
+      </div>
+
+      <!-- Cosm picker -->
+      <div style="display:flex;flex-direction:column;gap:16px">
+        <div class="tt">
+          <h3>Крылья</h3>
+          <div class="m" style="display:flex;flex-wrap:wrap;gap:8px;margin-top:10px">
+            <button class="cos-btn" data-cat="wings" data-ico="🦋" data-name="Мотылёк" onclick="pickCos(this)">🦋 Мотылёк</button>
+            <button class="cos-btn" data-cat="wings" data-ico="🔥" data-name="Огонь" onclick="pickCos(this)">🔥 Огонь</button>
+            <button class="cos-btn" data-cat="wings" data-ico="⚡" data-name="Молния" onclick="pickCos(this)">⚡ Молния</button>
+            <button class="cos-btn" data-cat="wings" data-ico="❄️" data-name="Лёд" onclick="pickCos(this)">❄️ Лёд</button>
+          </div>
+        </div>
+        <div class="tt">
+          <h3>Шляпы</h3>
+          <div class="m" style="display:flex;flex-wrap:wrap;gap:8px;margin-top:10px">
+            <button class="cos-btn" data-cat="hats" data-ico="👑" data-name="Корона" onclick="pickCos(this)">👑 Корона</button>
+            <button class="cos-btn" data-cat="hats" data-ico="🎩" data-name="Цилиндр" onclick="pickCos(this)">🎩 Цилиндр</button>
+            <button class="cos-btn" data-cat="hats" data-ico="🎅" data-name="Дед Мороз" onclick="pickCos(this)">🎅 Новогодняя</button>
+          </div>
+        </div>
+        <div class="tt">
+          <h3>Ауры</h3>
+          <div class="m" style="display:flex;flex-wrap:wrap;gap:8px;margin-top:10px">
+            <button class="cos-btn" data-cat="aura" data-ico="✨" data-name="Звёзды" onclick="pickCos(this)">✨ Звёзды</button>
+            <button class="cos-btn" data-cat="aura" data-ico="💜" data-name="Фиолет" onclick="pickCos(this)">💜 Фиолет</button>
+            <button class="cos-btn" data-cat="aura" data-ico="🌊" data-name="Волны" onclick="pickCos(this)">🌊 Волны</button>
+          </div>
+        </div>
+        <a class="mc p" href="account.html" style="text-align:center">Получить в клиенте</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── HUD DEMO ── -->
+<section id="hud">
+  <div class="wrap">
+    <h2 class="sec-t">HUD</h2>
+    <p class="sec-s">Перетащи любой элемент — в клиенте так же. ПКМ откроет настройки.</p>
+    <div id="hudDemo" style="position:relative;height:400px;background:#1c2a1c;border-radius:16px;border:1px solid rgba(255,255,255,.1);margin-top:28px;overflow:hidden;user-select:none;cursor:default">
+      <!-- Background mock -->
+      <div style="position:absolute;inset:0;background:linear-gradient(180deg,#74b6f0 0%,#74b6f0 55%,#4a8a3f 55%,#3a6e30 100%);opacity:.35"></div>
+      <!-- HUD widgets -->
+      <div class="hw" id="hw-wm"   style="top:8px;left:8px"    data-label="Watermark">Niksos <span style="color:#ffd855">v1.21.11</span></div>
+      <div class="hw" id="hw-hp"   style="top:8px;right:8px"   data-label="Health">❤️ 20 / 20</div>
+      <div class="hw" id="hw-ks"   style="bottom:48px;left:8px" data-label="Keystrokes" style="font-size:11px">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:2px;font-family:monospace;font-size:11px;line-height:1.8">
+          <div id="hw-w" class="ks-key">W</div><div></div>
+          <div id="hw-a" class="ks-key">A</div><div id="hw-s" class="ks-key">S</div><div id="hw-d" class="ks-key" style="display:none"></div>
+        </div>
+      </div>
+      <div class="hw" id="hw-th"   style="top:50%;left:50%;transform:translate(-50%,-50%)" data-label="TargetHUD">🎯 Steve ❤️❤️❤️❤️❤️</div>
+      <div class="hw" id="hw-pot"  style="bottom:48px;right:8px" data-label="PotionHUD">🍖 Насыщение II&nbsp; ⚡ Скорость I</div>
+      <div class="hw" id="hw-arm"  style="bottom:8px;left:8px"  data-label="ArmorHUD">🛡 ♦♦♦♦◇</div>
+      <!-- Crosshair -->
+      <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);color:#fff;font-size:24px;line-height:1;pointer-events:none">+</div>
+    </div>
+    <p style="text-align:center;font-size:12px;color:rgba(255,255,255,.3);margin-top:10px">Перетаскивай элементы мышкой</p>
+  </div>
+</section>
+
+<!-- ── ПРИЦЕЛ / ТОП / CHANGELOG shortcuts ── -->
+<section style="padding:72px 0">
+  <div class="wrap">
+    <h2 class="sec-t">Ещё</h2>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:28px">
+      <a href="crosshair.html" class="tt" style="cursor:pointer;text-decoration:none;display:block">
+        <h3>🎯 Прицел</h3>
+        <p>Нарисуй пиксель за пикселем — сохраняется в аккаунт и грузится в клиент</p>
+      </a>
+      <a href="leaderboard.html" class="tt" style="cursor:pointer;text-decoration:none;display:block">
+        <h3>🏆 Топ</h3>
+        <p>Реальный топ-50 по часам, убийствам и сессиям — обновляется раз в час</p>
+      </a>
+      <a href="changelog.html" class="tt" style="cursor:pointer;text-decoration:none;display:block">
+        <h3>📋 Обновления</h3>
+        <p>Полная история версий с описанием изменений и патчей</p>
+      </a>
+    </div>
+  </div>
+</section>
+
+<style>
+/* Cosmetics buttons */
+.cos-btn{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.15);color:#fff;border-radius:8px;padding:6px 12px;font-family:Pix,monospace;font-size:14px;cursor:pointer;transition:.15s;white-space:nowrap}
+.cos-btn:hover,.cos-btn.active{background:rgba(255,255,255,.18);border-color:rgba(255,255,255,.4)}
+/* HUD widgets */
+.hw{position:absolute;background:rgba(0,0,0,.6);border:1px solid rgba(255,255,255,.12);border-radius:6px;padding:5px 10px;font-family:Pix,monospace;font-size:13px;color:#fff;cursor:grab;white-space:nowrap;transition:border-color .15s}
+.hw:hover{border-color:rgba(255,255,255,.4)}
+.hw:active{cursor:grabbing}
+/* keystroke keys */
+.ks-key{background:rgba(255,255,255,.1);border-radius:3px;padding:1px 5px;text-align:center;font-size:11px}
+</style>
+<script>
+// ── Skin viewer ──
+function loadSkin() {
+  const nick = document.getElementById('nickInputCos').value.trim();
+  if(!nick) return;
+  const img = document.getElementById('skinImg');
+  const ph = document.getElementById('skinPlaceholder');
+  const note = document.getElementById('skinNote');
+  img.style.display='none'; ph.style.display='block'; note.textContent='Загрузка…';
+  // mc-heads.net full body render
+  const url = `https://mc-heads.net/body/${encodeURIComponent(nick)}/200`;
+  img.onload = ()=>{ img.style.display='block'; ph.style.display='none'; note.textContent=nick; };
+  img.onerror = ()=>{ note.textContent='Скин не найден'; };
+  img.src = url;
+}
+document.getElementById('nickInputCos').addEventListener('keydown', e=>{ if(e.key==='Enter') loadSkin(); });
+
+// Cosm overlay
+const cosState = {};
+function pickCos(btn) {
+  const cat=btn.dataset.cat, ico=btn.dataset.ico;
+  const same=cosState[cat]===ico;
+  cosState[cat]=same?null:ico;
+  document.querySelectorAll(`.cos-btn[data-cat="${cat}"]`).forEach(b=>b.classList.remove('active'));
+  if(!same) btn.classList.add('active');
+  // show overlay
+  const ov=document.getElementById('cosOverlay');
+  const active=Object.values(cosState).filter(Boolean);
+  if(active.length){ ov.textContent=active.join(' '); ov.style.display='block'; }
+  else { ov.style.display='none'; }
+}
+
+// ── HUD drag ──
+(function(){
+  const widgets = document.querySelectorAll('.hw');
+  let drag=null, ox=0, oy=0;
+  widgets.forEach(w=>{
+    w.addEventListener('mousedown', e=>{
+      e.preventDefault();
+      drag=w;
+      const r=w.getBoundingClientRect();
+      ox=e.clientX-r.left; oy=e.clientY-r.top;
+      w.style.transform='none'; w.style.zIndex=100;
+    });
+  });
+  const demo=document.getElementById('hudDemo');
+  document.addEventListener('mousemove', e=>{
+    if(!drag) return;
+    const dr=demo.getBoundingClientRect();
+    const wr=drag.getBoundingClientRect();
+    let nx=e.clientX-dr.left-ox, ny=e.clientY-dr.top-oy;
+    nx=Math.max(0,Math.min(nx,dr.width-wr.width));
+    ny=Math.max(0,Math.min(ny,dr.height-wr.height));
+    drag.style.left=nx+'px'; drag.style.top=ny+'px';
+    drag.style.right='auto'; drag.style.bottom='auto';
+  });
+  document.addEventListener('mouseup',()=>{if(drag){drag.style.zIndex='';drag=null;}});
+
+  // Keystroke animation
+  const keys={w:'hw-w',a:'hw-a',s:'hw-s',d:'hw-d'};
+  const ksD=document.getElementById('hw-d');
+  if(ksD) ksD.style.display='flex';
+  document.addEventListener('keydown', e=>{
+    const id=keys[e.key.toLowerCase()];
+    if(id){const el=document.getElementById(id);if(el)el.style.background='rgba(255,255,255,.3)';}
+  });
+  document.addEventListener('keyup', e=>{
+    const id=keys[e.key.toLowerCase()];
+    if(id){const el=document.getElementById(id);if(el)el.style.background='rgba(255,255,255,.1)';}
+  });
+})();
+</script>
+
 </main>
 
 <footer>
