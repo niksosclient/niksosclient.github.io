@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Профиль — Niksos Client</title>
-<link rel="icon" href="assets/favicon.png?v=20">
+<link rel="icon" href="../assets/favicon.png?v=20">
 <style>
 :root{
   --bg:#0a0a0a;--surface:#111;--surface2:#171717;--line:rgba(255,255,255,.09);
@@ -105,7 +105,7 @@ img{display:block;max-width:100%}
 <body>
 
 <nav class="nav">
-  <a class="brand" href="index.html"><img src="assets/logo-white.svg?v=20" alt="">Niksos</a>
+  <a class="brand" href="index.html"><img src="../assets/logo-white.svg?v=20" alt="">Niksos</a>
   <a class="back" href="index.html">← Главная</a>
 </nav>
 
@@ -194,12 +194,11 @@ img{display:block;max-width:100%}
 </div>
 </div>
 
-<!-- Подключение библиотек -->
+<!-- Правильные относительные пути к вашим ассетам из папки site/ -->
 <script src="https://jsdelivr.net"></script>
-<script src="assets/config.js"></script>
+<script src="../assets/config.js"></script>
 
 <script>
-// ── Получение ника из Query-параметров (?name=ник) ──
 function getNickFromUrl() {
   const qs = new URLSearchParams(window.location.search);
   return qs.get("name");
@@ -213,15 +212,19 @@ function goToNick() {
   }
 }
 
-// ── Загрузка данных из Supabase RPC ──
 async function loadProfile(nickname) {
   try {
-    // Делаем запрос к созданной функции в Supabase
-    const { data, error } = await supabase.rpc('niksos_public_profile', { p_name: nickname });
-
-    if (error) throw error;
-
-    if (!data) {
+    // Проверяем наличие инициализированного Supabase клиента
+    if (typeof supabase === 'undefined') {
+      console.error("Supabase не инициализирован. Проверьте ../assets/config.js");
+      document.getElementById('stateLoading').style.display = 'none';
+document.getElementById('nfName').textContent = nickname;
+document.getElementById('stateNotFound').style.display = 'flex';
+return;
+}
+const { data, error } = await supabase.rpc('niksos_public_profile', { p_name: nickname });
+if (error) throw error;
+if (!data) {
 document.getElementById('stateLoading').style.display = 'none';
 document.getElementById('nfName').textContent = nickname;
 document.getElementById('stateNotFound').style.display = 'flex';
@@ -229,32 +232,27 @@ return;
 }
 renderProfile(data);
 } catch (err) {
-console.error("Ошибка загрузки:", err);
+console.error("Ошибка загрузки профиля:", err);
 document.getElementById('stateLoading').style.display = 'none';
 document.getElementById('nfName').textContent = nickname;
 document.getElementById('stateNotFound').style.display = 'flex';
 }
 }
-// ── Отрисовка данных на странице ──
 function renderProfile(player) {
-// Аватар (Первая буква ника)
 const firstLetter = player.name ? player.name.charAt(0).toUpperCase() : '?';
 const fallback = document.getElementById('avFallback');
 if (fallback) fallback.textContent = firstLetter;
-// Текстовые данные
 if (document.getElementById('pName')) document.getElementById('pName').textContent = player.name;
 if (document.getElementById('pHours')) document.getElementById('pHours').textContent = Math.round(player.hours) + " ч.";
 if (document.getElementById('pKills')) document.getElementById('pKills').textContent = player.kills;
 if (document.getElementById('pDeaths')) document.getElementById('pDeaths').textContent = player.deaths;
 if (document.getElementById('pSessions')) document.getElementById('pSessions').textContent = player.sessions;
 if (document.getElementById('pFavServer')) document.getElementById('pFavServer').textContent = player.fav_server || 'Не определен';
-// Роли и значки
 const roleBadge = document.getElementById('pRole');
 if (roleBadge) {
 roleBadge.textContent = player.role === 'admin' ? 'Администратор' : player.role === 'staff' ? 'Персонал' : 'Игрок';
 roleBadge.className = 'badge ' + (player.role || 'user');
 }
-// Даты создания аккаунта и последнего входа
 if (player.created && document.getElementById('pSince')) {
 const d = new Date(player.created).toLocaleDateString("ru-RU", { day: 'numeric', month: 'long', year: 'numeric' });
 document.getElementById('pSince').textContent = "В клубе Niksos с " + d;
@@ -263,7 +261,6 @@ if (player.last_seen && document.getElementById('pLastSeen')) {
 const l = new Date(player.last_seen).toLocaleString("ru-RU", { day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit' });
 document.getElementById('pLastSeen').textContent = "Последняя активность: " + l;
 }
-// Показываем блок профиля
 document.getElementById('stateLoading').style.display = 'none';
 document.getElementById('profile').style.display = 'block';
 }
@@ -275,7 +272,6 @@ b.textContent = '✅ Скопировано!';
 setTimeout(() => { b.textContent = old; }, 2000);
 });
 }
-// ── Старт скрипта ──
 const nick = getNickFromUrl();
 if (!nick) {
   document.getElementById('stateLoading').style.display = 'none';
