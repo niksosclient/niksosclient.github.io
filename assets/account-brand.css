@@ -15,7 +15,24 @@ html[data-theme="dark"] {
   --accbg: rgba(255,255,255,.10);
   --sh: none;
 }
+html[data-theme="dark"][data-theme-variant="white"] {
+  --bg: #0a0a0a;
+  --bg2: #111111;
+  --card: #111111;
+  --line: rgba(255,255,255,.15);
+  --line2: rgba(255,255,255,.25);
+  --fg: #ffffff;
+  --fg2: #e3e3e3;
+  --fg3: #b8b8b8;
+  --hover: rgba(255,255,255,.10);
+  --sel: rgba(255,255,255,.12);
+  --acc: #ffffff;
+  --acc2: #ffffff;
+  --accbg: rgba(255,255,255,.15);
+  --sh: none;
+}
 html[data-theme="dark"] body {
+  min-height: 100vh;
   background:
     radial-gradient(70% 45% at 50% -5%, rgba(255,255,255,.07), transparent 70%),
     linear-gradient(rgba(255,255,255,.025) 1px, transparent 1px) 0 0/32px 32px,
@@ -42,7 +59,7 @@ html:not([data-theme="dark"]) .topbar {
 .brand span { font-weight: 400; }
 .tl { gap: 22px; }
 .tl a { font-size: 14px; font-weight: 500; transition: color .15s ease; }
-html[data-theme="dark"] .tl a { color: #a3a3a3; }
+html[data-theme="dark"] .tl a { color: var(--fg2); }
 .tl a:hover { color: var(--fg); }
 .iconbtn { border-radius: 12px; }
 .card, .stats {

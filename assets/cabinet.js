@@ -18,10 +18,23 @@
   go(new URLSearchParams(location.search).get("buy") ? "sub" : location.hash.slice(1) || "overview");
   window.addEventListener("hashchange", () => go(location.hash.slice(1)));
 
+  const themeRoot = document.documentElement;
+  function updateThemeButton() {
+    const brighter = themeRoot.dataset.themeVariant === "white";
+    $("themeBtn").setAttribute("aria-label", brighter ? "Включить обычный тёмный режим" : "Включить тёмный режим с белым контрастом");
+    $("themeBtn").title = brighter ? "Обычный тёмный контраст" : "Тёмный режим с белым контрастом";
+  }
+  themeRoot.dataset.theme = "dark";
+  updateThemeButton();
   $("themeBtn").addEventListener("click", () => {
-    const t = document.documentElement.dataset.theme === "dark" ? "light" : "dark";
-    document.documentElement.dataset.theme = t;
-    try { localStorage.setItem("niksos_theme", t); } catch (e) {}
+    const variant = themeRoot.dataset.themeVariant === "white" ? "default" : "white";
+    themeRoot.dataset.theme = "dark";
+    themeRoot.dataset.themeVariant = variant;
+    updateThemeButton();
+    try {
+      localStorage.setItem("niksos_theme", "dark");
+      localStorage.setItem("niksos_theme_variant", variant);
+    } catch (e) {}
   });
 
   function sync() {
