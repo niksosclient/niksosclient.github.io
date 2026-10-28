@@ -7,9 +7,9 @@
 <link rel="icon" href="assets/favicon.png?v=20">
 <link rel="stylesheet" href="assets/cabinet.css?v=1">
 <link rel="stylesheet" href="assets/checkout.css?v=30github">
-<link rel="stylesheet" href="assets/account-brand.css?v=1">
+<link rel="stylesheet" href="assets/account-brand.css?v=2">
 <link rel="stylesheet" href="assets/account-settings.css?v=1">
-<script>try{const t=localStorage.getItem("niksos_theme");if(t)document.documentElement.dataset.theme=t}catch(e){}</script>
+<script>try{const r=document.documentElement,old=localStorage.getItem("niksos_theme"),saved=localStorage.getItem("niksos_theme_variant");r.dataset.theme="dark";r.dataset.themeVariant=saved==="white"||(!saved&&old==="light")?"white":"default"}catch(e){document.documentElement.dataset.theme="dark"}</script>
 </head>
 <body>
 <header class="topbar">
@@ -265,7 +265,7 @@
 <script src="assets/niksos-cloud.js?v=1"></script>
 <script src="assets/checkout.js?v=33beta-promos"></script>
 <script src="assets/account.js?v=settings-1"></script>
-<script src="assets/cabinet.js?v=1"></script>
+<script src="assets/cabinet.js?v=2"></script>
 <script src="assets/events.js?v=1"></script>
 <script src="assets/account-settings.js?v=1"></script>
 </body>
