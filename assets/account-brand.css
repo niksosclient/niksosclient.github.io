@@ -1,0 +1,79 @@
+/* Shared Niksos visual language for the account area. */
+html[data-theme="dark"] {
+  --bg: #0a0a0a;
+  --bg2: #111111;
+  --card: #111111;
+  --line: rgba(255,255,255,.08);
+  --line2: rgba(255,255,255,.14);
+  --fg: #f5f5f5;
+  --fg2: #a3a3a3;
+  --fg3: #737373;
+  --hover: rgba(255,255,255,.07);
+  --sel: rgba(255,255,255,.07);
+  --acc: #f5f5f5;
+  --acc2: #e6e6e6;
+  --accbg: rgba(255,255,255,.10);
+  --sh: none;
+}
+html[data-theme="dark"] body {
+  background:
+    radial-gradient(70% 45% at 50% -5%, rgba(255,255,255,.07), transparent 70%),
+    linear-gradient(rgba(255,255,255,.025) 1px, transparent 1px) 0 0/32px 32px,
+    linear-gradient(90deg, rgba(255,255,255,.025) 1px, transparent 1px) 0 0/32px 32px,
+    #0a0a0a;
+  background-attachment: fixed;
+}
+html:not([data-theme="dark"]) body { background: var(--bg); }
+.topbar {
+  height: 60px;
+  padding: 0 max(16px, calc((100% - 1040px) / 2));
+  gap: 24px;
+  background: rgba(10,10,10,.72);
+  border-bottom: 1px solid rgba(255,255,255,.08);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+html:not([data-theme="dark"]) .topbar {
+  background: color-mix(in srgb, var(--bg) 88%, transparent);
+  border-color: var(--line);
+}
+.brand { gap: 9px; font-size: 18px; font-weight: 700; letter-spacing: -.02em; }
+.brand img { width: 24px; height: 24px; }
+.brand span { font-weight: 400; }
+.tl { gap: 22px; }
+.tl a { font-size: 14px; font-weight: 500; transition: color .15s ease; }
+html[data-theme="dark"] .tl a { color: #a3a3a3; }
+.tl a:hover { color: var(--fg); }
+.iconbtn { border-radius: 12px; }
+.card, .stats {
+  border: 1px solid var(--line);
+  box-shadow: none;
+  background: var(--card);
+}
+.card { border-radius: 16px; }
+.stats { border-radius: 16px; }
+.btn {
+  min-height: 44px;
+  border-radius: 999px;
+  transition: background .18s ease, color .18s ease, border-color .18s ease, transform .18s ease;
+}
+.btn:hover { transform: translateY(-1px); }
+.btn.primary { background: var(--fg); color: var(--bg); border-color: var(--fg); }
+.btn.primary:hover { opacity: .9; }
+.nv { transition: background .15s ease, color .15s ease; }
+.nv.on { background: var(--sel); }
+.nv.on svg { color: var(--acc2); }
+input, select { border-radius: 10px; }
+input:focus, select:focus { border-color: var(--acc); }
+.vhead h1 { letter-spacing: -.035em; }
+@media (max-width: 900px) {
+  .topbar { padding: 0 20px; }
+  .side .nv { min-height: 44px; }
+}
+@media (max-width: 560px) {
+  .topbar { padding: 0 16px; gap: 12px; }
+  .brand { font-size: 16px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; }
+}

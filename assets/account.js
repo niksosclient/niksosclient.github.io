@@ -42,6 +42,11 @@
   let lastLic = null;
   function render(lic) {
     lastLic = lic;
+    const deviceCount = Number(lic.devices), maxDevices = Number(lic.max_devices);
+    window.dispatchEvent(new CustomEvent("niksos:license", { detail: {
+      devices: Number.isFinite(deviceCount) ? Math.max(0, deviceCount) : null,
+      maxDevices: Number.isFinite(maxDevices) ? Math.max(0, maxDevices) : null
+    }}));
     $("who").textContent = lic.name || session.name;
     $("adminLink").hidden = lic.role !== "admin" && !lic.owner;
     $("testWrap").style.display = (lic.role === "admin" || lic.owner) && PROVS.includes("rollypay") ? "block" : "none";
@@ -87,6 +92,7 @@
 
   function showDash(lic) {
     $("auth").style.display = "none"; $("dash").style.display = "block"; render(lic);
+    window.dispatchEvent(new Event("niksos:account-ready"));
     if (wantPlan && !afterLogin.done) {
       afterLogin.done = true;
       const b = document.querySelector(`[data-plan="${CSS.escape(wantPlan)}"]`);
