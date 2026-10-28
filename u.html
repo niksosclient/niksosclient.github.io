@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Профиль — Niksos Client</title>
-<link rel="icon" href="../assets/favicon.png?v=20">
+<link rel="icon" href="assets/favicon.png?v=20">
 <style>
 :root{
   --bg:#0a0a0a;--surface:#111;--surface2:#171717;--line:rgba(255,255,255,.09);
@@ -105,7 +105,7 @@ img{display:block;max-width:100%}
 <body>
 
 <nav class="nav">
-  <a class="brand" href="index.html"><img src="../assets/logo-white.svg?v=20" alt="">Niksos</a>
+  <a class="brand" href="index.html"><img src="assets/logo-white.svg?v=20" alt="">Niksos</a>
   <a class="back" href="index.html">← Главная</a>
 </nav>
 
@@ -130,7 +130,7 @@ img{display:block;max-width:100%}
   <div class="state" id="stateNoNick" style="display:none">
     <div class="ico">👤</div>
     <h2>Введи ник</h2>
-    <p>Перейди по ссылке вида <code>u.html?name=ник</code> или найди игрока ниже</p>
+    <p>Перейди по ссылке вида <code>/u/[ник]</code> или найди игрока ниже</p>
     <input type="text" id="nickInput" placeholder="Никнейм…" autocomplete="off" spellcheck="false">
     <button class="btn" onclick="goToNick()">Смотреть профиль</button>
   </div>
@@ -154,127 +154,238 @@ img{display:block;max-width:100%}
       </div>
     </div>
 
-    <!-- Stats Grid -->
+    <!-- Stats -->
     <div class="stats-grid">
       <div class="stat-card">
-        <div class="val yellow" id="pHours">0</div>
-        <div class="lbl">Часы</div>
+        <div class="val yellow" id="sHours">0</div>
+        <div class="lbl">⏱ Часов</div>
       </div>
       <div class="stat-card">
-        <div class="val green" id="pKills">0</div>
-        <div class="lbl">Убийства</div>
+        <div class="val green" id="sKills">0</div>
+        <div class="lbl">⚔️ Убийств</div>
       </div>
       <div class="stat-card">
-        <div class="val" id="pDeaths">0</div>
-        <div class="lbl">Смерти</div>
+        <div class="val" id="sDeaths">0</div>
+        <div class="lbl">💀 Смертей</div>
       </div>
       <div class="stat-card">
-        <div class="val purple" id="pSessions">0</div>
-        <div class="lbl">Сессии</div>
+        <div class="val" id="sSessions">0</div>
+        <div class="lbl">🎮 Сессий</div>
       </div>
     </div>
 
-    <!-- Fav Server -->
-    <div class="fav-server">
-      <div class="ico">🎮</div>
+    <!-- Fav server -->
+    <div class="fav-server" id="favServer" style="display:none">
+      <div class="ico" id="favIco">🌍</div>
       <div>
         <div class="lbl">Любимый сервер</div>
-        <div class="name" id="pFavServer">—</div>
+        <div class="name" id="favName">—</div>
       </div>
     </div>
 
-    <!-- Share Row -->
+    <!-- Achievements -->
+    <div class="ach-section">
+      <h2>🏆 Достижения <span id="achCount" style="color:var(--muted);font-weight:400;font-size:14px"></span></h2>
+      <div class="ach-grid" id="achGrid"></div>
+    </div>
+
+    <!-- Crosshair -->
+    <div class="cross-section" id="crossSection" style="display:none">
+      <h2>🎯 Кастомный прицел</h2>
+      <div class="cross-box">
+        <canvas id="crossCanvas" width="128" height="128" style="width:128px;height:128px"></canvas>
+      </div>
+    </div>
+
+    <!-- Share -->
     <div class="share-row">
-      <span>Поделиться профилем:</span>
+      <span>Поделиться профилем</span>
       <button class="share-btn" onclick="copyLink()">🔗 Скопировать ссылку</button>
     </div>
 
-  </div>
+  </div><!-- /profile -->
 
 </div>
 </div>
 
-<!-- ЗДЕСЬ ИСПРАВЛЕННАЯ ПОЛНАЯ ССЫЛКА НА БИБЛИОТЕКУ SUPABASE -->
-<script src="https://jsdelivr.net"></script>
-<script src="../assets/config.js"></script>
-
+<script src="assets/config.js?v=13"></script>
 <script>
+// ── Справочник достижений ──
+const ACH_META = {
+  true_adam:   { name: 'Тру Адам',      ico: '🌱', desc: 'Первый запуск клиента' },
+  afk_master:  { name: 'АФК-чел',       ico: '💤', desc: '100+ часов, меньше 50 убийств' },
+  veteran:     { name: 'Ветеран',        ico: '🛡️', desc: '500+ часов в клиенте' },
+  killer:      { name: 'Убийца',         ico: '⚔️', desc: '1000+ убийств' },
+  miner:       { name: 'Шахтёр',         ico: '⛏️', desc: '100 000+ сломанных блоков' },
+  regular:     { name: 'Постоянный',     ico: '🔥', desc: '30+ игровых сессий' },
+  funtime_fan: { name: 'FunTime-фанат',  ico: '🎪', desc: '200+ часов на FunTime' },
+};
+
+// ── Парсинг ника из URL ──
 function getNickFromUrl() {
-  const qs = new URLSearchParams(window.location.search);
-  return qs.get("name");
+  // /u/Ник или ?u=Ник
+  const p = location.pathname; // /u/Ник
+  const m = p.match(/\/u\/([^/?#]+)/i);
+  if (m) return decodeURIComponent(m[1]);
+  const sp = new URLSearchParams(location.search);
+  return sp.get('u') || sp.get('nick') || '';
 }
 
 function goToNick() {
-  const input = document.getElementById('nickInput');
-  const name = input.value.trim();
-  if (name) {
-    window.location.search = '?name=' + encodeURIComponent(name);
-  }
+  const v = document.getElementById('nickInput').value.trim();
+  if (!v) return;
+  location.href = '/u/' + encodeURIComponent(v);
+}
+document.getElementById('nickInput')?.addEventListener('keydown', e => { if(e.key==='Enter') goToNick(); });
+
+async function rpc(fn, body) {
+  const C = window.NIKSOS;
+  const r = await fetch(`${C.supabaseUrl}/rest/v1/rpc/${fn}`, {
+    method:'POST',
+    headers:{'Content-Type':'application/json','apikey':C.supabaseKey},
+    body: JSON.stringify(body)
+  });
+  if (!r.ok) throw new Error('HTTP ' + r.status);
+  return r.json();
 }
 
-async function loadProfile(nickname) {
-  try {
-    if (typeof supabase === 'undefined') {
-      console.error("Supabase не инициализирован. Проверь подключение скриптов.");
-      document.getElementById('stateLoading').style.display = 'none';
-document.getElementById('nfName').textContent = nickname;
-document.getElementById('stateNotFound').style.display = 'flex';
-return;
+function fmt(n) {
+  if (n == null) return '0';
+  if (n >= 1000) return (n/1000).toFixed(1).replace('.0','') + 'k';
+  return Math.round(n).toLocaleString('ru');
 }
-const { data, error } = await supabase.rpc('niksos_public_profile', { p_name: nickname });
-if (error) throw error;
-if (!data) {
-document.getElementById('stateLoading').style.display = 'none';
-document.getElementById('nfName').textContent = nickname;
-document.getElementById('stateNotFound').style.display = 'flex';
-return;
+
+function relDate(ts) {
+  if (!ts) return null;
+  const d = new Date(ts), now = new Date(), diff = now - d;
+  const mins = Math.floor(diff/60000);
+  if (mins < 2) return 'только что';
+  if (mins < 60) return `${mins} мин. назад`;
+  const hrs = Math.floor(mins/60);
+  if (hrs < 24) return `${hrs} ч. назад`;
+  const days = Math.floor(hrs/24);
+  if (days < 30) return `${days} д. назад`;
+  return d.toLocaleDateString('ru',{day:'numeric',month:'long',year:'numeric'});
 }
-renderProfile(data);
-} catch (err) {
-console.error("Ошибка загрузки профиля:", err);
-document.getElementById('stateLoading').style.display = 'none';
-document.getElementById('nfName').textContent = nickname;
-document.getElementById('stateNotFound').style.display = 'flex';
+
+function absDate(ts) {
+  if (!ts) return null;
+  return new Date(ts).toLocaleDateString('ru',{day:'numeric',month:'long',year:'numeric'});
 }
+
+const SRV_ICO = {FunTime:'🎪',HolyWorld:'⚔️',ReallyWorld:'🌿',Другой:'🌍'};
+
+async function loadProfile(nick) {
+  const data = await rpc('niksos_public_profile', { p_name: nick });
+  if (!data) {
+    document.getElementById('stateLoading').style.display='none';
+    document.getElementById('stateNotFound').style.display='flex';
+    document.getElementById('nfName').textContent = nick;
+    return;
+  }
+
+  // Avatar
+  const avEl = document.getElementById('avWrap');
+  const avFb = document.getElementById('avFallback');
+  const img = new Image();
+  img.crossOrigin = 'anonymous';
+  img.src = `https://mc-heads.net/avatar/${encodeURIComponent(data.name)}/80`;
+  img.onload = () => { avEl.innerHTML=''; avEl.appendChild(img); };
+  avFb.textContent = data.name[0].toUpperCase();
+
+  // Header
+  document.title = `${data.name} — Niksos`;
+  document.getElementById('pName').textContent = data.name;
+  const roleEl = document.getElementById('pRole');
+  if (data.role === 'admin' || data.role === 'owner') {
+    roleEl.textContent = '👑 Администратор'; roleEl.className='badge admin';
+  } else if (data.role === 'staff') {
+    roleEl.textContent = '🛡 Стафф'; roleEl.className='badge staff';
+  } else {
+    roleEl.textContent = '🎮 Игрок';
+  }
+
+  const lastSeen = relDate(data.last_seen);
+  if (lastSeen) {
+    document.getElementById('pLastSeen').textContent = 'Последний раз: ' + lastSeen;
+    if (data.last_seen && (new Date() - new Date(data.last_seen)) < 5*60000) {
+      document.getElementById('pOnlineBadge').style.display='inline-flex';
+    }
+  }
+  if (data.created) document.getElementById('pSince').textContent = 'В Niksos с ' + absDate(data.created);
+
+  // Stats
+  document.getElementById('sHours').textContent = fmt(data.hours);
+  document.getElementById('sKills').textContent = fmt(data.kills);
+  document.getElementById('sDeaths').textContent = fmt(data.deaths);
+  document.getElementById('sSessions').textContent = fmt(data.sessions);
+
+  // Fav server
+  if (data.fav_server && data.hours > 0) {
+    document.getElementById('favServer').style.display='flex';
+    document.getElementById('favName').textContent = data.fav_server;
+    document.getElementById('favIco').textContent = SRV_ICO[data.fav_server] || '🌍';
+  }
+
+  // Achievements
+  const ach = Array.isArray(data.achievements) ? data.achievements : [];
+  const achGrid = document.getElementById('achGrid');
+  document.getElementById('achCount').textContent = `(${ach.length})`;
+
+  // Earned slugs
+  const earned = new Set(ach.map(a => a.slug));
+
+  // All possible
+  Object.entries(ACH_META).forEach(([slug, meta]) => {
+    const got = earned.has(slug);
+    const a = ach.find(a=>a.slug===slug);
+    const el = document.createElement('div');
+    el.className = 'ach' + (got ? '' : ' locked');
+    el.innerHTML = `
+      <div class="ach-ico">${meta.ico}</div>
+      <div>
+        <div class="ach-name">${meta.name}</div>
+        <div class="ach-date">${got ? (a?.earned ? absDate(a.earned) : 'Получено') : meta.desc}</div>
+      </div>`;
+    achGrid.appendChild(el);
+  });
+
+  // Crosshair
+  if (data.crosshair) {
+    try {
+      const pixels = JSON.parse(data.crosshair);
+      document.getElementById('crossSection').style.display='block';
+      const cv = document.getElementById('crossCanvas');
+      const ctx = cv.getContext('2d');
+      ctx.fillStyle='#111';
+      ctx.fillRect(0,0,128,128);
+      const scale = Math.floor(128/16);
+      pixels.forEach(({x,y,color})=>{
+        ctx.fillStyle = color || '#fff';
+        ctx.fillRect(x*scale,y*scale,scale,scale);
+      });
+    } catch(e){}
+  }
+
+  // Show
+  document.getElementById('stateLoading').style.display='none';
+  document.getElementById('profile').style.display='block';
 }
-function renderProfile(player) {
-const firstLetter = player.name ? player.name.charAt(0).toUpperCase() : '?';
-const fallback = document.getElementById('avFallback');
-if (fallback) fallback.textContent = firstLetter;
-if (document.getElementById('pName')) document.getElementById('pName').textContent = player.name;
-if (document.getElementById('pHours')) document.getElementById('pHours').textContent = Math.round(player.hours) + " ч.";
-if (document.getElementById('pKills')) document.getElementById('pKills').textContent = player.kills;
-if (document.getElementById('pDeaths')) document.getElementById('pDeaths').textContent = player.deaths;
-if (document.getElementById('pSessions')) document.getElementById('pSessions').textContent = player.sessions;
-if (document.getElementById('pFavServer')) document.getElementById('pFavServer').textContent = player.fav_server || 'Не определен';
-const roleBadge = document.getElementById('pRole');
-if (roleBadge) {
-roleBadge.textContent = player.role === 'admin' ? 'Администратор' : player.role === 'staff' ? 'Персонал' : 'Игрок';
-roleBadge.className = 'badge ' + (player.role || 'user');
-}
-if (player.created && document.getElementById('pSince')) {
-const d = new Date(player.created).toLocaleDateString("ru-RU", { day: 'numeric', month: 'long', year: 'numeric' });
-document.getElementById('pSince').textContent = "В клубе Niksos с " + d;
-}
-if (player.last_seen && document.getElementById('pLastSeen')) {
-const l = new Date(player.last_seen).toLocaleString("ru-RU", { day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit' });
-document.getElementById('pLastSeen').textContent = "Последняя активность: " + l;
-}
-document.getElementById('stateLoading').style.display = 'none';
-document.getElementById('profile').style.display = 'block';
-}
+
 function copyLink() {
-navigator.clipboard.writeText(location.href).then(() => {
-const b = event.target.closest('.share-btn');
-const old = b.textContent;
-b.textContent = '✅ Скопировано!';
-setTimeout(() => { b.textContent = old; }, 2000);
-});
+  navigator.clipboard.writeText(location.href).then(()=>{
+    const b = event.target.closest('.share-btn');
+    const old = b.textContent;
+    b.textContent='✅ Скопировано!';
+    setTimeout(()=>{ b.textContent=old; },2000);
+  });
 }
+
+// ── Init ──
 const nick = getNickFromUrl();
 if (!nick) {
-  document.getElementById('stateLoading').style.display = 'none';
-  document.getElementById('stateNoNick').style.display = 'flex';
+  document.getElementById('stateLoading').style.display='none';
+  document.getElementById('stateNoNick').style.display='flex';
 } else {
   loadProfile(nick);
 }
