@@ -7,8 +7,7 @@
 <link rel="icon" href="assets/favicon.png?v=20">
 <link rel="stylesheet" href="assets/cabinet.css?v=1">
 <link rel="stylesheet" href="assets/checkout.css?v=30github">
-<link rel="stylesheet" href="assets/account-brand.css?v=settings-1">
-<link rel="stylesheet" href="assets/account-settings.css?v=settings-1">
+<link rel="stylesheet" href="assets/account-brand.css?v=1">
 <script>try{const t=localStorage.getItem("niksos_theme");if(t)document.documentElement.dataset.theme=t}catch(e){}</script>
 </head>
 <body>
@@ -51,7 +50,6 @@
     <div class="grp">Аккаунт</div>
     <button class="nv" data-view="device"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/></svg><span>Привязка ПК</span></button>
     <button class="nv" data-view="history"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/></svg><span>История</span></button>
-    <button class="nv" data-view="settings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="m19.4 15 .1.1a1.7 1.7 0 0 1-2.4 2.4l-.1-.1a1.7 1.7 0 0 0-2.9 1.2v.2a1.7 1.7 0 0 1-3.4 0v-.2a1.7 1.7 0 0 0-2.9-1.2l-.1.1a1.7 1.7 0 0 1-2.4-2.4l.1-.1a1.7 1.7 0 0 0-1.2-2.9H4a1.7 1.7 0 0 1 0-3.4h.2a1.7 1.7 0 0 0 1.2-2.9l-.1-.1a1.7 1.7 0 0 1 2.4-2.4l.1.1a1.7 1.7 0 0 0 2.9-1.2V2a1.7 1.7 0 0 1 3.4 0v.2a1.7 1.7 0 0 0 2.9 1.2l.1-.1a1.7 1.7 0 0 1 2.4 2.4l-.1.1a1.7 1.7 0 0 0 1.2 2.9h.2a1.7 1.7 0 0 1 0 3.4h-.2a1.7 1.7 0 0 0-1.2 2.9z"/></svg><span>Настройки</span></button>
     <div class="grp">Игра</div>
     <button class="nv" data-view="events"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3.5 3 14.5 0 18M12 3c-3 3.5-3 14.5 0 18"/></svg><span>Ивенты</span><em class="live"></em></button>
     <div class="grp">Сообщество</div>
@@ -171,74 +169,6 @@
         </table></div>
       </div>
     </div>
-    <!-- Настройки аккаунта -->
-    <div class="view" data-v="settings" hidden>
-      <div class="vhead"><h1>Настройки аккаунта</h1><p>Только настройки, подтверждённые сервером. Недоступные функции явно выключены.</p></div>
-      <div class="as-tabs" role="tablist" aria-label="Разделы настроек аккаунта">
-        <button class="as-tab" id="settings-tab-general" type="button" role="tab" aria-selected="true" aria-controls="settings-panel-general" tabindex="0" data-settings-tab="general">Общие</button>
-        <button class="as-tab" id="settings-tab-security" type="button" role="tab" aria-selected="false" aria-controls="settings-panel-security" tabindex="-1" data-settings-tab="security">Безопасность</button>
-        <button class="as-tab" id="settings-tab-hwid" type="button" role="tab" aria-selected="false" aria-controls="settings-panel-hwid" tabindex="-1" data-settings-tab="hwid">HWID</button>
-        <button class="as-tab" id="settings-tab-integrations" type="button" role="tab" aria-selected="false" aria-controls="settings-panel-integrations" tabindex="-1" data-settings-tab="integrations">Интеграции</button>
-        <button class="as-tab" id="settings-tab-notifications" type="button" role="tab" aria-selected="false" aria-controls="settings-panel-notifications" tabindex="-1" data-settings-tab="notifications">Уведомления</button>
-      </div>
-
-      <section class="as-panel" id="settings-panel-general" role="tabpanel" aria-labelledby="settings-tab-general" data-settings-panel="general" tabindex="0">
-        <article class="card as-card">
-          <div><h2>Внешний вид</h2><p class="desc">Тема сохраняется только в этой вкладке браузера. Она не меняет данные аккаунта.</p></div>
-          <div class="as-inline"><span id="settingsThemeValue" class="small">Текущая тема: тёмная</span><button class="btn ghost" id="settingsThemeToggle" type="button">Сменить тему</button></div>
-        </article>
-        <article class="card as-card">
-          <div><h2>Регион</h2><p class="desc">Региональные коды, продуктовые правила и серверный RPC в доступной схеме не определены.</p></div>
-          <p class="as-state" role="status">Не настроено — выбор региона выключен до утверждения серверного списка.</p>
-        </article>
-        <article class="card as-card">
-          <div><h2>Приватность профиля</h2><p class="desc">Публичные RPC из review-материалов возвращают имя/роль, статистику, достижения и прицел; leaderboard — имя, роль и игровую статистику; список медиа — имя, площадку, ссылку и число подписчиков. Состояние этих review-функций в текущей БД не подтверждено.</p></div>
-          <p class="as-state" role="status">Настройки видимости выключены: нет подтверждения серверной проверки всех публичных путей. Связи друзей в доступных клиентских материалах не подтверждены серверной проверкой.</p>
-        </article>
-      </section>
-
-      <section class="as-panel" id="settings-panel-security" role="tabpanel" aria-labelledby="settings-tab-security" data-settings-panel="security" tabindex="0" hidden>
-        <article class="card as-card">
-          <div><h2>Смена пароля</h2><p class="desc">Смена отключена: authHash совместим, но облачная идентичность и ключи шифрования лаунчера производны от пароля. Без переноса облачных данных новый пароль меняет доступ к существующему облаку.</p></div>
-          <p class="as-state" id="accountPasswordAvailability" role="status" aria-live="polite">Проверяем серверные возможности…</p>
-          <p class="small">Потребуется отдельная миграция данных и совместимый rollout веб-кабинета и лаунчера. Здесь пароль не запрашивается и не отправляется.</p>
-        </article>
-        <article class="card as-card">
-          <div><h2>Email и подтверждение</h2><p class="desc">Pending-запись, одноразовая ссылка, почтовый провайдер и ограничение отправки пока не развернуты.</p></div>
-          <p class="as-state" role="status">Не настроено — email-адрес не запрашивается и не сохраняется.</p>
-        </article>
-        <article class="card as-card">
-          <div><h2>Двухфакторная защита</h2><p class="desc">TOTP, recovery-коды и обязательная проверка входа не внедрены в веб- и launcher-протокол.</p></div>
-          <p class="as-state" role="status">Не настроено — включение выключено.</p>
-        </article>
-        <article class="card as-card">
-          <div><h2>Веб-сессии</h2><p class="desc">Сейчас кабинет хранит authHash только в sessionStorage и повторно передаёт его защищённым RPC. Серверного списка сессий и токенов отзыва нет.</p></div>
-          <p class="as-state" role="status">Управление сессиями недоступно; удаление записи в браузере не отзывает серверную сессию.</p>
-        </article>
-        <article class="card as-card">
-          <div><h2>Удаление аккаунта</h2><p class="desc">Self-service транзакция удаления и принятая политика по связанным платёжным данным отсутствуют.</p></div>
-          <p class="as-state" role="status">Не настроено — запрос на удаление не отправляется.</p>
-        </article>
-      </section>
-
-      <section class="as-panel" id="settings-panel-hwid" role="tabpanel" aria-labelledby="settings-tab-hwid" data-settings-panel="hwid" tabindex="0" hidden>
-        <article class="card as-card">
-          <div><h2>Привязка ПК</h2><p class="desc">Показываем только поля, пришедшие из ответа лицензии сервера. Названия устройств и характеристики ПК не выводятся.</p></div>
-          <div class="as-facts"><div><span class="small">Устройств</span><b id="settingsHwidCount">—</b></div><div><span class="small">Лимит</span><b id="settingsHwidLimit">—</b></div></div>
-          <p class="as-state" id="settingsHwidState" role="status">Загружаем ответ лицензии…</p>
-          <button class="btn ghost" type="button" data-go="device">Открыть существующий поток сброса</button>
-        </article>
-      </section>
-
-      <section class="as-panel" id="settings-panel-integrations" role="tabpanel" aria-labelledby="settings-tab-integrations" data-settings-panel="integrations" tabindex="0" hidden>
-        <article class="card as-card"><div><h2>Discord</h2><p class="desc">Публичная invite-ссылка не подтверждает привязку. OAuth callback, state и проверка Discord ID отсутствуют.</p></div><p class="as-state" role="status">Интеграция не настроена</p></article>
-        <article class="card as-card"><div><h2>YouTube и TikTok</h2><p class="desc">Заявка в медиа-программу — отдельный процесс и не является подтверждением владения каналом.</p></div><p class="as-state" role="status">Интеграции не настроены</p><a class="btn ghost" href="media.html">Открыть заявку в медиа-программу</a></article>
-      </section>
-
-      <section class="as-panel" id="settings-panel-notifications" role="tabpanel" aria-labelledby="settings-tab-notifications" data-settings-panel="notifications" tabindex="0" hidden>
-        <article class="card as-card"><div><h2>Уведомления</h2><p class="desc">В доступных материалах есть черновик broadcast-объявлений лаунчера. Пользовательских категорий и подтверждённого email-отправителя не найдено.</p></div><p class="as-state" role="status">Настройки доставки не настроены — переключателей нет, сообщения не отправляются.</p></article>
-      </section>
-    </div>
   </main>
  </div>
 </section>
@@ -263,12 +193,11 @@
 
 
 <script src="assets/config.js?v=13"></script>
-<script src="assets/niksos-api.js?v=settings-1"></script>
+<script src="assets/niksos-api.js?v=notices"></script>
 <script src="assets/niksos-cloud.js?v=1"></script>
 <script src="assets/checkout.js?v=33beta-promos"></script>
-<script src="assets/account.js?v=settings-1"></script>
-<script src="assets/cabinet.js?v=settings-1"></script>
-<script src="assets/account-settings.js?v=settings-1"></script>
+<script src="assets/account.js?v=cab1"></script>
+<script src="assets/cabinet.js?v=1"></script>
 <script src="assets/events.js?v=1"></script>
 </body>
 </html>
