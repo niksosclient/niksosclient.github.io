@@ -8,6 +8,7 @@
 <link rel="stylesheet" href="assets/cabinet.css?v=1">
 <link rel="stylesheet" href="assets/checkout.css?v=30github">
 <link rel="stylesheet" href="assets/account-brand.css?v=1">
+<link rel="stylesheet" href="assets/account-settings.css?v=1">
 <script>try{const t=localStorage.getItem("niksos_theme");if(t)document.documentElement.dataset.theme=t}catch(e){}</script>
 </head>
 <body>
@@ -50,6 +51,7 @@
     <div class="grp">Аккаунт</div>
     <button class="nv" data-view="device"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/></svg><span>Привязка ПК</span></button>
     <button class="nv" data-view="history"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/></svg><span>История</span></button>
+    <button class="nv" data-view="settings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-1.99 1.83l-.18 1.57a8 8 0 0 0-1.69.98l-1.53-.63a2 2 0 0 0-2.45.84l-.22.38a2 2 0 0 0 .46 2.52l1.22 1.03a8 8 0 0 0 0 1.96l-1.22 1.03a2 2 0 0 0-.46 2.52l.22.38a2 2 0 0 0 2.45.84l1.53-.63c.52.4 1.08.73 1.69.98l.18 1.57A2 2 0 0 0 11.78 22h.44a2 2 0 0 0 1.99-1.83l.18-1.57c.61-.25 1.17-.58 1.69-.98l1.53.63a2 2 0 0 0 2.45-.84l.22-.38a2 2 0 0 0-.46-2.52l-1.22-1.03a8 8 0 0 0 0-1.96l1.22-1.03a2 2 0 0 0 .46-2.52l-.22-.38a2 2 0 0 0-2.45-.84l-1.53.63a8 8 0 0 0-1.69-.98l-.18-1.57A2 2 0 0 0 12.22 2z"/><circle cx="12" cy="12" r="3"/></svg><span>Настройки</span></button>
     <div class="grp">Игра</div>
     <button class="nv" data-view="events"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3.5 3 14.5 0 18M12 3c-3 3.5-3 14.5 0 18"/></svg><span>Ивенты</span><em class="live"></em></button>
     <div class="grp">Сообщество</div>
@@ -137,6 +139,72 @@
       <div class="card"><div id="hist"></div></div>
     </div>
 
+    <!-- Настройки аккаунта -->
+    <div class="view settings-view" data-v="settings" hidden>
+      <div class="vhead settings-head"><h1>Настройки аккаунта</h1><p>Управление данными и подключениями аккаунта.</p></div>
+      <div class="settings-tabs" role="tablist" aria-label="Настройки аккаунта">
+        <button id="settings-tab-general" type="button" role="tab" aria-selected="true" aria-controls="settings-panel-general" tabindex="0" data-settings-tab="general">Общие</button>
+        <button id="settings-tab-security" type="button" role="tab" aria-selected="false" aria-controls="settings-panel-security" tabindex="-1" data-settings-tab="security">Безопасность</button>
+        <button id="settings-tab-hwid" type="button" role="tab" aria-selected="false" aria-controls="settings-panel-hwid" tabindex="-1" data-settings-tab="hwid">HWID</button>
+        <button id="settings-tab-integrations" type="button" role="tab" aria-selected="false" aria-controls="settings-panel-integrations" tabindex="-1" data-settings-tab="integrations">Интеграции</button>
+        <button id="settings-tab-notifications" type="button" role="tab" aria-selected="false" aria-controls="settings-panel-notifications" tabindex="-1" data-settings-tab="notifications">Уведомления</button>
+      </div>
+      <div class="settings-panels">
+        <section id="settings-panel-general" class="settings-panel" role="tabpanel" aria-labelledby="settings-tab-general" tabindex="0" data-settings-panel="general">
+          <article class="settings-card">
+            <div class="settings-card-head"><div><h2>Регион</h2><p>Регион аккаунта и его настройки.</p></div><span class="settings-status is-muted">Недоступно</span></div>
+            <div class="settings-card-body"><p class="settings-copy">Серверный API кабинета не предоставляет регион и не поддерживает его сохранение. Здесь нет выбранного значения.</p></div>
+          </article>
+          <article class="settings-card">
+            <div class="settings-card-head"><div><h2>Приватность профиля</h2><p>Управление видимостью данных.</p></div><span class="settings-status is-muted">Недоступно</span></div>
+            <div class="settings-card-body"><p class="settings-copy">Настроек видимости и серверного сохранения приватности в текущем API нет. Значения из этой страницы не будут отправляться или храниться локально.</p></div>
+          </article>
+        </section>
+        <section id="settings-panel-security" class="settings-panel" role="tabpanel" aria-labelledby="settings-tab-security" tabindex="0" data-settings-panel="security" hidden>
+          <article class="settings-card">
+            <div class="settings-card-head"><div><h2>Безопасность аккаунта</h2><p>Вход в кабинет использует систему авторизации Niksos по нику и паролю.</p></div></div>
+            <div class="settings-card-body settings-list">
+              <div class="settings-item"><div><h3>Email</h3><p>Привязка и подтверждение адреса пока не подключены. Состояние email не показывается.</p></div><span class="settings-status is-muted">Не поддерживается</span></div>
+              <div class="settings-item"><div><h3>Смена пароля</h3><p>Для этого нет серверной операции; пароль или его хэш здесь не принимаются.</p></div><span class="settings-status is-muted">Не поддерживается</span></div>
+              <div class="settings-item"><div><h3>Двухфакторная защита</h3><p>Нет серверного подключения, проверки кодов и восстановления 2FA.</p></div><span class="settings-status is-muted">Не поддерживается</span></div>
+              <div class="settings-item"><div><h3>Сессии</h3><p>Сервер не предоставляет список сессий или отзыв отдельных устройств.</p></div><span class="settings-status is-muted">Не поддерживается</span></div>
+              <div class="settings-item"><div><h3>Удаление аккаунта</h3><p>В проекте описано только администраторское удаление. Самостоятельной серверной операции нет.</p></div><span class="settings-status is-muted">Не поддерживается</span></div>
+            </div>
+          </article>
+        </section>
+        <section id="settings-panel-hwid" class="settings-panel" role="tabpanel" aria-labelledby="settings-tab-hwid" tabindex="0" data-settings-panel="hwid" hidden>
+          <article class="settings-card">
+            <div class="settings-card-head"><div><h2>Привязка к компьютеру</h2><p>Статус ниже приходит из ответа лицензии Niksos.</p></div><span class="settings-status is-muted" id="settingsHwidStatus" aria-live="polite">Проверяем…</span></div>
+            <div class="settings-card-body">
+              <p class="settings-metric" id="settingsHwidCount" role="status" aria-live="polite">Загружаем статус привязки…</p>
+              <p class="settings-copy">API сообщает только количество устройств, без модели компьютера или его характеристик. Сброс выполняется через существующий защищённый поток кабинета.</p>
+            </div>
+            <div class="settings-card-foot"><span>Подтверждение и возможная оплата остаются в текущем разделе HWID.</span><button class="btn ghost settings-action" type="button" data-go="device">Открыть управление HWID</button></div>
+          </article>
+        </section>
+        <section id="settings-panel-integrations" class="settings-panel" role="tabpanel" aria-labelledby="settings-tab-integrations" tabindex="0" data-settings-panel="integrations" hidden>
+          <div class="settings-grid">
+            <article class="settings-card">
+              <div class="settings-card-head"><div><h2>Discord</h2><p>Официальное сообщество Niksos.</p></div><span class="settings-status is-muted">Нет API привязки</span></div>
+              <div class="settings-card-body"><p class="settings-copy">В кабинете нет серверной привязки Discord. Ссылка ниже открывает сервер сообщества, но не подключает аккаунт.</p></div>
+              <div class="settings-card-foot"><span>Публичная ссылка из конфигурации сайта.</span><a class="btn ghost settings-action" id="settingsDiscordLink" href="#" target="_blank" rel="noopener noreferrer">Открыть сервер</a></div>
+            </article>
+            <article class="settings-card">
+              <div class="settings-card-head"><div><h2>YouTube и TikTok</h2><p>Заявки на участие в медиа-программе.</p></div><span class="settings-status is-muted" id="settingsMediaBadge">Проверка не выполнена</span></div>
+              <div class="settings-card-body"><p class="settings-copy" id="settingsMediaState" role="status" aria-live="polite">Статус заявки появится после входа и ответа сервера.</p></div>
+              <div class="settings-card-foot"><span>Это статус заявки, не OAuth-подтверждение владения каналом.</span><a class="btn ghost settings-action" href="media.html#apply">Открыть медиа-программу</a></div>
+            </article>
+          </div>
+        </section>
+        <section id="settings-panel-notifications" class="settings-panel" role="tabpanel" aria-labelledby="settings-tab-notifications" tabindex="0" data-settings-panel="notifications" hidden>
+          <article class="settings-card">
+            <div class="settings-card-head"><div><h2>Уведомления</h2><p>Выбор событий и каналов доставки.</p></div><span class="settings-status is-muted">Недоступно</span></div>
+            <div class="settings-card-body"><p class="settings-copy">Для пользовательских предпочтений нет полей и API. Найденный черновик миграции относится к объявлениям лаунчера и не включает настройки уведомлений аккаунта.</p></div>
+          </article>
+        </section>
+      </div>
+    </div>
+
     <!-- Ивенты -->
     <div class="view" data-v="events" hidden>
       <div class="vhead"><h1>Ивенты</h1><p>Что происходит на серверах.</p></div>
@@ -193,11 +261,12 @@
 
 
 <script src="assets/config.js?v=13"></script>
-<script src="assets/niksos-api.js?v=notices"></script>
+<script src="assets/niksos-api.js?v=settings-1"></script>
 <script src="assets/niksos-cloud.js?v=1"></script>
 <script src="assets/checkout.js?v=33beta-promos"></script>
-<script src="assets/account.js?v=cab1"></script>
+<script src="assets/account.js?v=settings-1"></script>
 <script src="assets/cabinet.js?v=1"></script>
 <script src="assets/events.js?v=1"></script>
+<script src="assets/account-settings.js?v=1"></script>
 </body>
 </html>
