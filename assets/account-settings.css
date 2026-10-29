@@ -1,127 +1,68 @@
-/* Settings page: compact dark cards, readable states, and mobile-safe tabs. */
-.settings-view { min-width: 0; width: 100%; }
-.settings-head { margin: 8px 0 24px; }
-.settings-head h1 { margin-bottom: 0; }
-.settings-tabs {
+/* Account settings: aligned with cabinet.css/account-brand.css tokens. */
+.as-tabs {
   display: flex;
-  gap: 4px;
-  width: 100%;
+  gap: 6px;
   max-width: 100%;
-  margin: 0 auto 16px;
-  padding: 4px;
   overflow-x: auto;
   overscroll-behavior-inline: contain;
   scrollbar-width: thin;
-  border: 1px solid var(--line);
-  border-radius: 999px;
-  background: rgba(255,255,255,.045);
-  -webkit-overflow-scrolling: touch;
+  padding: 2px 1px 10px;
+  margin: 0 0 14px;
+  border-bottom: 1px solid var(--line);
 }
-.settings-tabs button {
+.as-tab {
   flex: 0 0 auto;
-  min-width: 76px;
   min-height: 44px;
-  padding: 0 14px;
-  border: 0;
-  border-radius: 999px;
-  background: transparent;
-  color: var(--fg2);
-  font: inherit;
-  font-size: 14px;
-  font-weight: 600;
-  line-height: 1.2;
-  cursor: pointer;
-  white-space: nowrap;
-  transition: color .15s ease, background .15s ease;
-}
-.settings-tabs button[aria-selected="true"] { background: var(--bg); color: var(--fg); }
-.settings-tabs button:focus-visible,
-.settings-action:focus-visible { outline: 2px solid var(--fg); outline-offset: 2px; }
-.settings-panels, .settings-panel { min-width: 0; }
-.settings-panel { display: grid; gap: 14px; }
-.settings-grid { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 14px; min-width: 0; }
-.settings-card {
-  min-width: 0;
-  overflow: hidden;
-  border: 1px solid var(--line);
-  border-radius: 16px;
-  background: var(--card);
-}
-.settings-card-head {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 14px;
-  padding: 16px 16px 12px;
-}
-.settings-card-head h2 { margin: 0; font-size: 16px; line-height: 1.35; }
-.settings-card-head p { margin: 4px 0 0; color: var(--fg2); font-size: 14px; line-height: 1.45; }
-.settings-card-body { padding: 0 16px 16px; min-width: 0; }
-.settings-copy, .settings-card-foot span {
-  margin: 0;
-  color: var(--fg2);
-  font-size: 13px;
-  line-height: 1.55;
-  overflow-wrap: anywhere;
-}
-.settings-status {
-  display: inline-flex;
-  flex: 0 0 auto;
-  align-items: center;
-  min-height: 26px;
-  max-width: 48%;
-  padding: 3px 9px;
+  padding: 0 16px;
   border: 1px solid var(--line2);
   border-radius: 999px;
-  color: var(--fg);
-  font-size: 12px;
-  font-weight: 650;
-  line-height: 1.25;
-  text-align: center;
+  background: var(--card);
+  color: var(--fg2);
+  font: 600 14px/1 Inter, system-ui, sans-serif;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.as-tab[aria-selected="true"] {
+  color: var(--bg);
+  background: var(--fg);
+  border-color: var(--fg);
+}
+.as-tab:focus-visible, .as-panel:focus-visible, .as-card button:focus-visible,
+.as-card input:focus-visible, .as-card a:focus-visible {
+  outline: 3px solid var(--acc2);
+  outline-offset: 3px;
+}
+.as-panel { min-width: 0; }
+.as-card {
+  display: grid;
+  gap: 12px;
+  margin-bottom: 14px;
+  min-width: 0;
+}
+.as-card .desc { margin-bottom: 0; max-width: 72ch; }
+.as-state {
+  margin: 0;
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  color: var(--fg2);
+  background: var(--sel);
   overflow-wrap: anywhere;
 }
-.settings-status.is-muted { color: var(--fg2); border-color: var(--line); background: rgba(255,255,255,.035); }
-.settings-card-foot {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  min-width: 0;
-  padding: 10px 16px;
-  border-top: 1px solid var(--line);
-}
-.settings-card-foot span { flex: 1 1 auto; min-width: 0; }
-.settings-action { flex: 0 0 auto; min-height: 44px; padding: 0 15px; white-space: nowrap; text-decoration: none; }
-.settings-metric { margin: 0 0 8px; color: var(--fg); font-size: 16px; font-weight: 700; line-height: 1.4; overflow-wrap: anywhere; }
-.settings-list { padding-top: 2px; }
-.settings-item {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 14px;
-  padding: 13px 0;
-  border-top: 1px solid var(--line);
-}
-.settings-item:first-child { border-top: 0; }
-.settings-item h3 { margin: 0; font-size: 14px; line-height: 1.4; }
-.settings-item p { margin: 4px 0 0; color: var(--fg2); font-size: 13px; line-height: 1.5; overflow-wrap: anywhere; }
-.settings-item > div { min-width: 0; }
-#settingsMediaState { min-height: 22px; }
-.settings-view :focus-visible { outline: 2px solid var(--fg); outline-offset: 3px; }
-@media (max-width: 680px) {
-  .settings-grid { grid-template-columns: minmax(0,1fr); }
-  .settings-tabs { justify-content: flex-start; }
-  .settings-tabs button { padding-inline: 13px; }
-}
-@media (max-width: 480px) {
-  .settings-head { text-align: left; margin-bottom: 18px; }
-  .settings-card-head { gap: 8px; padding: 14px 14px 10px; }
-  .settings-card-body { padding: 0 14px 14px; }
-  .settings-card-foot { align-items: stretch; flex-direction: column; padding: 10px 14px; }
-  .settings-action { width: 100%; justify-content: center; }
-  .settings-item { flex-direction: column; gap: 8px; }
-  .settings-status { max-width: 100%; }
-}
-@media (prefers-reduced-motion: reduce) {
-  .settings-tabs button { transition: none; }
+.as-inline { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.as-form { display: grid; gap: 2px; max-width: 520px; }
+.as-form .field { margin: 0 0 10px; }
+.as-form .field span { display: block; margin: 0 0 6px; color: var(--fg2); font-size: 13px; }
+.as-form .small { margin: 0 0 8px; }
+.as-form .btn { justify-self: start; }
+.as-facts { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.as-facts > div { display: grid; gap: 2px; padding: 12px; border-radius: 10px; background: var(--sel); }
+.as-facts b { font-size: 18px; font-variant-numeric: tabular-nums; }
+.as-card :disabled { cursor: not-allowed; }
+@media (max-width: 560px) {
+  .as-tabs { margin-inline: -2px; padding-inline: 2px; }
+  .as-tab { padding-inline: 14px; }
+  .as-card { padding: 17px; }
+  .as-inline { align-items: stretch; }
+  .as-inline .btn, .as-form .btn { width: 100%; }
 }

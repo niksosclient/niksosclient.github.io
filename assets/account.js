@@ -42,11 +42,6 @@
   let lastLic = null;
   function render(lic) {
     lastLic = lic;
-    const deviceCount = Number(lic.devices), maxDevices = Number(lic.max_devices);
-    window.dispatchEvent(new CustomEvent("niksos:license", { detail: {
-      devices: Number.isFinite(deviceCount) ? Math.max(0, deviceCount) : null,
-      maxDevices: Number.isFinite(maxDevices) ? Math.max(0, maxDevices) : null
-    }}));
     $("who").textContent = lic.name || session.name;
     $("adminLink").hidden = lic.role !== "admin" && !lic.owner;
     $("testWrap").style.display = (lic.role === "admin" || lic.owner) && PROVS.includes("rollypay") ? "block" : "none";
@@ -82,6 +77,7 @@
       : lic.hwid_free !== false ? "Первый сброс — бесплатно, каждый следующий — " + price + " ₽."
       : "Бесплатный сброс уже использован. Каждый следующий — " + price + " ₽.";
     const h = lic.history || [];
+    document.dispatchEvent(new CustomEvent("niksos:license", { detail: lic }));
     $("hist").innerHTML = h.length
       ? "<table><thead><tr><th>Тариф</th><th>Дата активации</th></tr></thead><tbody>" +
         h.map(x => `<tr><td>${x.plan === "promo" ? "Промокод " + esc(x.code) + " (" + (x.days ? "+" + x.days + " дн." : "навсегда") + ")"
@@ -92,7 +88,6 @@
 
   function showDash(lic) {
     $("auth").style.display = "none"; $("dash").style.display = "block"; render(lic);
-    window.dispatchEvent(new Event("niksos:account-ready"));
     if (wantPlan && !afterLogin.done) {
       afterLogin.done = true;
       const b = document.querySelector(`[data-plan="${CSS.escape(wantPlan)}"]`);
@@ -251,7 +246,10 @@
     finally { busy($("resetBtn"), false); $("resetBtn").disabled = !(lastLic && lastLic.devices); }
   });
 
-  $("logout").addEventListener("click", () => { sessionStorage.removeItem("niksos"); sessionStorage.removeItem("niksos_ck"); session = null; showAuth(); });
+  $("logout").addEventListener("click", () => {
+    sessionStorage.removeItem("niksos"); sessionStorage.removeItem("niksos_ck"); session = null; showAuth();
+    document.dispatchEvent(new CustomEvent("niksos:logout"));
+  });
 
   // восстановление сессии вкладки
   (async () => {
