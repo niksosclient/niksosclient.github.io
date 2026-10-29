@@ -23,15 +23,7 @@ html[data-theme="dark"] body {
     #0a0a0a;
   background-attachment: fixed;
 }
-html:not([data-theme="dark"]) body {
-  min-height: 100vh;
-  background:
-    radial-gradient(70% 45% at 50% -5%, rgba(0,0,0,.045), transparent 70%),
-    linear-gradient(rgba(0,0,0,.035) 1px, transparent 1px) 0 0/32px 32px,
-    linear-gradient(90deg, rgba(0,0,0,.035) 1px, transparent 1px) 0 0/32px 32px,
-    var(--bg);
-  background-attachment: fixed;
-}
+html:not([data-theme="dark"]) body { background: var(--bg); }
 .topbar {
   height: 60px;
   padding: 0 max(16px, calc((100% - 1040px) / 2));
@@ -52,7 +44,7 @@ html:not([data-theme="dark"]) .topbar {
 .tl a { font-size: 14px; font-weight: 500; transition: color .15s ease; }
 html[data-theme="dark"] .tl a { color: #a3a3a3; }
 .tl a:hover { color: var(--fg); }
-.iconbtn { border-radius: 12px; min-width: 44px; min-height: 44px; }
+.iconbtn { border-radius: 12px; }
 .card, .stats {
   border: 1px solid var(--line);
   box-shadow: none;

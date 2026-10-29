@@ -31,7 +31,6 @@
     authHash,
     register: (name, hash) => rpc("niksos_register", { p_name: name, p_pass: hash }),
     license: (name, hash) => rpc("niksos_license", { p_name: name, p_pass: hash }),
-    settingsCapabilities: (name, hash) => rpc("niksos_account_settings_capabilities", { p_name: name, p_pass: hash }),
     activate: (name, hash, key) => rpc("niksos_activate", { p_name: name, p_pass: hash, p_key: key }),
     admin: {
       stats: (n, h) => rpc("niksos_admin_stats", { p_name: n, p_pass: h }),

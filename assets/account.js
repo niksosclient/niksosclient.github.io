@@ -77,7 +77,6 @@
       : lic.hwid_free !== false ? "Первый сброс — бесплатно, каждый следующий — " + price + " ₽."
       : "Бесплатный сброс уже использован. Каждый следующий — " + price + " ₽.";
     const h = lic.history || [];
-    document.dispatchEvent(new CustomEvent("niksos:license", { detail: lic }));
     $("hist").innerHTML = h.length
       ? "<table><thead><tr><th>Тариф</th><th>Дата активации</th></tr></thead><tbody>" +
         h.map(x => `<tr><td>${x.plan === "promo" ? "Промокод " + esc(x.code) + " (" + (x.days ? "+" + x.days + " дн." : "навсегда") + ")"
@@ -246,10 +245,7 @@
     finally { busy($("resetBtn"), false); $("resetBtn").disabled = !(lastLic && lastLic.devices); }
   });
 
-  $("logout").addEventListener("click", () => {
-    sessionStorage.removeItem("niksos"); sessionStorage.removeItem("niksos_ck"); session = null; showAuth();
-    document.dispatchEvent(new CustomEvent("niksos:logout"));
-  });
+  $("logout").addEventListener("click", () => { sessionStorage.removeItem("niksos"); sessionStorage.removeItem("niksos_ck"); session = null; showAuth(); });
 
   // восстановление сессии вкладки
   (async () => {
