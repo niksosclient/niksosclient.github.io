@@ -67,6 +67,8 @@
     buy: (name, hash, plan, test, provider, checkout = {}) => NiksosApi.pay({ action: "create", name, pass: hash, plan, test: !!test, provider, ...checkout }),
     paySync: (name, hash) => NiksosApi.pay({ action: "sync", name, pass: hash }),
     hwidReset: (name, hash) => rpc("niksos_hwid_reset", { p_name: name, p_pass: hash }),
+    // Media-application status uses Niksos auth; this is not an OAuth account link.
+    mediaMy: (name, hash) => rpc("niksos_media_my", { p_name: name, p_pass: hash }),
     // ── Публичный профиль (без пароля) ──
     publicProfile: (name) => rpc("niksos_public_profile", { p_name: name }),
     // ── Топ игроков ──
